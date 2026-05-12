@@ -3,10 +3,8 @@ import { Constraints } from "./types";
 export function humanizeConstraint(constraint: Constraints): string {
     const [prop, op, val] = (constraint as unknown as string).split(":");
     
-    // Utilitaire pour transformer "Lycée|ENS" en "Lycée ou ENS"
     const formatOr = (input: string) => input?.replace(/\|/g, " ou ");
 
-    // Cartographie des caractéristiques pour des noms plus naturels
     const labels: Record<string, string> = {
         historicalFigure: "un personnage historique",
         tram: "le tramway",
@@ -47,5 +45,5 @@ export function humanizeConstraint(constraint: Constraints): string {
             return `La station est en correspondance avec ${connection}`;
     }
 
-    return constraint; // Retourne la contrainte brute si aucune règle ne correspond
+    return "??";
 }
