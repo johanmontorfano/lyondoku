@@ -1,6 +1,6 @@
 import { mono } from "@/scripts/fonts";
 import Link from "next/link";
-import { BsGithub, BsSend } from "react-icons/bs";
+import { BsDice5, BsGithub, BsSend } from "react-icons/bs";
 
 export function Navbar() {
     return <div className="navbar w-full">
@@ -12,12 +12,15 @@ export function Navbar() {
                 </h1>
             </Link>
         </div>
-        <div className="navbar-end gap-2 items-center">
+        <div className="navbar-end gap-3 items-center">
+            <Link href="/random">
+                <BsDice5 size={18} />
+            </Link>
             <Link href="mailto:hello@johanmontorfano.com">
-                <BsSend size={22} className="mt-0.5" />
+                <BsSend size={18} className="mt-0.5" />
             </Link>
             <Link href="https://github.com/johanmontorfano/lyondoku">
-                <BsGithub size={24} />
+                <BsGithub size={20} />
             </Link>
         </div>
     </div>

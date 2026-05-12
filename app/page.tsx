@@ -35,7 +35,7 @@ export default function Page() {
             réponses possibles</li>
         </ul>
         <div className="divider" />
-        <h1 className="text-xl font-semibold">Grilles</h1>
+        <h1 className="text-xl font-semibold">Grilles quotidiennes</h1>
         <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify">
             {allGrids.reverse().map(t => <li key={t}>
                 <Link

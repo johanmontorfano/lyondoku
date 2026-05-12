@@ -7,15 +7,16 @@ import {
     useStationSelectorPopup,
 } from "./doku_answer_popup";
 import { motion } from "framer-motion";
-import { Station } from "@/scripts/game_mgr/types";
+import { Constraints, Station } from "@/scripts/game_mgr/types";
+import { humanizeConstraint } from "@/scripts/game_mgr/humanize";
 import Confetti from "react-confetti-boom";
 
-function ConstraintCell(props: { constraint: string }) {
+function ConstraintCell(props: { constraint: Constraints }) {
     return <div
         className="font-semibold text-sm bg-base-200 flex items-center rounded-xl"
     >
         <p className="ml-2">
-            {props.constraint}
+            {humanizeConstraint(props.constraint)}
         </p>
     </div>;
 }
@@ -147,21 +148,24 @@ export function DokuGrid(props: {
     }, [popup.lastSelected]);
 
     useEffect(() => {
+        // NOTE: when the game is a random_ one, we don't save the score
         if (Object.keys(answers).length === 9 && errorCount < 3) {
             setWon(true);
-            localStorage.setItem(props.gameData.id, JSON.stringify({
-                won: true,
-                answers: answers,
-                errors: errorCount
-            }));
+            if (!props.gameData.id.startsWith("random_"))
+                localStorage.setItem(props.gameData.id, JSON.stringify({
+                    won: true,
+                    answers: answers,
+                    errors: errorCount
+                }));
             getAllAnswers();
         } else if (errorCount >= 3) {
             setWon(false);
-            localStorage.setItem(props.gameData.id, JSON.stringify({
-                won: false,
-                answers: answers,
-                errors: 3
-            }));
+            if (!props.gameData.id.startsWith("random_"))
+                localStorage.setItem(props.gameData.id, JSON.stringify({
+                    won: false,
+                    answers: answers,
+                    errors: 3
+                }));
             getAllAnswers();
         }
     }, [answers, errorCount]);
@@ -173,15 +177,11 @@ export function DokuGrid(props: {
             <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full aspect-square">
                 <div />
                 {props.gameData.cols.map((col, i) => (
-                    <ConstraintCell key={"col-" + i} constraint={
-                        col.replaceAll(":", " ")
-                    } />
+                    <ConstraintCell key={"col-" + i} constraint={col} />
                 ))}
                 {cellKeys.map((keys, i) => (
                     <React.Fragment key={`row-frag-${i}`}>
-                        <ConstraintCell constraint={
-                            props.gameData.rows[i].replaceAll(":", " ")
-                        } />
+                        <ConstraintCell constraint={props.gameData.rows[i]} />
                         {keys.map((key) => (
                             <Cell
                                 key={key}
