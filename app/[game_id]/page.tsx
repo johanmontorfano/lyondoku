@@ -23,7 +23,7 @@ export default async function Page(props: {
     if (gameData === null) notFound();
 
     return <div>
-        <header className={"py-12 " + mono.className}>
+        <header className={"pb-6 " + mono.className}>
             <h3 className="text-xl font-monospace">
                 {isToday(new Date(gameData.createdAt)) ?
                     "grille du jour" : "archive du"}

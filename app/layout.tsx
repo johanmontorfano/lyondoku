@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { grotesk } from "@/scripts/fonts";
+import { Navbar } from "@/components/navbar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +18,11 @@ export default function RootLayout({
             lang="en"
             className={`${grotesk.className} h-full`}
         >
-            <body className="max-w-[600px] w-[90%] mx-auto">{children}</body>
+            <body className="max-w-[600px] w-[90%] mx-auto min-h-dvh">
+                <Navbar />
+                <br />
+                {children}
+            </body>
         </html>
     );
 }
