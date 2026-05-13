@@ -12,9 +12,9 @@ import Confetti from "react-confetti-boom";
 
 function ConstraintCell(props: { constraint: Constraints }) {
     return <div className="bg-base-200 flex items-center rounded-xl">
-        <p className="ml-2 font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)]">
+        <div className="ml-2 font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)]">
             {humanizeConstraint(props.constraint)}
-        </p>
+        </div>
     </div>;
 }
 

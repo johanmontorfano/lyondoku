@@ -54,7 +54,7 @@ export function humanizeConstraint(
                 return <>
                     Sur une ligne {colorstl[val]}
                     <div className="flex flex-wrap gap-1">
-                        {linesData.byColor[val as "green"].map((l: string) =>
+                        {linesData.byColor[val as "green"].sort().map((l: string) =>
                             <img
                                 key={l}
                                 src={"lines/" + l + ".svg"}
