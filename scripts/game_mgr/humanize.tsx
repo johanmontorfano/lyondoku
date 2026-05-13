@@ -1,10 +1,11 @@
+import { ReactNode } from "react";
 import { Constraints } from "./types";
 
-export function humanizeConstraint(constraint: Constraints): string {
+export function humanizeConstraint(
+    constraint: Constraints
+): ReactNode | string {
     const [prop, op, val] = (constraint as unknown as string).split(":");
-    
     const formatOr = (input: string) => input?.replace(/\|/g, " ou ");
-
     const labels: Record<string, string> = {
         historicalFigure: "une figure historique",
         tram: "tramway",
@@ -14,6 +15,12 @@ export function humanizeConstraint(constraint: Constraints): string {
         terminus: "terminus",
         SNCF: "réseau SNCF",
     };
+
+    // determines if a string is about a line, thus if it starts with M T or F
+    function isLineName(str: string) {
+        return ("MTF".includes(str[0]) && str.length === 2) ||
+            str.startsWith("NAVI");
+    }
 
     switch (prop) {
         case "name":
@@ -25,7 +32,9 @@ export function humanizeConstraint(constraint: Constraints): string {
         case "nameCharacteristics":
             return `Fait référence à ${labels[val] || val}`;
         case "linesType":
-            return `Correspond avec le ${labels[val] || val}`;
+            if (labels[val])
+                return `Sur le ${labels[val]}`;
+            return `Correspond avec le ${val}`;
         case "stationCharacteristics":
             return `Est ${labels[val] || val}`;
         case "stationBorough":
@@ -35,9 +44,17 @@ export function humanizeConstraint(constraint: Constraints): string {
             if (op === "either") return `Se situe à ${formatOr(val)}`;
             break;
         case "stationConnection":
-            const connection = labels[val] || `la ligne ${val}`;
-            return `Sur la ${connection}`;
+            if (!(val in labels) && isLineName(val)) {
+                return <>
+                    Sur la ligne
+                    <img
+                             width={30}
+                             src={"lines/" + val + ".svg"}
+                             className="mt-1"
+                        />
+                </>
+            }
+            return `Sur le ${labels[val] || val}`;
     }
-
     return "??";
 }
