@@ -43,7 +43,7 @@ function Cell(props: {
                         .sort()
                         .map(c => <img
                              key={c}
-                             width={30}
+                             className="w-[clamp(0.5rem,4cqi,2.2rem)]"
                              src={"lines/" + c + ".svg"}
                         />)}
                 </div>
@@ -53,9 +53,8 @@ function Cell(props: {
                         .sort()
                         .map(c => <img
                              key={c}
-                             width={30}
+                             className="mt-1 w-[clamp(0.5rem,4cqi,2.2rem)]"
                              src={"lines/" + c + ".svg"}
-                             className="mt-1"
                         />)}
                 </div>
                 <div className="flex gap-1">
@@ -64,9 +63,8 @@ function Cell(props: {
                         .sort()
                         .map(c => <img
                              key={c}
-                             width={30}
+                             className="mt-1 w-[clamp(0.5rem,4cqi,2.2rem)]"
                              src={"lines/" + c + ".svg"}
-                             className="mt-1"
                         />)}
                 </div>
             </div>

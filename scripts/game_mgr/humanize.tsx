@@ -53,13 +53,12 @@ export function humanizeConstraint(
             if (op === "includes")
                 return <>
                     Sur une ligne {colorstl[val]}
-                    <div className="flex gap-1">
+                    <div className="flex flex-wrap gap-1">
                         {linesData.byColor[val as "green"].map((l: string) =>
                             <img
                                 key={l}
-                                width={30}
                                 src={"lines/" + l + ".svg"}
-                                className="mt-1"
+                                className="w-[clamp(0.5rem,4cqi,2.2rem)]"
                             />)}
                     </div>
                 </>;
@@ -80,9 +79,8 @@ export function humanizeConstraint(
                 return <>
                     Sur la ligne
                     <img
-                        width={30}
                          src={"lines/" + val + ".svg"}
-                         className="mt-1"
+                         className="w-[clamp(0.5rem,4cqi,2.2rem)]"
                     />
                 </> 
             return `Sur le ${labels[val] || val}`;
