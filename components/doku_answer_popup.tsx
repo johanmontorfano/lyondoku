@@ -14,7 +14,7 @@ export const useStationSelectorPopup = create<{
     // used for all stations that are already used in answers
     forbiddenStations: string[];
     setShowSpecificStationsReadonly(stations: string[] | null): void;
-    setLastSelected(selected: string): void;
+    setLastSelected(selected: string | null): void;
     setPlaceholder(placeholder: string): void;
     setStations(stations: string[]): void;
     setForbiddenStations(forbiddenStations: string[]): void;

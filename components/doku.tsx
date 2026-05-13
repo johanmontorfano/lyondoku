@@ -107,6 +107,7 @@ export function DokuGrid(props: {
     ];
 
     async function handleCheck(cellKey: string, guess: string) {
+        console.log(cellKey, guess);
         try {
             const res = await fetch("/api/verify", {
                 method: "POST",
@@ -148,6 +149,7 @@ export function DokuGrid(props: {
     }
 
     useEffect(() => {
+        console.log("EFFECTA");
         // if there is a record for this game on local storage, it means the
         // grid has already been played and the user might have either won or
         // lost
@@ -161,11 +163,13 @@ export function DokuGrid(props: {
             setAnswers(saveData.answers);
             setErrorCount(saveData.errors);
         }
-    }, []);
+    }, [props.gameData]);
 
     useEffect(() => {
-        if (popup.lastSelected !== null)
+        if (popup.lastSelected !== null) {
             handleCheck(focusedCellKey.current, popup.lastSelected);
+            popup.setLastSelected(null);
+        }
     }, [popup.lastSelected]);
 
     useEffect(() => {
