@@ -1,3 +1,4 @@
+import { ResetProgress } from "@/components/reset_progress";
 import Link from "next/link";
 
 export default function Page() {
@@ -51,5 +52,7 @@ export default function Page() {
                 }</Link>
             </li>)}
         </ul>
+        <br />
+        <ResetProgress />
     </div>
 }
