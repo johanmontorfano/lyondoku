@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { grotesk } from "@/scripts/fonts";
 import { Navbar } from "@/components/navbar";
-import "./globals.css";
-import Link from "next/link";
 import { ResetProgress } from "@/components/reset_progress";
+import Link from "next/link";
+import "./globals.css";
 
 export const metadata: Metadata = {
     title: "LyonDoku",

@@ -173,6 +173,7 @@ export function DokuGrid(props: {
     }, [popup.lastSelected]);
 
     useEffect(() => {
+        if (typeof window === "undefined") return;
         // NOTE: when the game is a random_ one, we don't save the score
         if (Object.keys(answers).length === 9 && errorCount < 3) {
             setWon(true);

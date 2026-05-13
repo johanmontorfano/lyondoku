@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 
 export function ResetProgress() {
-    const [disabled, setDisabled] = useState(!localStorage.length);
+    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
+        if (typeof window === "undefined") return;
+        setDisabled(!localStorage.length);
         // we periodically check if local storage is still empty
         const interval = setInterval(() => {
             setDisabled(!localStorage.length);
