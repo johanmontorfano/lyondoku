@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import { Constraints } from "./types";
 
+import linesData from "@/public/lines";
+
 export function humanizeConstraint(
     constraint: Constraints
 ): ReactNode | string {
@@ -48,10 +50,21 @@ export function humanizeConstraint(
                 return <>
                     Sur la ligne
                     <img
-                             width={30}
-                             src={"lines/" + val + ".svg"}
-                             className="mt-1"
-                        />
+                        width={30}
+                         src={"lines/" + val + ".svg"}
+                         className="mt-1"
+                    />
+                </>
+            } else if (val.endsWith("Line")) { // dealing with color
+                return <>
+                    Sur une des lignes
+                    {linesData.byColor[val.replace("Line", "")].map((l: string) =>
+                        <img
+                            key={l}
+                            width={30}
+                            src={"lines/" + l + ".svg"}
+                            className="mt-1"
+                        />)}
                 </>
             }
             return `Sur le ${labels[val] || val}`;
