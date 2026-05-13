@@ -71,7 +71,7 @@ export function humanizeConstraint(
         case "stationBorough":
             return `Dans un arrondissement ${op === "odd" ? "impair" : "pair"}`;
         case "stationLocation":
-            if (op === "not") return `Ne se situe pas à ${val}`;
+            if (op === "not") return `Ne se situe pas à ${formatOr(val)}`;
             if (op === "equals") return `Se situe à ${val}`;
             if (op === "includes") return `Se situe à ${formatOr(val)}`;
             break;
