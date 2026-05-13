@@ -6,43 +6,37 @@ export function humanizeConstraint(constraint: Constraints): string {
     const formatOr = (input: string) => input?.replace(/\|/g, " ou ");
 
     const labels: Record<string, string> = {
-        historicalFigure: "un personnage historique",
-        tram: "le tramway",
-        metro: "le métro",
-        funicular: "le funiculaire",
-        std: "une station classique",
-        terminus: "un terminus",
-        SNCF: "le réseau SNCF",
+        historicalFigure: "une figure historique",
+        tram: "tramway",
+        metro: "métro",
+        funicular: "funiculaire",
+        std: "station classique",
+        terminus: "terminus",
+        SNCF: "réseau SNCF",
     };
 
     switch (prop) {
         case "name":
-            if (op === "includes") return `Le nom de la station contient "${val}"`;
-            if (op === "includes-either") return `Le nom de la station contient "${formatOr(val)}"`;
-            if (op === "wordlen") return `Le nom de la station est composé d'exactement ${val} mot(s)`;
-            if (op === "minwordlen") return `Le nom de la station comporte au moins ${val} mots`;
+            if (op === "includes") return `Contient "${val}"`;
+            if (op === "includes-either") return `Content "${formatOr(val)}"`;
+            if (op === "wordlen") return `Comporte ${val} mot(s)`;
+            if (op === "minwordlen") return `Comporte au moins ${val} mots`;
             break;
-
         case "nameCharacteristics":
-            return `Le nom de la station fait référence à ${labels[val] || val}`;
-
+            return `Fait référence à ${labels[val] || val}`;
         case "linesType":
-            return `La station est desservie par ${labels[val] || val}`;
-
+            return `Correspond avec le ${labels[val] || val}`;
         case "stationCharacteristics":
-            return `La station est ${labels[val] || val}`;
-
+            return `Est ${labels[val] || val}`;
         case "stationBorough":
-            return `L'arrondissement de la station est ${op === "odd" ? "impair" : "pair"}`;
-
+            return `Dans un arrondissement ${op === "odd" ? "impair" : "pair"}`;
         case "stationLocation":
-            if (op === "equals") return `La station se situe à ${val}`;
-            if (op === "either") return `La station se situe à ${formatOr(val)}`;
+            if (op === "equals") return `Se situe à ${val}`;
+            if (op === "either") return `Se situe à ${formatOr(val)}`;
             break;
-
         case "stationConnection":
             const connection = labels[val] || `la ligne ${val}`;
-            return `La station est en correspondance avec ${connection}`;
+            return `Sur la ${connection}`;
     }
 
     return "??";
