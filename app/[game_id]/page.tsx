@@ -31,18 +31,19 @@ export default async function Page(props: {
     }
 
     if (gameData === null) notFound();
-
     return <div>
         <header className={"pb-6 " + mono.className}>
             <h3 className="text-xl font-monospace">
                 {params.game_id.startsWith("random_") ?
                     "grille aléatoire" :
-                    isToday(new Date(gameData.createdAt)) ?
+                    isToday(new Date(gameData.id)) ?
                         "grille du jour" : "archive du"}
             </h3>
             {!params.game_id.startsWith("random_") &&
                 <h4 className="text-xl font-monospace">
-                    { new Intl.DateTimeFormat('fr-FR').format(gameData.createdAt)}
+                    { new Intl.DateTimeFormat('fr-FR').format(
+                        new Date(gameData.id).getTime()
+                    )}
                 </h4>
             }
         </header>
