@@ -242,6 +242,7 @@ export function DokuGrid(props: {
                 <button
                     onClick={() => setErrorCount(3)}
                     className="btn btn-primary"
+                    disabled={won !== null}
                 >Abandonner</button>
                 <ErrorsCounter count={errorCount} />
             </div>
