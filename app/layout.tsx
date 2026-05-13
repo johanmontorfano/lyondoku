@@ -18,7 +18,7 @@ export default function RootLayout({
             lang="en"
             className={`${grotesk.className} h-full`}
         >
-            <body className="max-w-[600px] w-[90%] mx-auto min-h-dvh">
+            <body className="max-w-[600px] w-[96%] mx-auto min-h-dvh">
                 <Navbar />
                 <br />
                 {children}
