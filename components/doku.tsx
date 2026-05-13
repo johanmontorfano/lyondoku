@@ -56,6 +56,16 @@ function Cell(props: {
                              className="mt-1"
                         />)}
                 </div>
+                <div className="flex gap-1">
+                    {props.answer.connections
+                        .filter(c => c.startsWith("NAVI") || c[0] === "F")
+                        .map(c => <img
+                             key={c}
+                             width={30}
+                             src={"lines/" + c + ".svg"}
+                             className="mt-1"
+                        />)}
+                </div>
             </div>
         </div>}
     </div>
@@ -211,6 +221,9 @@ export function DokuGrid(props: {
                                         props.gameData.validAnswersCount[key];
                                     focusedCellKey.current = key;
 
+                                    popup.setForbiddenStations(
+                                        Object.values(answers).map(a => a.name)
+                                    )
                                     popup.setPlaceholder(`${
                                         answersCount
                                     } réponse${

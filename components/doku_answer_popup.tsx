@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { create } from "zustand";
 import { motion, AnimatePresence } from "framer-motion";
 import { BsX } from "react-icons/bs";
@@ -11,10 +11,13 @@ export const useStationSelectorPopup = create<{
     lastSelected: string | null;
     placeholder: string;
     stations: string[];
+    // used for all stations that are already used in answers
+    forbiddenStations: string[];
     setShowSpecificStationsReadonly(stations: string[] | null): void;
     setLastSelected(selected: string): void;
     setPlaceholder(placeholder: string): void;
     setStations(stations: string[]): void;
+    setForbiddenStations(forbiddenStations: string[]): void;
     setShow(state: boolean): void;
 }>((update) => {
     return {
@@ -22,9 +25,13 @@ export const useStationSelectorPopup = create<{
         lastSelected: null,
         placeholder: "",
         stations: [],
+        forbiddenStations: [],
         showSpecificStationsReadonly: null,
         setStations(stations) {
             update({ stations });
+        },
+        setForbiddenStations(forbiddenStations) {
+            update({ forbiddenStations });
         },
         setShowSpecificStationsReadonly(stations) {
             update({ showSpecificStationsReadonly: stations });
@@ -51,9 +58,16 @@ export function StationSelectorPopup() {
         setActiveMatch(-1);
         if (search.trim() === "") return [];
         return state.stations.filter((s) =>
-            s.toLowerCase().includes(search.toLowerCase()),
+            s.toLowerCase().includes(search.toLowerCase()) &&
+            !state.forbiddenStations.includes(s)
         );
     }, [search, state.stations]);
+
+    useEffect(() => {
+        setSearch("");
+        if (!state.show)
+            state.setForbiddenStations([]);
+    }, [state.show]);
 
     const handleKeyDown = (ev: React.KeyboardEvent) => {
         if (ev.key === "ArrowDown") {
