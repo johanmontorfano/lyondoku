@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Constraints } from "./types";
 
-import linesData from "@/public/lines";
+import linesData from "@/public/data/lines.json";
 
 export function humanizeConstraint(
     constraint: Constraints
@@ -58,7 +58,7 @@ export function humanizeConstraint(
             } else if (val.endsWith("Line")) { // dealing with color
                 return <>
                     Sur une des lignes
-                    {linesData.byColor[val.replace("Line", "")].map((l: string) =>
+                    {linesData.byColor[val.replace("Line", "") as "green" | "blue" | "pink"].map((l: string) =>
                         <img
                             key={l}
                             width={30}
