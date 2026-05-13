@@ -6,16 +6,13 @@ import {
     StationSelectorPopup,
     useStationSelectorPopup,
 } from "./doku_answer_popup";
-import { motion } from "framer-motion";
 import { Constraints, Station } from "@/scripts/game_mgr/types";
 import { humanizeConstraint } from "@/scripts/game_mgr/humanize";
 import Confetti from "react-confetti-boom";
 
 function ConstraintCell(props: { constraint: Constraints }) {
-    return <div
-        className="font-semibold text-sm bg-base-200 flex items-center rounded-xl"
-    >
-        <p className="ml-2">
+    return <div className="bg-base-200 flex items-center rounded-xl">
+        <p className="ml-2 font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)]">
             {humanizeConstraint(props.constraint)}
         </p>
     </div>;
@@ -26,28 +23,42 @@ function Cell(props: {
     allAnswers: string[] | undefined,
     onClick: () => void
 }) {
-    return <motion.div
+    return <div
+        role="button"
         className={`w-full h-full ${
             !props.answer || props.allAnswers ? "cursor-pointer" : ""
         } border border-2 rounded-xl hover:bg-base-300 transition-colors`}
-        onClick={!props.answer || props.allAnswers ? props.onClick : undefined}
+      onClick={() => {
+            if (!props.answer || props.allAnswers) props.onClick();
+        }} 
     >
         {props.answer && <div className="m-2 relative h-full">
-            <p className="text-sm font-semibold">{props.answer.name}</p>
-            <div className="absolute bottom-4">
+            <p className="font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)]">
+                {props.answer.name}
+            </p>
+            <div className="absolute bottom-4 pointer-events-none">
                 <div className="flex gap-1">
                     {props.answer.connections
                         .filter(c => c[0] === "M")
-                        .map(c => <img width={30} src={"lines/" + c + ".svg"} />)}
+                        .map(c => <img
+                             key={c}
+                             width={30}
+                             src={"lines/" + c + ".svg"}
+                        />)}
                 </div>
                 <div className="flex gap-1">
                     {props.answer.connections
                         .filter(c => c[0] === "T" || c[0] === "R")
-                        .map(c => <img width={30} src={"lines/" + c + ".svg"} className="mt-1" />)}
+                        .map(c => <img
+                             key={c}
+                             width={30}
+                             src={"lines/" + c + ".svg"}
+                             className="mt-1"
+                        />)}
                 </div>
             </div>
         </div>}
-    </motion.div>
+    </div>
 }
 
 function ErrorsCounter(props: { count: number }) {
@@ -174,7 +185,7 @@ export function DokuGrid(props: {
         <>
             {won && <Confetti mode="fall" /> }
             <StationSelectorPopup />
-            <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full aspect-square">
+            <div className="grid grid-cols-4 grid-rows-4 max-sm:gap-1 gap-2 w-full aspect-square">
                 <div />
                 {props.gameData.cols.map((col, i) => (
                     <ConstraintCell key={"col-" + i} constraint={col} />
@@ -214,7 +225,11 @@ export function DokuGrid(props: {
                 ))}
             </div>
             <br />
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+                <button
+                    onClick={() => setErrorCount(3)}
+                    className="btn btn-primary"
+                >Abandonner</button>
                 <ErrorsCounter count={errorCount} />
             </div>
         </>

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { create } from "zustand";
 import { motion, AnimatePresence } from "framer-motion";
 import { BsX } from "react-icons/bs";
@@ -80,7 +80,7 @@ export function StationSelectorPopup() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute top-0 left-0 w-full h-dvh z-50 flex items-center justify-center bg-black/40"
+                    className="absolute top-0 left-0 w-full h-dvh z-50 flex justify-center bg-black/40 items-start"
                     onClick={() => state.setShow(false)}
                 >
                     <motion.div
@@ -92,10 +92,10 @@ export function StationSelectorPopup() {
                             damping: 25,
                             stiffness: 300,
                         }}
-                        className="bg-base-100 shadow-2xl max-w-[450px] w-full rounded-2xl overflow-hidden border border-base-300"
+                        className="bg-base-100 shadow-2xl max-w-[450px] w-full rounded-2xl overflow-hidden border border-base-300 mt-5 mx-5"
                         onClick={(ev) => ev.stopPropagation()}
                     >
-                        <div className="px-4 py-2 flex justify-end">
+                        <div className="px-4 pt-2 flex justify-end">
                             <button className="btn btn-sm btn-ghost btn-circle" onClick={() => {
                                 state.setShow(false);
                             }}>
