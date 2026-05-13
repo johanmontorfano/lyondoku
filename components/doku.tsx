@@ -40,6 +40,7 @@ function Cell(props: {
                 <div className="flex gap-1">
                     {props.answer.connections
                         .filter(c => c[0] === "M")
+                        .sort()
                         .map(c => <img
                              key={c}
                              width={30}
@@ -49,6 +50,7 @@ function Cell(props: {
                 <div className="flex gap-1">
                     {props.answer.connections
                         .filter(c => c[0] === "T" || c[0] === "R")
+                        .sort()
                         .map(c => <img
                              key={c}
                              width={30}
@@ -59,6 +61,7 @@ function Cell(props: {
                 <div className="flex gap-1">
                     {props.answer.connections
                         .filter(c => c.startsWith("NAVI") || c[0] === "F")
+                        .sort()
                         .map(c => <img
                              key={c}
                              width={30}
@@ -149,7 +152,6 @@ export function DokuGrid(props: {
     }
 
     useEffect(() => {
-        console.log("EFFECTA");
         // if there is a record for this game on local storage, it means the
         // grid has already been played and the user might have either won or
         // lost
