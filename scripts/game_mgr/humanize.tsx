@@ -7,7 +7,15 @@ export function humanizeConstraint(
     constraint: Constraints
 ): ReactNode | string {
     const [prop, op, val] = (constraint as unknown as string).split(":");
-    const formatOr = (input: string) => input?.replace(/\|/g, " ou ");
+    const formatOr = (input: string): string => {
+        if (!input) return "";
+
+        const expressions = input.split("|").map(item => item.trim());
+        if (expressions.length <= 1) return expressions[0] || "";
+
+        const lastExpression = expressions.pop();
+        return `${expressions.join(", ")} ou ${lastExpression}`;
+    };
     const labels: Record<string, string> = {
         historicalFigure: "une figure historique",
         tram: "tramway",
@@ -26,17 +34,39 @@ export function humanizeConstraint(
 
     switch (prop) {
         case "name":
-            if (op === "includes") return `Contient "${val}"`;
-            if (op === "includes-either") return `Content "${formatOr(val)}"`;
-            if (op === "wordlen") return `Comporte ${val} mot(s)`;
+            if (op === "includes") return `Contient '${val}'`;
+            if (op === "word-includes") return `Contient ${formatOr(val)}`;
+            if (op === "wordlen")
+                return `Comporte ${val} mot${parseInt(val) > 1 ? "s" : ""}`;
             if (op === "minwordlen") return `Comporte au moins ${val} mots`;
             break;
         case "nameCharacteristics":
             return `Fait référence à ${labels[val] || val}`;
+        case "linesColor":
+            const colorstl: Record<string, string> = {
+                green: "verte",
+                pink: "rose",
+                blue: "bleue",
+                red: "rouge",
+                orange: "orange"
+            };
+            if (op === "includes")
+                return <>
+                    Sur une ligne {colorstl[val]}
+                    <div className="flex gap-1">
+                        {linesData.byColor[val as "green"].map((l: string) =>
+                            <img
+                                key={l}
+                                width={30}
+                                src={"lines/" + l + ".svg"}
+                                className="mt-1"
+                            />)}
+                    </div>
+                </>;
         case "linesType":
             if (labels[val])
                 return `Sur le ${labels[val]}`;
-            return `Correspond avec le ${val}`;
+            return `Sur une ligne de ${val}`;
         case "stationCharacteristics":
             return `Est ${labels[val] || val}`;
         case "stationBorough":
@@ -45,8 +75,8 @@ export function humanizeConstraint(
             if (op === "equals") return `Se situe à ${val}`;
             if (op === "either") return `Se situe à ${formatOr(val)}`;
             break;
-        case "stationConnection":
-            if (!(val in labels) && isLineName(val)) {
+        case "connections":
+            if (!(val in labels) && isLineName(val))
                 return <>
                     Sur la ligne
                     <img
@@ -54,20 +84,11 @@ export function humanizeConstraint(
                          src={"lines/" + val + ".svg"}
                          className="mt-1"
                     />
-                </>
-            } else if (val.endsWith("Line")) { // dealing with color
-                return <>
-                    Sur une des lignes
-                    {linesData.byColor[val.replace("Line", "") as "green" | "blue" | "pink"].map((l: string) =>
-                        <img
-                            key={l}
-                            width={30}
-                            src={"lines/" + l + ".svg"}
-                            className="mt-1"
-                        />)}
-                </>
-            }
+                </> 
             return `Sur le ${labels[val] || val}`;
+        case "terminus":
+            if (op === "bool" && val === "True") return "Est un terminus";
+            return "N'est pas un terminus";
     }
-    return "??";
+    return val;
 }
