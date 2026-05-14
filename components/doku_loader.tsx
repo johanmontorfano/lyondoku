@@ -41,6 +41,7 @@ export async function SSRDokuLoader(props: {
                 </h4>
             }
         </header>
+        <br />
         <DokuGrid gameData={gameData as UserFacingGameData} stations={stations} />
     </div>
 }

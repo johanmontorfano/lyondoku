@@ -66,7 +66,7 @@ export default function RootLayout({
                 <footer className="pb-8">
                     <div className="divider" />
                     <h1 className="text-xl font-semibold">
-                        Grilles quotidiennes
+                        Archives
                     </h1>
                     <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify">
                         {allGrids.reverse().map((t) => (

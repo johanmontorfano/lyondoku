@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-    themes:
-        lyondoku --default,
-        lyondoku-dark --prefersdark;
+    themes: lyondoku --default, lyondarku --prefersdark;
 }
 
 @plugin "daisyui/theme" {
@@ -30,3 +28,41 @@
     --radius-box: 0.25rem;
     --border: 1px;
 }
+
+
+
+@plugin "daisyui/theme" {
+  name: "lyondarku";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: oklch(0% 0 24.580);
+  --color-base-200: oklch(24.3% 0.035 24.580);
+  --color-base-300: oklch(36.8% 0.062 24.580);
+  --color-base-content: oklch(100% 0 0);
+  --color-primary: oklch(52.19% 0.231 24.58);
+  --color-primary-content: oklch(98% 0.01 24.58);
+  --color-secondary: oklch(45% 0 0);
+  --color-secondary-content: oklch(98% 0 0);
+  --color-accent: oklch(85% 0.15 90);
+  --color-accent-content: oklch(25% 0.05 90);
+  --color-neutral: oklch(25% 0.02 24.58);
+  --color-neutral-content: oklch(98% 0 0);
+  --color-info: oklch(65% 0.15 250);
+  --color-info-content: oklch(28% 0.091 267.935);
+  --color-success: oklch(70% 0.18 150);
+  --color-success-content: oklch(100% 0.051 172.552);
+  --color-warning: oklch(80% 0.17 70);
+  --color-warning-content: oklch(26% 0.079 36.259);
+  --color-error: oklch(55% 0.22 25);
+  --color-error-content: oklch(100% 0.109 3.907);
+  --radius-selector: 0.125rem;
+  --radius-field: 0.125rem;
+  --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+

@@ -7,24 +7,25 @@ import { BsX } from "react-icons/bs";
 export const useStationSelectorPopup = create<{
     show: boolean;
     // when this variable is set, the popup will only show those stations
-    showSpecificStationsReadonly: string[] | null;
-    lastSelected: string | null;
+    showSpecificStationsReadonly: number[] | null;
+    lastSelected: number | null;
     placeholder: string;
-    stations: string[];
+    // stations are saved this way since the server only provides ids
+    stations: Record<number, string>;
     // used for all stations that are already used in answers
-    forbiddenStations: string[];
-    setShowSpecificStationsReadonly(stations: string[] | null): void;
-    setLastSelected(selected: string | null): void;
+    forbiddenStations: number[];
+    setShowSpecificStationsReadonly(stations: number[] | null): void;
+    setLastSelected(selected: number | null): void;
     setPlaceholder(placeholder: string): void;
-    setStations(stations: string[]): void;
-    setForbiddenStations(forbiddenStations: string[]): void;
+    setStations(stations: Record<number, string>): void;
+    setForbiddenStations(forbiddenStations: number[]): void;
     setShow(state: boolean): void;
 }>((update) => {
     return {
         show: false,
         lastSelected: null,
         placeholder: "",
-        stations: [],
+        stations: {},
         forbiddenStations: [],
         showSpecificStationsReadonly: null,
         setStations(stations) {
@@ -57,9 +58,9 @@ export function StationSelectorPopup() {
     const matches = useMemo(() => {
         setActiveMatch(-1);
         if (search.trim() === "") return [];
-        return state.stations.filter((s) =>
-            s.toLowerCase().includes(search.toLowerCase()) &&
-            !state.forbiddenStations.includes(s)
+        return Object.entries(state.stations).filter((s) =>
+            s[1].toLowerCase().includes(search.toLowerCase()) &&
+            !state.forbiddenStations.includes(parseInt(s[0]))
         );
     }, [search, state.stations]);
 
@@ -80,7 +81,7 @@ export function StationSelectorPopup() {
             setActiveMatch((prev) => (prev > 0 ? prev - 1 : prev));
         } else if (ev.key === "Enter" && matches[activeMatch]) {
             setSearch("");
-            state.setLastSelected(matches[activeMatch]);
+            state.setLastSelected(parseInt(matches[activeMatch][0]));
             state.setShow(false);
         } else if (ev.key === "Escape") {
             state.setShow(false);
@@ -94,7 +95,7 @@ export function StationSelectorPopup() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute top-0 left-0 w-full h-dvh z-50 flex justify-center bg-black/40 items-start"
+                    className="fixed top-0 left-0 w-full h-dvh z-50 flex justify-center bg-black/40 items-start"
                     onClick={() => state.setShow(false)}
                 >
                     <motion.div
@@ -135,7 +136,7 @@ export function StationSelectorPopup() {
                                 <AnimatePresence mode="popLayout">
                                     {matches.map((station, i) => (
                                         <motion.li
-                                            key={station}
+                                            key={station[1]}
                                             layout
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
@@ -151,7 +152,7 @@ export function StationSelectorPopup() {
                                                 }`}
                                                 onClick={() => {
                                                     state.setLastSelected(
-                                                        station,
+                                                        parseInt(station[0])
                                                     );
                                                     state.setShow(false);
                                                 }}
@@ -160,7 +161,7 @@ export function StationSelectorPopup() {
                                                 }
                                             >
                                                 <span className="relative z-10 font-medium">
-                                                    {station}
+                                                    {station[1]}
                                                 </span>
 
                                                 {/* The Sliding Highlight */}
@@ -179,10 +180,10 @@ export function StationSelectorPopup() {
                                         </motion.li>
                                     ))}
                                 </AnimatePresence>
-                                {state.showSpecificStationsReadonly?.map(station => (
-                                        <li key={station}>
+                                {state.showSpecificStationsReadonly?.map(id => (
+                                        <li key={state.stations[id]}>
                                             <p className="flex justify-between items-center py-3 px-4 rounded-xl transition-colors text-medium">
-                                                {station}
+                                                {state.stations[id]}
                                             </p>
                                         </li>
                                     ))}

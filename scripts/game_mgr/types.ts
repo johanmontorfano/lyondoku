@@ -9,6 +9,7 @@ export type Constraints = string;
 // a line (either row or column) is a member of a grid, it defines the
 // constraints of the answer of a specific line
 export interface Station {
+    id: number;
     name: string;
     nameCharacteristics: "historicalFigure"[];
     
@@ -19,7 +20,10 @@ export interface Station {
     stationCharacteristics: ("std" | "terminus" | "centralPlatform")[];
 
     location: string;
+    lat: number;
+    lon: number;
     // NOTE: when the station is outside of Lyon, we default to odd
     stationBorough: "odd" | "even";
     stationLocation: string;
+    terminus: boolean;
 }

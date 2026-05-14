@@ -9,7 +9,8 @@ export interface GameData {
     rows: [Constraints, Constraints, Constraints],
     cols: [Constraints, Constraints, Constraints],
     // tl tc tr cl cc cr bl bc br
-    validAnswers: { [cell: string]: string[] }
+    validAnswers: { [cell: string]: number[] }
+    scoring: { [cell: string]: number }
 }
 export type UserFacingGameData = Omit<GameData, "validAnswers"> & {
     validAnswersCount: { [cell: string]: number }
@@ -43,9 +44,9 @@ export async function retrieveGame(id: string, userFacing = false): Promise<
     }
 }
 
-export async function retrieveStation(name: string) {
+export async function retrieveStation(id: number) {
     try {
-        const snap = await firestore.doc(`config/network/stations/${name}`).get();
+        const snap = await firestore.doc(`config/network/stations/${id}`).get();
         
         if (snap.exists)
             return snap.data() as Station;

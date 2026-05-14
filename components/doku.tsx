@@ -7,8 +7,9 @@ import {
     useStationSelectorPopup,
 } from "./doku_answer_popup";
 import { Constraints, Station } from "@/scripts/game_mgr/types";
-import { humanizeConstraint } from "@/scripts/game_mgr/humanize";
+import { humanizeConstraint, humanizeRarity } from "@/scripts/game_mgr/humanize";
 import Confetti from "react-confetti-boom";
+import stations from "@/public/data/stations.json";
 
 function ConstraintCell(props: { constraint: Constraints }) {
     return <div className="bg-base-200 flex items-center rounded-xl">
@@ -19,25 +20,25 @@ function ConstraintCell(props: { constraint: Constraints }) {
 }
 
 function Cell(props: {
-    answer: Station | undefined,
-    allAnswers: string[] | undefined,
+    answer: (Station & { score: number }) | undefined,
+    allAnswers: number[] | undefined,
     onClick: () => void
 }) {
     return <div
         role="button"
         className={`w-full h-full ${
             !props.answer || props.allAnswers ? "cursor-pointer" : ""
-        } border border-2 rounded-xl hover:bg-base-300 transition-colors`}
+        } border border-2 rounded-xl dark:border-white/70 hover:bg-base-300 overflow-clip transition-colors`}
       onClick={() => {
             if (!props.answer || props.allAnswers) props.onClick();
         }} 
     >
-        {props.answer && <div className="m-2 relative h-full">
-            <p className="font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)]">
+        {props.answer && <div className="relative h-full">
+            <p className="font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)] p-2">
                 {props.answer.name}
             </p>
-            <div className="absolute bottom-4 pointer-events-none">
-                <div className="flex gap-1">
+            <div className="absolute bottom-0 pointer-events-none w-full">
+                <div className="flex gap-1 px-2">
                     {props.answer.connections
                         .filter(c => c[0] === "M")
                         .sort()
@@ -47,7 +48,7 @@ function Cell(props: {
                              src={"lines/" + c + ".svg"}
                         />)}
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-1 px-2">
                     {props.answer.connections
                         .filter(c => c[0] === "T" || c[0] === "R")
                         .sort()
@@ -57,7 +58,7 @@ function Cell(props: {
                              src={"lines/" + c + ".svg"}
                         />)}
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-1 px-2">
                     {props.answer.connections
                         .filter(c => c.startsWith("NAVI") || c[0] === "F")
                         .sort()
@@ -67,6 +68,11 @@ function Cell(props: {
                              src={"lines/" + c + ".svg"}
                         />)}
                 </div>
+                <p className="w-full text-center bg-base-200 py-0.5 text-[clamp(0.3rem,2.4cqi,0.65rem)] mt-1">
+                    {
+                        props.answer.score
+                    }% – {humanizeRarity(props.answer.score)}
+                </p>
             </div>
         </div>}
     </div>
@@ -95,8 +101,11 @@ export function DokuGrid(props: {
 }) {
     const popup = useStationSelectorPopup();
     const [won, setWon] = useState<boolean | null>(null);
-    const [answers, setAnswers] = useState<{ [key: string]: Station }>({});
-    const [allAnswers, setAllAnswers] = useState<{ [key: string]: string[] }>({});
+    const [answers, setAnswers] = useState<{
+        [key: string]: Station & { score: number }
+    }>({});
+    const [score, setScore] = useState(0);
+    const [allAnswers, setAllAnswers] = useState<{ [key: string]: number[] }>({});
     const [errorCount, setErrorCount] = useState(0);
 
     const focusedCellKey = useRef("tl");
@@ -107,7 +116,7 @@ export function DokuGrid(props: {
         ["bl", "bc", "br"],
     ];
 
-    async function handleCheck(cellKey: string, guess: string) {
+    async function handleCheck(cellKey: string, guess: number) {
         console.log(cellKey, guess);
         try {
             const res = await fetch("/api/verify", {
@@ -129,6 +138,7 @@ export function DokuGrid(props: {
                     ...prev,
                     [cellKey]: body.stationData
                 }));
+                setScore(p => p + body.stationData.score);
             } else {
                 setErrorCount(p => p + 1);
             }
@@ -200,6 +210,9 @@ export function DokuGrid(props: {
         <>
             {won && <Confetti mode="fall" /> }
             <StationSelectorPopup />
+            <div className="py-4 w-fiull flex justify-end">
+                <p>{score}/900</p>
+            </div>
             <div className="grid grid-cols-4 grid-rows-4 max-sm:gap-1 gap-2 w-full aspect-square">
                 <div />
                 {props.gameData.cols.map((col, i) => (
@@ -227,7 +240,7 @@ export function DokuGrid(props: {
                                     focusedCellKey.current = key;
 
                                     popup.setForbiddenStations(
-                                        Object.values(answers).map(a => a.name)
+                                        Object.values(answers).map(a => a.id)
                                     )
                                     popup.setPlaceholder(`${
                                         answersCount
