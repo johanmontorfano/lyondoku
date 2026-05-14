@@ -27,6 +27,10 @@ export async function POST(req: NextRequest) {
     const game = await retrieveGame(body.data.gridId) as GameData;
     const correct = game !== null &&
         game.validAnswers[body.data.targetCell]?.includes(body.data.guess);
+    
+    if (!correct)
+        return NextResponse.json({ correct, stationData: null });
+
     const stationData = correct ? await retrieveStation(body.data.guess) : null;
 
     if (stationData === null)
