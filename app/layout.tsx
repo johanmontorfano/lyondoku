@@ -7,7 +7,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
     title: "LyonDoku",
-    description: "Metrodoku clone 4 Lyon",
+    description: "Metrodoku clone 4 Lyon"
 };
 
 export default function RootLayout({
