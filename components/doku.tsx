@@ -9,7 +9,6 @@ import {
 import { Constraints, Station } from "@/scripts/game_mgr/types";
 import { humanizeConstraint, humanizeRarity } from "@/scripts/game_mgr/humanize";
 import Confetti from "react-confetti-boom";
-import stations from "@/public/data/stations.json";
 
 function ConstraintCell(props: { constraint: Constraints }) {
     return <div className="bg-base-200 flex items-center rounded-xl">
@@ -97,7 +96,7 @@ function ErrorsCounter(props: { count: number }) {
 
 export function DokuGrid(props: {
     gameData: UserFacingGameData;
-    stations: string[];
+    stations: Record<string, string>;
 }) {
     const popup = useStationSelectorPopup();
     const [won, setWon] = useState<boolean | null>(null);
