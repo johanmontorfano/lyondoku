@@ -42,6 +42,12 @@ export function humanizeConstraint(
             break;
         case "nameCharacteristics":
             return `Fait référence à ${labels[val] || val}`;
+        // NOTE: THIS PROPERTY IS SPECIAL AS NO METHOD APPLIES TO IT
+        case "near":
+            const distance = parseInt(op);
+            const place = val.split("->")[0];
+
+            return `A moins de ${distance / 1000}km ${place}`;
         case "linesColor":
             const colorstl: Record<string, string> = {
                 green: "verte",
@@ -90,4 +96,11 @@ export function humanizeConstraint(
             return "N'est pas un terminus";
     }
     return val;
+}
+
+export function humanizeRarity(rarity: number) {
+    if (rarity > 79) return "très rare";
+    else if (rarity > 50) return "rare";
+    else if (rarity > 30) return "peu commun";
+    return "commun";
 }
