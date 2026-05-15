@@ -54,9 +54,13 @@ function Cell(props: {
                         />)}
                 </div>
                 <div className="flex gap-1 px-2">
-                    {[...props.answer.connections
-                        .filter(c => c[0] === "T")
-                        .sort(), "RX"]
+                    {props.answer.connections
+                        .filter(c => c[0] === "T" || c === "RX")
+                        .sort((a, b) => {
+                            if (a === "RX" || a > b) return 1;
+                            if (a < b) return -1;
+                            return 0;
+                        })
                         .map(c => <img
                              key={c}
                              className="mt-1 w-[clamp(0.5rem,4cqi,2.2rem)]"
