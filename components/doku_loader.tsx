@@ -1,6 +1,6 @@
 "use server";
 
-import { retrieveAllStationsNames, retrieveGame, UserFacingGameData } from "@/scripts/game_mgr/game";
+import { retrieveGame, UserFacingGameData } from "@/scripts/game_mgr/game";
 import { DokuGrid } from "./doku";
 import { mono } from "@/scripts/fonts";
 import { ReactNode } from "react";
@@ -11,7 +11,6 @@ export async function SSRDokuLoader(props: {
     id: string,
     onNotFound: () => ReactNode | never
 }) {
-    const stations = await retrieveAllStationsNames();
     const gameData = await retrieveGame(props.id, true);
 
     function isToday(date: Date) {
@@ -42,6 +41,6 @@ export async function SSRDokuLoader(props: {
             }
         </header>
         <br />
-        <DokuGrid gameData={gameData as UserFacingGameData} stations={stations} />
+        <DokuGrid gameData={gameData as UserFacingGameData} />
     </div>
 }

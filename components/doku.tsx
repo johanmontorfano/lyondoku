@@ -9,6 +9,7 @@ import {
 import { Constraints, Station } from "@/scripts/game_mgr/types";
 import { humanizeConstraint, humanizeRarity } from "@/scripts/game_mgr/humanize";
 import Confetti from "react-confetti-boom";
+import { getDataset } from "@/scripts/firebase/data_provider";
 
 function ConstraintCell(props: { constraint: Constraints }) {
     return <div className="bg-base-200 flex items-center rounded-xl">
@@ -94,10 +95,7 @@ function ErrorsCounter(props: { count: number }) {
     </div>
 }
 
-export function DokuGrid(props: {
-    gameData: UserFacingGameData;
-    stations: Record<string, string>;
-}) {
+export function DokuGrid(props: { gameData: UserFacingGameData }) {
     const popup = useStationSelectorPopup();
     const [won, setWon] = useState<boolean | null>(null);
     const [answers, setAnswers] = useState<{
@@ -146,6 +144,14 @@ export function DokuGrid(props: {
         }
     }
 
+    async function getStations() {
+        const data = await getDataset("stations_dict");
+
+        // TODO: add error handling
+        if  (data !== null)
+            popup.setStations(data);
+    }
+
     async function getAllAnswers() {
         try {
             const res = await fetch("/api/solutions?id=" + props.gameData.id);
@@ -159,6 +165,10 @@ export function DokuGrid(props: {
     }
 
     useEffect(() => {
+        // we reload stations everytime game data changes to ensure stations
+        // list is not stalled on the doku context
+        getStations();
+
         // if there is a record for this game on local storage, it means the
         // grid has already been played and the user might have either won or
         // lost
@@ -169,6 +179,7 @@ export function DokuGrid(props: {
             const saveData = JSON.parse(saveGame);
 
             setWon(saveData.won);
+            setScore(saveData.score);
             setAnswers(saveData.answers);
             setErrorCount(saveData.errors);
         }
@@ -190,7 +201,8 @@ export function DokuGrid(props: {
                 localStorage.setItem(props.gameData.id, JSON.stringify({
                     won: true,
                     answers: answers,
-                    errors: errorCount
+                    errors: errorCount,
+                    score
                 }));
             getAllAnswers();
         } else if (errorCount >= 3) {
@@ -199,7 +211,8 @@ export function DokuGrid(props: {
                 localStorage.setItem(props.gameData.id, JSON.stringify({
                     won: false,
                     answers: answers,
-                    errors: 3
+                    errors: 3,
+                    score
                 }));
             getAllAnswers();
         }
@@ -246,7 +259,6 @@ export function DokuGrid(props: {
                                     } réponse${
                                         answersCount > 1 ? "s" : ""
                                     } possibles`);
-                                    popup.setStations(props.stations);
                                     popup.setShow(true);
                                 }}
                             />

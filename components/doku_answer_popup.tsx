@@ -163,8 +163,6 @@ export function StationSelectorPopup() {
                                                 <span className="relative z-10 font-medium">
                                                     {station[1]}
                                                 </span>
-
-                                                {/* The Sliding Highlight */}
                                                 {activeMatch === i && (
                                                     <motion.div
                                                         layoutId="active-pill"
