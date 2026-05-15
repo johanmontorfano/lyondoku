@@ -31,8 +31,9 @@ function Cell(props: {
         data-id={props.id}
         className={`w-full h-full ${!props.answer || props.allAnswers ?
             "cursor-pointer" : ""} border border-2 rounded-xl 
-            dark:border-white/70 hover:bg-base-300 overflow-clip
-            transition-colors ${props.disabled ? "bg-base-300" : ""}
+            dark:border-neutral-500 hover:bg-base-300 overflow-clip
+            transition-colors ${props.disabled ?
+                "bg-black dark:bg-neutral-500 opacity-20 pointer-events-none" : ""}
         `}
         onClick={() => {
             if (!props.answer || props.allAnswers) props.onClick();
