@@ -29,7 +29,7 @@ export function humanizeConstraint(
     // determines if a string is about a line, thus if it starts with M T or F
     function isLineName(str: string) {
         return ("MTF".includes(str[0]) && str.length === 2) ||
-            str.startsWith("NAVI");
+            str.startsWith("NAVI") || str === "RX";
     }
 
     switch (prop) {
@@ -37,7 +37,7 @@ export function humanizeConstraint(
             if (op === "includes") return `Contient '${val}'`;
             if (op === "word-includes") return `Contient ${formatOr(val)}`;
             if (op === "wordlen")
-                return `Comporte ${val} mot${parseInt(val) > 1 ? "s" : ""}`;
+                return `Comporte seulement ${val} mot${parseInt(val) > 1 ? "s" : ""}`;
             if (op === "minwordlen") return `Comporte au moins ${val} mots`;
             break;
         case "nameCharacteristics":
