@@ -182,6 +182,14 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             setScore(saveData.score);
             setAnswers(saveData.answers);
             setErrorCount(saveData.errors);
+        } else {
+            // even if we don't have any save data, the state is reset because
+            // we are not dealing with the same dataset
+            setWon(null);
+            setScore(0);
+            setAnswers({});
+            setErrorCount(0);
+            setAllAnswers({});
         }
     }, [props.gameData]);
 
