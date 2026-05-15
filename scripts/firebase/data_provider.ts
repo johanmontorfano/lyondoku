@@ -29,7 +29,7 @@ export async function getDataset(name: ValidDatasetsNames) {
     if (("dataset_" + name) in localStorage) {
         const dataset = JSON.parse(localStorage.getItem("dataset_" + name)!);
 
-        if (Date.now() - dataset.retrievedOn >= 60 * 60 * 24 * 3 * 1000)
+        if (Date.now() - dataset.retrievedOn >= 60 * 60 * 3 * 1000)
             return await retrieveDataset(name);
         return dataset.payload
     }
