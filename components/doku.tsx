@@ -20,16 +20,21 @@ function ConstraintCell(props: { constraint: Constraints }) {
 }
 
 function Cell(props: {
+    id: string, // used to properly target the correct cell with framer scope
     answer: (Station & { score: number }) | undefined,
     allAnswers: number[] | undefined,
-    onClick: () => void
+    onClick: () => void,
+    disabled: boolean
 }) {
     return <div
         role="button"
-        className={`w-full h-full ${
-            !props.answer || props.allAnswers ? "cursor-pointer" : ""
-        } border border-2 rounded-xl dark:border-white/70 hover:bg-base-300 overflow-clip transition-colors`}
-      onClick={() => {
+        data-id={props.id}
+        className={`w-full h-full ${!props.answer || props.allAnswers ?
+            "cursor-pointer" : ""} border border-2 rounded-xl 
+            dark:border-white/70 hover:bg-base-300 overflow-clip
+            transition-colors ${props.disabled ? "bg-base-300" : ""}
+        `}
+        onClick={() => {
             if (!props.answer || props.allAnswers) props.onClick();
         }} 
     >
@@ -104,6 +109,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     const [score, setScore] = useState(0);
     const [allAnswers, setAllAnswers] = useState<{ [key: string]: number[] }>({});
     const [errorCount, setErrorCount] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const focusedCellKey = useRef("tl");
 
@@ -114,7 +120,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     ];
 
     async function handleCheck(cellKey: string, guess: number) {
-        console.log(cellKey, guess);
+        setLoading(true);
         try {
             const res = await fetch("/api/verify", {
                 method: "POST",
@@ -136,12 +142,11 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                     [cellKey]: body.stationData
                 }));
                 setScore(p => p + body.stationData.score);
-            } else {
-                setErrorCount(p => p + 1);
-            }
+            } else setErrorCount(p => p + 1);
         } catch (e) {
             console.error(e);
         }
+        setLoading(false);
     }
 
     async function getStations() {
@@ -165,6 +170,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     }
 
     useEffect(() => {
+        setLoading(true);
         // we reload stations everytime game data changes to ensure stations
         // list is not stalled on the doku context
         getStations();
@@ -191,6 +197,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             setErrorCount(0);
             setAllAnswers({});
         }
+        setLoading(false);
     }, [props.gameData]);
 
     useEffect(() => {
@@ -230,7 +237,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         <>
             {won && <Confetti mode="fall" /> }
             <StationSelectorPopup />
-            <div className="py-4 w-fiull flex justify-end">
+            <div className="py-4 w-full flex justify-end">
                 <p>{score}/900</p>
             </div>
             <div className="grid grid-cols-4 grid-rows-4 max-sm:gap-1 gap-2 w-full aspect-square">
@@ -244,6 +251,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                         {keys.map((key) => (
                             <Cell
                                 key={key}
+                                id={key}
                                 answer={answers[key]}
                                 allAnswers={allAnswers[key]}
                                 onClick={() => {
@@ -269,6 +277,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                                     } possibles`);
                                     popup.setShow(true);
                                 }}
+                                disabled={loading}
                             />
                         ))}
                     </React.Fragment>
