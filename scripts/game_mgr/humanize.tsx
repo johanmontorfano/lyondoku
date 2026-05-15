@@ -18,6 +18,7 @@ export function humanizeConstraint(
     };
     const labels: Record<string, string> = {
         historicalFigure: "une figure historique",
+        det: "déterminants",
         tram: "tramway",
         metro: "métro",
         funicular: "funiculaire",
@@ -41,13 +42,19 @@ export function humanizeConstraint(
             if (op === "minwordlen") return `Comporte au moins ${val} mots`;
             break;
         case "nameCharacteristics":
-            return `Fait référence à ${labels[val] || val}`;
+            if (val === "historicalFigure")
+                return "Fait référence à une figure historique"
+            else if (val === "det")
+                return "Comporte au moins un déterminant"
+            break;
         // NOTE: THIS PROPERTY IS SPECIAL AS NO METHOD APPLIES TO IT
         case "near":
             const distance = parseInt(op);
             const place = val.split("->")[0];
 
-            return `A moins de ${distance / 1000}km ${place}`;
+            return `A moins de ${
+                (distance / 1000).toString().replace(".", ",")
+            }km ${place}`;
         case "linesColor":
             const colorstl: Record<string, string> = {
                 green: "verte",
