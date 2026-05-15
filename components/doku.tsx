@@ -103,13 +103,16 @@ function ErrorsCounter(props: { count: number }) {
 export function DokuGrid(props: { gameData: UserFacingGameData }) {
     const popup = useStationSelectorPopup();
     const [won, setWon] = useState<boolean | null>(null);
-    const [answers, setAnswers] = useState<{
-        [key: string]: Station & { score: number }
-    }>({});
     const [score, setScore] = useState(0);
-    const [allAnswers, setAllAnswers] = useState<{ [key: string]: number[] }>({});
-    const [errorCount, setErrorCount] = useState(0);
     const [loading, setLoading] = useState(false);
+
+    const [answers, setAnswers] = useState<{
+        [k: string]: Station & { score: number }
+    }>({});
+    const [allAnswers, setAllAnswers] = useState<{ [key: string]: number[] }>({});
+
+    const [attempts, setAttemps] = useState(0);
+    const [errorCount, setErrorCount] = useState(0);
 
     const focusedCellKey = useRef("tl");
 
@@ -186,6 +189,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
 
             setWon(saveData.won);
             setScore(saveData.score);
+            setAttemps(saveData.attempts);
             setAnswers(saveData.answers);
             setErrorCount(saveData.errors);
         } else {
@@ -194,6 +198,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             setWon(null);
             setScore(0);
             setAnswers({});
+            setAttemps(0);
             setErrorCount(0);
             setAllAnswers({});
         }
@@ -217,6 +222,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                     won: true,
                     answers: answers,
                     errors: errorCount,
+                    attempts,
                     score
                 }));
             getAllAnswers();
@@ -227,6 +233,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                     won: false,
                     answers: answers,
                     errors: 3,
+                    attempts,
                     score
                 }));
             getAllAnswers();
@@ -238,7 +245,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             {won && <Confetti mode="fall" /> }
             <StationSelectorPopup />
             <div className="py-4 w-full flex justify-end">
-                <p>{score}/900</p>
+                <p>{score - attempts * 50}/900</p>
             </div>
             <div className="grid grid-cols-4 grid-rows-4 max-sm:gap-1 gap-2 w-full aspect-square">
                 <div />
@@ -285,11 +292,31 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             </div>
             <br />
             <div className="flex justify-between">
-                <button
-                    onClick={() => setErrorCount(3)}
-                    className="btn btn-primary"
-                    disabled={won !== null}
-                >Abandonner</button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setErrorCount(
+                            // we use 4 when giving up to indicate that the
+                            // reason the user lost is not natural since 4
+                            // errors cannot be obtained through a normal
+                            // game
+                            4
+                        )}
+                        className="btn btn-primary"
+                        disabled={won !== null}
+                    >Abandonner</button>
+                    <button
+                        onClick={() => {
+                            setAttemps(p => p + 1);
+                            setErrorCount(0);
+                            setAllAnswers({});
+                            setScore(0);
+                            setWon(null);
+                            setAnswers({});
+                        }}
+                        className="btn btn-ghost"
+                        disabled={errorCount !== 3}
+                    >Réessayer</button>
+                </div>
                 <ErrorsCounter count={errorCount} />
             </div>
         </>

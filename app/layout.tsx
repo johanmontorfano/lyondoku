@@ -50,18 +50,22 @@ export default function RootLayout({
                 <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify">
                     <li>
                         Le but du jeu est de remplir la grille avec des stations
-                        lyonnaises de métro, tram et funiculaire qui
-                        correspondent aussi bien au critère de la ligne qu'à
-                        celui de la colonne.
+                        lyonnaises de métro, tram, navette fluviale et 
+                        funiculaire qui correspondent aussi bien au critère de 
+                        la ligne qu'à celui de la colonne.
                     </li>
                     <li>Vous perdez si 3 erreurs sont commises.</li>
                     <li>
+                        Il est possible de retenter sa chance sur les grilles
+                        qui ne sont pas abandonnées.
+                    </li>
+                    <li>
                         Une fois une station placée, elle ne peut être modifiée
-                        ou réutilisée
+                        ou réutilisée.
                     </li>
                     <li>
                         À la fin de la partie, cliquez sur les cases pour
-                        consulter les réponses possibles
+                        consulter les réponses possibles.
                     </li>
                 </ul>
                 <footer className="pb-8">
