@@ -37,9 +37,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "retrieval err" }, { status: 500 });
     return NextResponse.json({
         correct,
-        stationData: {
-            ...stationData,
-            score: computeStationRarity(stationData)
-        }
+        stationData,
+        score: computeStationRarity(stationData)
     });
 }
