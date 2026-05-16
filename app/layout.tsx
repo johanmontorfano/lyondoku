@@ -5,7 +5,6 @@ import { ResetProgress } from "@/components/reset_progress";
 import Link from "next/link";
 import "./globals.css";
 
-export const revalidate = 600;
 export const metadata: Metadata = {
     title: "LyonDoku",
     description: "Metrodoku clone 4 Lyon"
