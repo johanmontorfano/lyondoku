@@ -1,7 +1,7 @@
 "use client";
 
 import { UserFacingGameData } from "@/scripts/game_mgr/game";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
     StationSelectorPopup,
     useStationSelectorPopup,
@@ -9,8 +9,17 @@ import {
 import { Constraints, Station } from "@/scripts/game_mgr/types";
 import { humanizeConstraint, humanizeRarity } from "@/scripts/game_mgr/humanize";
 import { getDataset } from "@/scripts/firebase/data_provider";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Confetti from "react-confetti-boom";
+import { buttonAnimate } from "@/scripts/motion";
+import { shareGame } from "@/scripts/share_game";
+
+export interface CellData {
+    answer?: Station;
+    validAnswers: number[];
+    score: number;
+    errors: number;
+};
 
 function ConstraintCell(props: {
     constraint: Constraints,
@@ -28,25 +37,23 @@ function ConstraintCell(props: {
 }
 
 function Cell(props: {
-    id: string, // used to properly target the correct cell with framer scope
-    answer: (Station & { score: number }) | undefined,
-    allAnswers: number[] | undefined,
+    data: CellData,
     onClick: () => void,
     disabled: boolean
 }) {
     const [animation, setAnimation] = useState("");
     const [was, setWas] = useState({
-        answered: !!props.answer,
+        answered: !!props.data?.answer,
         disabled: props.disabled
     });
 
     useEffect(() => {
-        if (was.disabled && !props.disabled && !props.answer)
+        if (was.disabled && !props.disabled && !props.data.answer)
             setAnimation("animate-flash-red");
-        else if (was.disabled && !props.disabled && !!props.answer)
+        else if (was.disabled && !props.disabled && !!props.data.answer)
             setAnimation("animate-flash-green");
         setWas({
-            answered: !!props.answer,
+            answered: !!props.data?.answer,
             disabled: props.disabled
         });
         if (was.disabled && !props.disabled) {
@@ -57,24 +64,23 @@ function Cell(props: {
 
     return <motion.div
         role="button"
-        data-id={props.id}
-        className={`w-full h-full ${!props.answer || props.allAnswers ?
-            "cursor-pointer" : ""} ${animation} border border-1 rounded-md 
-            dark:border-neutral-700 hover:bg-base-300 overflow-clip
-            transition-colors ${props.disabled ?
+        className={`w-full h-full ${!props.data?.answer ||
+            props.data.validAnswers ? "cursor-pointer" : ""} ${animation} 
+            border border-1 rounded-md dark:border-neutral-700 hover:bg-base-300 
+            overflow-clip transition-colors ${props.disabled ?
                 "bg-black dark:bg-neutral-500 opacity-30 pointer-events-none" : ""}
         `}
         onClick={() => {
-            if (!props.answer || props.allAnswers) props.onClick();
+            if (!props.data?.answer || props.data.validAnswers) props.onClick();
         }} 
     >
-        {props.answer && <div className="relative h-full">
+        {props.data.answer && <div className="relative h-full">
             <p className="font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)] p-2">
-                {props.answer.name}
+                {props.data.answer.name}
             </p>
             <div className="absolute bottom-0 pointer-events-none w-full">
                 <div className="flex gap-1 px-2">
-                    {props.answer.connections
+                    {props.data.answer.connections
                         .filter(c => c[0] === "M")
                         .sort()
                         .map(c => <img
@@ -84,7 +90,7 @@ function Cell(props: {
                         />)}
                 </div>
                 <div className="flex gap-1 px-2">
-                    {props.answer.connections
+                    {props.data.answer.connections
                         .filter(c => c[0] === "T" || c === "RX")
                         .sort((a, b) => {
                             if (a === "RX" || a > b) return 1;
@@ -98,7 +104,7 @@ function Cell(props: {
                         />)}
                 </div>
                 <div className="flex gap-1 px-2">
-                    {props.answer.connections
+                    {props.data.answer.connections
                         .filter(c => c.startsWith("NAVI") || c[0] === "F")
                         .sort()
                         .map(c => <img
@@ -109,18 +115,23 @@ function Cell(props: {
                 </div>
                 <p className="w-full text-center bg-base-200 py-0.5 text-[clamp(0.3rem,2.4cqi,0.65rem)] mt-1">
                     {
-                        props.answer.score
-                    }% – {humanizeRarity(props.answer.score)}
+                        props.data.score
+                    }% – {humanizeRarity(props.data.score)}
                 </p>
             </div>
         </div>}
     </motion.div>
 }
 
-function ErrorsCounter(props: { count: number }) {
+function Counter(props: {
+    score: number,
+    count: number
+}) {
     const dot = "h-3 w-3 border border-2 rounded-full transition-colors ";
 
     return <div className="flex items-center gap-1">
+        <p className="text-sm font-bold mr-2">{props.score}/900</p>
+        <p className="text-sm font-bold mr-2">–</p>
         <p className="text-sm font-bold mr-2">Erreurs</p>
         <div className={
             dot + (props.count > 0 ? "border-error bg-error" : "")
@@ -135,26 +146,35 @@ function ErrorsCounter(props: { count: number }) {
 }
 
 export function DokuGrid(props: { gameData: UserFacingGameData }) {
-    const popup = useStationSelectorPopup();
-    const [won, setWon] = useState<boolean | null>(null);
-    const [score, setScore] = useState(0);
-    const [loading, setLoading] = useState(false);
-
-    const [answers, setAnswers] = useState<{
-        [k: string]: Station & { score: number }
-    }>({});
-    const [allAnswers, setAllAnswers] = useState<{ [key: string]: number[] }>({});
-
-    const [attempts, setAttemps] = useState(0);
-    const [errorCount, setErrorCount] = useState(0);
-
-    const focusedCellKey = useRef("tl");
-
     const cellKeys = [
         ["tl", "tc", "tr"],
         ["cl", "cc", "cr"],
         ["bl", "bc", "br"],
     ];
+
+    const popup = useStationSelectorPopup();
+    const [won, setWon] = useState<boolean | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [attempts, setAttemps] = useState(0);
+    const [cells, setCells] = useState<CellData[]>(cellKeys.flat().map(() => ({
+        score: 0,
+        errors: 0,
+        validAnswers: []
+    })));
+
+    const errorCount = useMemo(() => Object.values(cells)
+        .map(c => c.errors)
+        .reduce((p, c) => p + c, 0),
+    [cells]);
+    const score = useMemo(() => Object.values(cells)
+        .map(c => c.score)
+        .reduce((p, c) => p + c, 0),
+    [cells]);
+    const focusedCellKey = useRef("tl");
+    const startedAt = useRef(Date.now());
+    const endedAt = useRef(Infinity);
+
+    const getKeyId = (k: string) => cellKeys.flat().findIndex(v => v === k);
 
     async function handleCheck(cellKey: string, guess: number) {
         setLoading(true);
@@ -173,13 +193,22 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
 
             const body = await res.json();
 
-            if (body.correct) {
-                setAnswers(prev => ({
-                    ...prev,
-                    [cellKey]: body.stationData
-                }));
-                setScore(p => p + body.stationData.score);
-            } else setErrorCount(p => p + 1);
+            if (body.correct) 
+                setCells(prev => {
+                    prev[getKeyId(cellKey)] = {
+                        ...prev[getKeyId(cellKey)],
+                        answer: body.stationData,
+                        score: body.score
+                    }
+                    return [...prev];
+                });
+            else setCells(prev => {
+                prev[getKeyId(cellKey)] = {
+                    ...prev[getKeyId(cellKey)],
+                    errors: prev[getKeyId(cellKey)].errors + 1
+                }
+                return [...prev];
+            });
         } catch (e) {
             console.error(e);
         }
@@ -200,10 +229,30 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             
             if (!res.ok)
                 throw new Error("Request error");
-            setAllAnswers(await res.json());
+            
+            const body = await res.json();
+
+            setCells(prev => {
+                Object.entries(body).forEach(([k, v]) => {
+                    prev[getKeyId(k)].validAnswers = v as number[];
+                });
+                return [...prev];
+            });
         } catch (e) {
             console.error(e);
         }
+    }
+    
+    function handleGameEnd(won: boolean) {
+        endedAt.current = Date.now();
+        setWon(won);
+        if (!props.gameData.id.startsWith("random_"))
+            localStorage.setItem(props.gameData.id, JSON.stringify({
+                won, cells, attempts,
+                startedAt: startedAt.current,
+                endedAt: endedAt.current
+            }));
+        getAllAnswers();
     }
 
     useEffect(() => {
@@ -221,20 +270,21 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         if (saveGame !== null) {
             const saveData = JSON.parse(saveGame);
 
+            startedAt.current = saveData.startedAt;
+            endedAt.current = saveData.endedAt;
             setWon(saveData.won);
-            setScore(saveData.score);
+            setCells(saveData.cells);
             setAttemps(saveData.attempts);
-            setAnswers(saveData.answers);
-            setErrorCount(saveData.errors);
         } else {
             // even if we don't have any save data, the state is reset because
             // we are not dealing with the same dataset
             setWon(null);
-            setScore(0);
-            setAnswers({});
+            setCells(cellKeys.flat().map(() => ({
+                score: 0,
+                errors: 0,
+                validAnswers: []
+            })));
             setAttemps(0);
-            setErrorCount(0);
-            setAllAnswers({});
         }
         setLoading(false);
     }, [props.gameData]);
@@ -247,36 +297,21 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     }, [popup.lastSelected]);
 
     useEffect(() => {
+        if (won !== null) return;
         if (typeof window === "undefined") return;
         // NOTE: when the game is a random_ one, we don't save the score
-        if (Object.keys(answers).length === 9 && errorCount < 3) {
-            setWon(true);
-            if (!props.gameData.id.startsWith("random_"))
-                localStorage.setItem(props.gameData.id, JSON.stringify({
-                    won: true,
-                    answers: answers,
-                    errors: errorCount,
-                    attempts,
-                    score
-                }));
-            getAllAnswers();
+        if (props.gameData.id.startsWith("random_")) return;
+        if (Object.values(cells).filter(c => !!c.answer).length === 9 &&
+            errorCount < 3) {
+            handleGameEnd(true);
         } else if (errorCount >= 3) {
-            setWon(false);
-            if (!props.gameData.id.startsWith("random_"))
-                localStorage.setItem(props.gameData.id, JSON.stringify({
-                    won: false,
-                    answers: answers,
-                    errors: 3,
-                    attempts,
-                    score
-                }));
-            getAllAnswers();
+            handleGameEnd(false);
         }
-    }, [answers, errorCount]);
+    }, [cells, errorCount]);
 
     return (
         <>
-            {won && <Confetti mode="fall" /> }
+            {won && <Confetti mode="fall" />}
             <StationSelectorPopup />
             <div className="grid grid-cols-4 grid-rows-4 gap-1 w-full aspect-square">
                 <div />
@@ -296,13 +331,13 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                         {keys.map((key) => (
                             <Cell
                                 key={key}
-                                id={key}
-                                answer={answers[key]}
-                                allAnswers={allAnswers[key]}
+                                data={cells[getKeyId(key)]}
                                 onClick={() => {
-                                    if (allAnswers[key] !== undefined) {
+                                    const data = cells[getKeyId(key)];
+
+                                    if (data.validAnswers.length > 0) {
                                         popup.setShowSpecificStationsReadonly(
-                                            allAnswers[key]
+                                            data.validAnswers
                                         );
                                         popup.setShow(true);
                                         return;
@@ -313,8 +348,10 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                                     focusedCellKey.current = key;
 
                                     popup.setForbiddenStations(
-                                        Object.values(answers).map(a => a.id)
-                                    )
+                                        Object.values(cells)
+                                            .filter(a => a.answer !== undefined)
+                                            .map(a => a.answer!.id)
+                                    );
                                     popup.setPlaceholder(`${
                                         answersCount
                                     } réponse${
@@ -332,32 +369,46 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             <br />
             <div className="flex justify-between items-center">
                 <div className="flex gap-2">
-                    <button
-                        onClick={() => setErrorCount(
-                            // we use 4 when giving up to indicate that the
-                            // reason the user lost is not natural since 4
-                            // errors cannot be obtained through a normal
-                            // game
-                            4
-                        )}
-                        className="btn btn-primary"
-                        disabled={won !== null}
-                    >Abandonner</button>
-                    <button
-                        onClick={() => {
-                            setAttemps(p => p + 1);
-                            setErrorCount(0);
-                            setAllAnswers({});
-                            setScore(0);
-                            setWon(null);
-                            setAnswers({});
-                        }}
-                        className="btn btn-ghost"
-                        disabled={errorCount !== 3}
-                    >Réessayer</button>
+                    <AnimatePresence>
+                        {won === null && <motion.button
+                            variants={buttonAnimate}
+                            initial="exit"
+                            animate="show"
+                            exit="exit"
+                            onClick={() => handleGameEnd(false)}
+                            className="btn btn-primary"
+                            key="giveup"
+                        >Abandonner</motion.button>}
+                        {won === false && <motion.button
+                            variants={buttonAnimate}
+                            initial="exit"
+                            animate="show"
+                            exit="exit"
+                            onClick={() => {
+                                setAttemps(p => p + 1);
+                                setWon(null);
+                            }}
+                            className="btn btn-ghost"
+                            disabled={errorCount < 3}
+                            key="retry"
+                        >Réessayer</motion.button>}
+                        {won !== null && !props.gameData.id.startsWith("random_") && <motion.button
+                            variants={buttonAnimate}
+                            initial="exit"
+                            animate="show"
+                            exit="exit"
+                            onClick={() => shareGame(
+                                props.gameData.id,
+                                startedAt.current,
+                                endedAt.current,
+                                cells
+                            )}
+                            className="btn btn-primary"
+                            key="share"
+                        >Partager</motion.button>}
+                    </AnimatePresence>
                 </div>
-                <p>{score - attempts * 50}/900</p>
-                <ErrorsCounter count={errorCount} />
+                <Counter score={score - attempts * 50} count={errorCount} />
             </div>
         </>
     );
