@@ -3,6 +3,29 @@
     themes: lyondoku --default, lyondarku --prefersdark;
 }
 
+@theme {
+    --animate-flash-red: flash-red 1s ease;
+    --animate-flash-green: flash-green 1s ease;
+
+    @keyframes flash-red {
+        0%, 100% {
+            background: transparent;
+        }
+        50% {
+            background: var(--color-red-500);
+        }
+    }
+
+    @keyframes flash-green {
+        0%, 100% {
+            background: transparent;
+        }
+        50% {
+            background: var(--color-green-500);
+        }
+    }
+}
+
 @plugin "daisyui/theme" {
     name: "lyondoku";
     default: true;

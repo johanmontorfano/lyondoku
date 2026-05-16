@@ -8,8 +8,9 @@ import {
 } from "./doku_answer_popup";
 import { Constraints, Station } from "@/scripts/game_mgr/types";
 import { humanizeConstraint, humanizeRarity } from "@/scripts/game_mgr/humanize";
-import Confetti from "react-confetti-boom";
 import { getDataset } from "@/scripts/firebase/data_provider";
+import { motion } from "framer-motion";
+import Confetti from "react-confetti-boom";
 
 function ConstraintCell(props: {
     constraint: Constraints,
@@ -33,11 +34,32 @@ function Cell(props: {
     onClick: () => void,
     disabled: boolean
 }) {
-    return <div
+    const [animation, setAnimation] = useState("");
+    const [was, setWas] = useState({
+        answered: !!props.answer,
+        disabled: props.disabled
+    });
+
+    useEffect(() => {
+        if (was.disabled && !props.disabled && !props.answer)
+            setAnimation("animate-flash-red");
+        else if (was.disabled && !props.disabled && !!props.answer)
+            setAnimation("animate-flash-green");
+        setWas({
+            answered: !!props.answer,
+            disabled: props.disabled
+        });
+        if (was.disabled && !props.disabled) {
+            const timer = setTimeout(() => setAnimation(""), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [props]);
+
+    return <motion.div
         role="button"
         data-id={props.id}
         className={`w-full h-full ${!props.answer || props.allAnswers ?
-            "cursor-pointer" : ""} border border-1 rounded-md 
+            "cursor-pointer" : ""} ${animation} border border-1 rounded-md 
             dark:border-neutral-700 hover:bg-base-300 overflow-clip
             transition-colors ${props.disabled ?
                 "bg-black dark:bg-neutral-500 opacity-30 pointer-events-none" : ""}
@@ -92,7 +114,7 @@ function Cell(props: {
                 </p>
             </div>
         </div>}
-    </div>
+    </motion.div>
 }
 
 function ErrorsCounter(props: { count: number }) {
@@ -303,7 +325,8 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                                     } possibles`);
                                     popup.setShow(true);
                                 }}
-                                disabled={loading}
+                                disabled={loading &&
+                                    focusedCellKey.current === key}
                             />
                         ))}
                     </React.Fragment>
