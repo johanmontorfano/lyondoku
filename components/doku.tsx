@@ -278,9 +278,6 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         <>
             {won && <Confetti mode="fall" /> }
             <StationSelectorPopup />
-            <div className="py-4 w-full flex justify-end">
-                <p>{score - attempts * 50}/900</p>
-            </div>
             <div className="grid grid-cols-4 grid-rows-4 gap-1 w-full aspect-square">
                 <div />
                 {props.gameData.cols.map((col, i) => (
@@ -333,7 +330,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                 ))}
             </div>
             <br />
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
                 <div className="flex gap-2">
                     <button
                         onClick={() => setErrorCount(
@@ -359,6 +356,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                         disabled={errorCount !== 3}
                     >Réessayer</button>
                 </div>
+                <p>{score - attempts * 50}/900</p>
                 <ErrorsCounter count={errorCount} />
             </div>
         </>
