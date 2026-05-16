@@ -34,7 +34,7 @@ export async function SSRDokuLoader(props: {
             </h3>
             {!props.id.startsWith("random_") &&
                 <h4 className="text-xl font-monospace">
-                    { new Intl.DateTimeFormat('fr-FR').format(
+                    {new Intl.DateTimeFormat('fr-FR').format(
                         new Date(gameData.id).getTime()
                     )}
                 </h4>
