@@ -11,9 +11,16 @@ import { humanizeConstraint, humanizeRarity } from "@/scripts/game_mgr/humanize"
 import Confetti from "react-confetti-boom";
 import { getDataset } from "@/scripts/firebase/data_provider";
 
-function ConstraintCell(props: { constraint: Constraints }) {
-    return <div className="bg-base-200 flex items-center rounded-xl">
-        <div className="ml-2 font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)]">
+function ConstraintCell(props: {
+    constraint: Constraints,
+    group: "row" | "column"
+}) {
+    return <div className={`bg-base-200 border-base-300 flex items-center ${
+        props.group === "row" ?
+            "rounded-l-[20%_50%]" :
+            "rounded-t-[50%_20%]"
+    } rounded-sm`}>
+        <div className="mx-2 font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)]">
             {humanizeConstraint(props.constraint)}
         </div>
     </div>;
@@ -30,10 +37,10 @@ function Cell(props: {
         role="button"
         data-id={props.id}
         className={`w-full h-full ${!props.answer || props.allAnswers ?
-            "cursor-pointer" : ""} border border-2 rounded-xl 
-            dark:border-neutral-500 hover:bg-base-300 overflow-clip
+            "cursor-pointer" : ""} border border-1 rounded-md 
+            dark:border-neutral-700 hover:bg-base-300 overflow-clip
             transition-colors ${props.disabled ?
-                "bg-black dark:bg-neutral-500 opacity-20 pointer-events-none" : ""}
+                "bg-black dark:bg-neutral-500 opacity-30 pointer-events-none" : ""}
         `}
         onClick={() => {
             if (!props.answer || props.allAnswers) props.onClick();
@@ -252,14 +259,21 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             <div className="py-4 w-full flex justify-end">
                 <p>{score - attempts * 50}/900</p>
             </div>
-            <div className="grid grid-cols-4 grid-rows-4 max-sm:gap-1 gap-2 w-full aspect-square">
+            <div className="grid grid-cols-4 grid-rows-4 gap-1 w-full aspect-square">
                 <div />
                 {props.gameData.cols.map((col, i) => (
-                    <ConstraintCell key={"col-" + i} constraint={col} />
+                    <ConstraintCell
+                        key={"col-" + i}
+                        constraint={col}
+                        group="column"
+                    />
                 ))}
                 {cellKeys.map((keys, i) => (
                     <React.Fragment key={`row-frag-${i}`}>
-                        <ConstraintCell constraint={props.gameData.rows[i]} />
+                        <ConstraintCell
+                            constraint={props.gameData.rows[i]}
+                            group="row"
+                        />
                         {keys.map((key) => (
                             <Cell
                                 key={key}
