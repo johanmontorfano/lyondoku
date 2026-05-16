@@ -4,6 +4,7 @@ import { Navbar } from "@/components/navbar";
 import { ResetProgress } from "@/components/reset_progress";
 import Link from "next/link";
 import "./globals.css";
+import { firstEverGrid } from "@/scripts/game_mgr/data";
 
 export const metadata: Metadata = {
     title: "LyonDoku",
@@ -18,7 +19,6 @@ export default function RootLayout({
     // HACK: since a new grid is available every day, instead of pulling grid
     // lists from the server, we only show links for a grid a day from the
     // first grid to today
-    const firstEverGrid = new Date("05/12/2026");
     const allGrids = [];
 
     const today = new Date();
