@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, FormEvent } from "react";
 
 export function FontEditor() {
+    const [show, setShow] = useState(false);
     const [selectedFont, setSelectedFont] = useState("Space Grotesk");
     const [targetVariable, setTargetVariable] = useState("--font-grotesk");
 
@@ -10,6 +11,40 @@ export function FontEditor() {
     const panelRef = useRef<HTMLDivElement>(null);
     const isDragging = useRef(false);
     const dragStart = useRef({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const targetSequence = ["d", "k", "b", "g"];
+        let keyBuffer: string[] = [];
+
+        function listener(ev: KeyboardEvent) {
+            const hasModifier = ev.ctrlKey || ev.metaKey;
+            if (!hasModifier) {
+                keyBuffer = [];
+                return;
+            }
+
+            const pressedKey = ev.key.toLowerCase();
+            const nextExpectedKey = targetSequence[keyBuffer.length];
+
+            if (pressedKey === nextExpectedKey) {
+                keyBuffer.push(pressedKey);
+
+                if (keyBuffer.length === targetSequence.length) {
+                    setShow((prev) => !prev);
+                    keyBuffer = [];
+                    ev.preventDefault();
+                }
+            } else {
+                keyBuffer = pressedKey === targetSequence[0] ? [pressedKey] : [];
+            }
+        }
+
+        window.addEventListener("keydown", listener);
+        return () => {
+            window.removeEventListener("keydown", listener);
+        };
+    }, []);
+
 
     useEffect(() => {
         setSelectedFont("");
@@ -95,7 +130,7 @@ export function FontEditor() {
         if (fontInput) setSelectedFont(fontInput);
     };
 
-    return (
+    return show && (
         <div
             ref={panelRef}
             onMouseDown={handleMouseDown}

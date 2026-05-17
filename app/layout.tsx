@@ -41,7 +41,7 @@ export default function RootLayout({
                 <br />
                 <Navbar />
                 <br />
-                {process.env.NODE_ENV !== "production" && <FontEditor />}
+                <FontEditor />
                 {children}
                 <div className="divider" />
                 <h1 className="text-xl font-semibold">
