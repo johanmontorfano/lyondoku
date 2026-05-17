@@ -13,14 +13,8 @@ export function Navbar() {
             </Link>
         </div>
         <div className="navbar-end gap-3 items-center">
-            <Link href="/random">
-                <BsDice5 size={18} />
-            </Link>
             <Link href="mailto:hello@johanmontorfano.com">
-                <BsSend size={18} className="mt-0.5" />
-            </Link>
-            <Link href="https://github.com/johanmontorfano/lyondoku">
-                <BsGithub size={20} />
+                <BsSend size={22} className="mt-0.5" />
             </Link>
         </div>
     </div>
