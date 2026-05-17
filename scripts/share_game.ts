@@ -4,6 +4,7 @@ import { firstEverGrid } from "./game_mgr/data";
 
 function cellData2Emoji(data: CellData) {
     if (!data.answer) return "🔴";
+    else if (data.errors > 1) return "🟠";
     else if (data.errors > 0) return "🟡";
     else return "🟢";
 }
