@@ -1,13 +1,11 @@
-import { mono } from "@/scripts/fonts";
+import { BsSend } from "react-icons/bs";
 import Link from "next/link";
-import { BsDice5, BsGithub, BsSend } from "react-icons/bs";
 
 export function Navbar() {
     return <div className="navbar px-0 w-full">
         <div className="navbar-start">
             <Link href="/">
-                <h1 className={mono.className +
-                    " text-5xl font-bold hover:underline"}>
+                <h1 className="font-(family-name:--font-mono) text-5xl font-bold hover:underline">
                     lyondoku
                 </h1>
             </Link>

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { grotesk } from "@/scripts/fonts";
 import { Navbar } from "@/components/navbar";
 import { ResetProgress } from "@/components/reset_progress";
+import { firstEverGrid } from "@/scripts/game_mgr/data";
+import { FontEditor } from "@/components/font_editor";
 import Link from "next/link";
 import "./globals.css";
-import { firstEverGrid } from "@/scripts/game_mgr/data";
 
 export const metadata: Metadata = {
     title: "LyonDoku",
@@ -36,11 +36,12 @@ export default function RootLayout({
     }
 
     return (
-        <html lang="en" className={`${grotesk.className} h-full`}>
+        <html lang="en" className="font-(family-name:--font-grotesk) h-full">
             <body className="max-w-[600px] w-[96%] mx-auto min-h-dvh">
                 <br />
                 <Navbar />
                 <br />
+                {process.env.NODE_ENV !== "production" && <FontEditor />}
                 {children}
                 <div className="divider" />
                 <h1 className="text-xl font-semibold">

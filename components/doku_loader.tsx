@@ -2,7 +2,6 @@
 
 import { retrieveGame, UserFacingGameData } from "@/scripts/game_mgr/game";
 import { DokuGrid } from "./doku";
-import { mono } from "@/scripts/fonts";
 import { ReactNode } from "react";
 
 // NOTE: this function will load a doku data server-side before passing it to
@@ -25,15 +24,15 @@ export async function SSRDokuLoader(props: {
 
     if (gameData === null) return props.onNotFound();
     return <div>
-        <header className={mono.className}>
-            <h3 className="text-xl font-monospace">
+        <header className="font-(family-name:--font-mono)">
+            <h3 className="text-xl font-(family-name:--font-mono">
                 {props.id.startsWith("random_") ?
                     "grille aléatoire" :
                     isToday(new Date(gameData.id)) ?
                         "grille du jour" : "archive du"}
             </h3>
             {!props.id.startsWith("random_") &&
-                <h4 className="text-xl font-monospace">
+                <h4 className="text-lg font-(family-name:--font-mono)">
                     {new Intl.DateTimeFormat('fr-FR').format(
                         new Date(gameData.id).getTime()
                     )}
