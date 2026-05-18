@@ -9,7 +9,6 @@ function getInstance() {
     const found = getApps().find((app) => app.name === "[DEFAULT]");
 
     if (found) return found;
-
     return firebase.initializeApp({
         credential: firebase.credential.cert({
             projectId: process.env.NEXT_PUBLIC_FB_PROJECT_ID,
@@ -19,7 +18,6 @@ function getInstance() {
         storageBucket: process.env.NEXT_PUBLIC_FB_STORAGE_BUCKET
     });
 }
-
 
 const admin = getInstance();
 
