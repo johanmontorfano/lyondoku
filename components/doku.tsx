@@ -71,7 +71,9 @@ function Cell(props: {
                 "bg-black dark:bg-neutral-500 opacity-30 pointer-events-none" : ""}
         `}
         onClick={() => {
-            if (!props.data?.answer || props.data.validAnswers) props.onClick();
+            console.log(props.data);
+            if (!props.data.answer || props.data.validAnswers.length > 0)
+                props.onClick();
         }} 
     >
         {props.data.answer && <div className="relative h-full">
@@ -274,6 +276,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             setWon(saveData.won);
             setCells(saveData.cells);
             setAttemps(saveData.attempts);
+            getAllAnswers();
         } else {
             // even if we don't have any save data, the state is reset because
             // we are not dealing with the same dataset
