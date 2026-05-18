@@ -219,8 +219,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         const data = await getDataset("stations_dict");
 
         // TODO: add error handling
-        if  (data !== null)
-            popup.setStations(data);
+        if (data) popup.setStations(data);
     }
 
     async function getAllAnswers() {
