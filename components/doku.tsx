@@ -332,9 +332,10 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                             <Cell
                                 key={key}
                                 data={cells[getKeyId(key)]}
-                                onClick={() => {
+                                onClick={async () => {
                                     const data = cells[getKeyId(key)];
 
+                                    await getStations();
                                     if (data.validAnswers.length > 0) {
                                         popup.setShowSpecificStationsReadonly(
                                             data.validAnswers
