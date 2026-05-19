@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/navbar";
-import { ResetProgress } from "@/components/reset_progress";
-import { firstEverGrid } from "@/scripts/game_mgr/data";
+import { Footer, Navbar } from "@/components/navbar";
 import { FontEditor } from "@/components/font_editor";
-import Link from "next/link";
 import "./globals.css";
+import { ResetProgress } from "@/components/reset_progress";
 
 export const metadata: Metadata = {
-    title: "LyonDoku",
+    title: "Lyondle",
     description: "Metrodoku clone 4 Lyon"
 };
 
@@ -16,83 +14,42 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    // HACK: since a new grid is available every day, instead of pulling grid
-    // lists from the server, we only show links for a grid a day from the
-    // first grid to today
-    const allGrids = [];
-
-    const today = new Date();
-    let cursor = new Date(firstEverGrid);
-
-    today.setHours(0, 0, 0, 0);
-    cursor.setHours(0, 0, 0, 0);
-    while (cursor < today) {
-        const year = cursor.getFullYear();
-        const month = String(cursor.getMonth() + 1).padStart(2, "0");
-        const day = String(cursor.getDate()).padStart(2, "0");
-
-        allGrids.push(`${year}-${month}-${day}`);
-        cursor.setDate(cursor.getDate() + 1);
-    }
-
     return (
-        <html lang="en" className="font-(family-name:--font-grotesk) h-full">
-            <body className="max-w-[600px] w-[96%] mx-auto min-h-dvh">
-                <br />
-                <Navbar />
-                <br />
-                <FontEditor />
-                {children}
-                <div className="divider" />
-                <h1 className="text-xl font-semibold">
-                    Comment jouer à lyondoku?
-                </h1>
-                <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify">
-                    <li>
-                        Le but du jeu est de remplir la grille avec des stations
-                        lyonnaises de métro, tram, navette fluviale et 
-                        funiculaire qui correspondent aussi bien au critère de 
-                        la ligne qu'à celui de la colonne.
-                    </li>
-                    <li>Vous perdez si 3 erreurs sont commises.</li>
-                    <li>
-                        Il est possible de retenter sa chance sur les grilles
-                        qui ne sont pas abandonnées.
-                    </li>
-                    <li>
-                        Une fois une station placée, elle ne peut être modifiée
-                        ou réutilisée.
-                    </li>
-                    <li>
-                        À la fin de la partie, cliquez sur les cases pour
-                        consulter les réponses possibles.
-                    </li>
-                </ul>
-                <footer className="pb-8">
+        <html lang="en" className="font-(family-name:--font-serif) h-full">
+            <body className="min-h-dvh flex flex-col justify-between max-w-[600px] w-[96%] mx-auto">
+                <div>
+                    <br />
+                    <Navbar />
+                    <FontEditor />
+                    <br />
+                    {children}
+                    <br />
+                </div>
+                <div>
                     <div className="divider" />
-                    <h1 className="text-xl font-semibold">
-                        Archives
-                    </h1>
-                    <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify">
-                        {allGrids.reverse().map((t) => (
-                            <li key={t}>
-                                <Link
-                                    prefetch={false}
-                                    href={"/" + t}
-                                    className="hover:underline"
-                                >
-                                    {new Intl.DateTimeFormat("fr-FR", {
-                                        month: "long",
-                                        day: "2-digit",
-                                        year: "numeric",
-                                    }).format(new Date(t))}
-                                </Link>
-                            </li>
-                        ))}
+                    <p className="font-semibold text-xl">Comment jouer à Lyondle</p>
+                    <ul className="list-disc [&>li]:ml-6">
+                        <li>
+                            Trouvez la station TCL en <strong>
+                                6 essais
+                            </strong> maximum
+                        </li>
+                        <li>
+                            Chaque essai vous fourni des indices sur la
+                            station à trouver
+                        </li>
+                        <li>
+                            Une nouvelle partie est disponible à <strong>
+                                minuit
+                            </strong> chaque jour
+                        </li>
                     </ul>
                     <br />
-                    <ResetProgress />
-                </footer>
+                    <div className="flex justify-end">
+                        <ResetProgress />
+                    </div>
+                    <Footer />
+                </div>
             </body>
         </html>
     );

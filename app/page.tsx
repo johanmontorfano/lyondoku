@@ -1,4 +1,4 @@
-import { SSRDokuLoader } from "@/components/doku_loader";
+import { Wordle } from "@/components/wordle/wordle";
 import { Suspense } from "react";
 
 export default function Page() {
@@ -7,19 +7,14 @@ export default function Page() {
     const day = String(new Date().getDate()).padStart(2, "0");
 
     return (
-        <div>
-            <Suspense
-                fallback={
-                    <div className="w-full flex justify-center">
-                        <span className="loading loading-spinner" />
-                    </div>
-                }
-            >
-                <SSRDokuLoader
-                    id={`${year}-${month}-${day}`}
-                    onNotFound={() => <p>not found</p>}
-                />
-            </Suspense>
-        </div>
+        <Suspense
+            fallback={
+                <div className="w-full flex justify-center">
+                    <span className="loading loading-spinner" />
+                </div>
+            }
+        >
+            <Wordle id={`${year}-${month}-${day}`} />
+        </Suspense>
     );
 }
