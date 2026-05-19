@@ -1,5 +1,5 @@
+import { storage } from "@/scripts/firebase/server";
 import { validDatasetsNames } from "@/scripts/firebase/types";
-import { getStorage } from "firebase-admin/storage";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     if (!datasetName || !validDatasetsNames.includes(datasetName))
         return NextResponse.json({ error: "not found" }, { status: 404 });
     
-    const snap = await getStorage().bucket()
+    const snap = await storage.bucket()
         .file(`data/${datasetName}.json`)
         .download();
 
