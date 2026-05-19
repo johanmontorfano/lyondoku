@@ -181,7 +181,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     async function handleCheck(cellKey: string, guess: number) {
         setLoading(true);
         try {
-            const res = await fetch("/api/verify", {
+            const res = await fetch("/api/verify/doku", {
                 method: "POST",
                 body: JSON.stringify({
                     gridId: props.gameData.id,
