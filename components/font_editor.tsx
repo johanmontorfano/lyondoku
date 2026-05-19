@@ -157,10 +157,13 @@ export function FontEditor() {
                     className="select select-bordered select-sm w-full bg-base-300 focus:outline-none"
                 >
                     <option value="--font-grotesk">
-                        --font-grotesk (Body)
+                        --font-grotesk
                     </option>
                     <option value="--font-mono">
-                        --font-mono (Code)
+                        --font-mono
+                    </option>
+                    <option value="--font-mono">
+                        --font-serif
                     </option>
                 </select>
             </div>
