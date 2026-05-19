@@ -180,7 +180,7 @@ export function Wordle(props: { id: string }) {
                     <NewAttemptButton>...</NewAttemptButton>
                     <NewAttemptButton noRightBorder>...</NewAttemptButton>
                 </>}
-                {new Array((won ? 6 : 5) - answers.length).fill(0).map((_, i) => (
+                {((won ? 6 : 5) - answers.length) > 0 && new Array((won ? 6 : 5) - answers.length).fill(0).map((_, i) => (
                     <WordleRowSkeleton key={i} />
                 ))}
             </div>
