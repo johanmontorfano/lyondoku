@@ -9,7 +9,10 @@ import {
 import { getDataset } from "@/scripts/firebase/data_provider";
 import { isToday } from "@/scripts/date";
 import { WordleRow, WordleRowSkeleton } from "./row";
+import { motion, AnimatePresence } from "framer-motion";
+import { buttonAnimate } from "@/scripts/motion";
 import Confetti from "react-confetti-boom";
+import { shareWordleGame } from "@/scripts/share_game";
 
 // this game works by making the user guess in 5 tries a station based on 5
 // criterias:
@@ -36,12 +39,14 @@ export function Wordle(props: { id: string }) {
 
     // we must get the latest answer as this function is called in the answer
     // checker which will not provide it with the new state scope upon call
-    function onWinOrLost(won: boolean, latestAnswer: WordleAnswer) {
+    function onWinOrLost(won: boolean, latestAnswer?: WordleAnswer) {
+        const final = answers;
         endedAtRef.current = new Date();
 
+        if (latestAnswer) final.push(latestAnswer);
         setWon(won);
         localStorage.setItem(`lyondle-${props.id}`, JSON.stringify({
-            won, answers: [...answers, latestAnswer],
+            won, answers: final,
             startedAt: startedAtRef.current.getTime(),
             endedAt: endedAtRef.current!.getTime()
         }));
@@ -189,6 +194,36 @@ export function Wordle(props: { id: string }) {
                 {((won ? 6 : 5) - answers.length) > 0 && new Array((won ? 6 : 5) - answers.length).fill(0).map((_, i) => (
                     <WordleRowSkeleton key={i} />
                 ))}
+            </div>
+            <br />
+            <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                    <AnimatePresence>
+                        {won === null && <motion.button
+                            variants={buttonAnimate}
+                            initial="exit"
+                            animate="show"
+                            exit="exit"
+                            onClick={() => onWinOrLost(false)}
+                            className="btn btn-primary"
+                            key="giveup"
+                        >Abandonner</motion.button>}
+                        {won !== null && <motion.button
+                            variants={buttonAnimate}
+                            initial="exit"
+                            animate="show"
+                            exit="exit"
+                            onClick={() => shareWordleGame(
+                                props.id,
+                                startedAtRef.current,
+                                endedAtRef.current!,
+                                answers
+                            )}
+                            className="btn btn-primary"
+                            key="share"
+                        >Partager</motion.button>}
+                    </AnimatePresence>
+                </div>
             </div>
         </div>
     );

@@ -444,8 +444,8 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                             exit="exit"
                             onClick={() => shareGame(
                                 props.gameData.id,
-                                startedAt.current,
-                                endedAt.current,
+                                startedAtRef.current,
+                                endedAtRef.current!,
                                 cells
                             )}
                             className="btn btn-primary"

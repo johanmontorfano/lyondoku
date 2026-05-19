@@ -1,6 +1,7 @@
 "use client";
 import type { CellData } from "@/components/doku/doku";
-import { firstEverGrid } from "./game_mgr/data";
+import { firstEverGrid, firstEverWordle } from "./game_mgr/data";
+import { WordleAnswer } from "./game_mgr/types";
 
 function cellData2Emoji(data: CellData) {
     if (!data.answer) return "🔴";
@@ -11,8 +12,8 @@ function cellData2Emoji(data: CellData) {
 
 export function shareGame(
     id: string,
-    startedAt: number,
-    endedAt: number,
+    startedAt: Date,
+    endedAt: Date,
     cells: CellData[]
 ) {
     const cellKeys = [
@@ -23,13 +24,13 @@ export function shareGame(
 
     const score = cells.map(c => c.score).reduce((a, b) => a + b, 0);
     const errors = cells.map(c => c.errors).reduce((a, b) => a + b, 0);
-    const elapsed = Math.ceil((endedAt - startedAt) / 1000);
+    const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
     const dailyNumber = Math.ceil(
         (Date.now() - firstEverGrid.getTime()) / (1000 * 60 * 60 * 24)
     );
 
     const text = [
-        `LyonDoku #${dailyNumber} (${
+        `Lyondle Doku #${dailyNumber} (${
             new Intl.DateTimeFormat('fr-FR').format(new Date(id).getTime())
         })`,
         `${(elapsed/60).toFixed(0)}:${elapsed%60} – ${score}/900 – ${
@@ -42,7 +43,42 @@ export function shareGame(
             ])).join("");
         }),
         "",
-        "lyondoku.vercel.app"
+        "https://lyondoku.vercel.app/doku"
+    ].join("\n");
+
+    navigator.share({ text });
+}
+
+export function shareWordleGame(
+    id: string,
+    startedAt: Date,
+    endedAt: Date,
+    answers: WordleAnswer[]
+) {
+    const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
+    const dailyNumber = Math.ceil(
+        (Date.now() - firstEverWordle.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    const text = [
+        `Lyondle #${dailyNumber} (${
+            new Intl.DateTimeFormat('fr-FR').format(new Date(id).getTime())
+        })`,
+        `${(elapsed/60).toFixed(0)}:${elapsed%60}`,
+        "",
+        ...answers.map(r => {
+            return `${
+                r.distanceWithAnswer === 0 ? "🟩" : "🟥"
+            } ${
+                r.validLinesOnStation.length > 0 ? "🟩": "🟥"
+            } ${
+                r.cityOrBoroughMatch ? "🟩" : "🟥"
+            } ${
+                r.distanceWithAnswer === 0 ? "🟩" : "🟥"
+            }`
+        }),
+        "",
+        "https://lyondoku.vercel.app"
     ].join("\n");
 
     navigator.share({ text });
