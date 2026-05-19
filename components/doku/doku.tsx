@@ -80,7 +80,6 @@ function Cell(props: {
                 "bg-black dark:bg-neutral-500 opacity-30 pointer-events-none" : ""}
         `}
         onClick={() => {
-            console.log(props.data);
             if (!props.data.answer || props.data.validAnswers.length > 0)
                 props.onClick();
         }} 

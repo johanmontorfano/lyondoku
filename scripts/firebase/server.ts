@@ -8,8 +8,6 @@ import { getStorage } from "firebase-admin/storage";
 function getInstance() {
     const found = getApps().find((app) => app.name === "[DEFAULT]");
 
-    console.log(found);
-
     if (found) return found;
     return firebase.initializeApp({
         credential: firebase.credential.cert({

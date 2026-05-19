@@ -2,8 +2,6 @@ import { WordleAnswer } from "@/scripts/game_mgr/types";
 import { BsArrowDown } from "react-icons/bs";
 
 export function WordleRowSkeleton() {
-    console.log("hello");
-
     return <>
         <div className="bg-base-200 p-1 h-12 pb-3 md:pb-2 md:p-2 border-r border-t border-base-content/20" />
         <div className="flex flex-wrap gap-1 border-r border-t p-1 md:p-2 border-base-content/20" />
