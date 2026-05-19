@@ -1,5 +1,5 @@
 "use client";
-import type { CellData } from "@/components/doku";
+import type { CellData } from "@/components/doku/doku";
 import { firstEverGrid } from "./game_mgr/data";
 
 function cellData2Emoji(data: CellData) {

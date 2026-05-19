@@ -5,7 +5,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
     StationSelectorPopup,
     useStationSelectorPopup,
-} from "./doku_answer_popup";
+} from "@/components/select_station";
 import { Constraints, Station } from "@/scripts/game_mgr/types";
 import { humanizeConstraint, humanizeRarity } from "@/scripts/game_mgr/humanize";
 import { getDataset } from "@/scripts/firebase/data_provider";
