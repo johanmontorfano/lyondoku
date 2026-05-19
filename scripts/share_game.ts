@@ -2,6 +2,7 @@
 import type { CellData } from "@/components/doku/doku";
 import { firstEverGrid, firstEverWordle } from "./game_mgr/data";
 import { WordleAnswer } from "./game_mgr/types";
+import { getDateTZ } from "./date";
 
 function cellData2Emoji(data: CellData) {
     if (!data.answer) return "🔴";
@@ -26,7 +27,7 @@ export function shareGame(
     const errors = cells.map(c => c.errors).reduce((a, b) => a + b, 0);
     const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
     const dailyNumber = Math.ceil(
-        (Date.now() - firstEverGrid.getTime()) / (1000 * 60 * 60 * 24)
+        (Date.now() - getDateTZ(firstEverGrid).getTime()) / (1000 * 60 * 60 * 24)
     );
 
     const text = [
@@ -59,7 +60,7 @@ export function shareWordleGame(
 ) {
     const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
     const dailyNumber = Math.ceil(
-        (Date.now() - firstEverWordle.getTime()) / (1000 * 60 * 60 * 24)
+        (Date.now() - getDateTZ(firstEverWordle).getTime()) / (1000 * 60 * 60 * 24)
     );
 
     const text = [

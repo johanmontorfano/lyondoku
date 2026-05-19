@@ -1,2 +1,2 @@
-export const firstEverGrid = new Date("05/12/2026");
-export const firstEverWordle = new Date("05/18/2026");
+export const firstEverGrid = "05/12/2026";
+export const firstEverWordle = "05/18/2026";

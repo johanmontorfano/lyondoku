@@ -1,37 +1,12 @@
 import { GridArchiveEntry, WordleArchiveEntry } from "@/components/archive";
+import { getDateRange } from "@/scripts/date";
 import { firstEverGrid, firstEverWordle } from "@/scripts/game_mgr/data";
 
 export default function Page() {
     // HACK: since a new wordle is available every day and we know the date of
     // the first one, we just statically compute all dates from the creation
-    const allWordles = [];
-    const allGrids = [];
-
-    const today = new Date();
-    let cursor = new Date(firstEverWordle);
-    let cursor2 = new Date(firstEverGrid);
-
-    today.setHours(0, 0, 0, 0);
-    cursor.setHours(0, 0, 0, 0);
-    while (cursor <= today) {
-        const year = cursor.getFullYear();
-        const month = String(cursor.getMonth() + 1).padStart(2, "0");
-        const day = String(cursor.getDate()).padStart(2, "0");
-
-        allWordles.push(`${year}-${month}-${day}`);
-        cursor.setDate(cursor.getDate() + 1);
-    }
-
-    today.setHours(0, 0, 0, 0);
-    cursor.setHours(0, 0, 0, 0);
-    while (cursor2 <= today) {
-        const year = cursor2.getFullYear();
-        const month = String(cursor2.getMonth() + 1).padStart(2, "0");
-        const day = String(cursor2.getDate()).padStart(2, "0");
-
-        allGrids.push(`${year}-${month}-${day}`);
-        cursor2.setDate(cursor2.getDate() + 1);
-    }
+    const allWordles = getDateRange(firstEverWordle);
+    const allGrids = getDateRange(firstEverGrid);
 
     return (
         <div className="pb-8">

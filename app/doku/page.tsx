@@ -1,12 +1,9 @@
 import { SSRDokuLoader } from "@/components/doku/doku_loader";
+import { getToday } from "@/scripts/date";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 export default function Page() {
-    const year = new Date().getFullYear();
-    const month = String(new Date().getMonth() + 1).padStart(2, "0");
-    const day = String(new Date().getDate()).padStart(2, "0");
-
     return (
         <Suspense
             fallback={
@@ -15,10 +12,7 @@ export default function Page() {
                 </div>
             }
         >
-            <SSRDokuLoader
-                id={`${year}-${month}-${day}`}
-                onNotFound={notFound}
-            />
+            <SSRDokuLoader id={getToday()} onNotFound={notFound} />
         </Suspense>
     );
 }

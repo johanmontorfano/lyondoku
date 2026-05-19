@@ -1,11 +1,8 @@
 import { Wordle } from "@/components/wordle/wordle";
+import { getToday } from "@/scripts/date";
 import { Suspense } from "react";
 
 export default function Page() {
-    const year = new Date().getFullYear();
-    const month = String(new Date().getMonth() + 1).padStart(2, "0");
-    const day = String(new Date().getDate()).padStart(2, "0");
-
     return (
         <Suspense
             fallback={
@@ -14,7 +11,7 @@ export default function Page() {
                 </div>
             }
         >
-            <Wordle id={`${year}-${month}-${day}`} />
+            <Wordle id={getToday()} />
         </Suspense>
     );
 }
