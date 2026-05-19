@@ -35,7 +35,9 @@ export function WordleRow(props: WordleAnswer) {
             </div>
         </div>
         <div className={
-            (winningRow ? "bg-success/70 text-base-100" : "") +
+            (winningRow || props.validLinesOnStation.length > 0 ?
+                "bg-success/70 text-base-100" : "text-error"
+            ) +
             " flex flex-wrap gap-1 border-r border-t p-1 md:p-2 border-base-content/20"
         }>
             {props.validLinesOnStation.sort().map((c) => (
@@ -47,9 +49,8 @@ export function WordleRow(props: WordleAnswer) {
             ))}
         </div>
         <div className={
-            (winningRow ?
-                "bg-success/70 text-base-100" :
-                (props.cityOrBoroughMatch ? "text-success" : "text-error")
+            (winningRow || props.cityOrBoroughMatch ?
+                "bg-success/70 text-base-100" : "text-error"
             ) +
             " border-r border-t p-1 md:p-2 border-base-content/20 text-dyn-md"
         }>
