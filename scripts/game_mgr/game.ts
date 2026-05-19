@@ -15,6 +15,10 @@ export type UserFacingGameData = Omit<GameData, "validAnswers"> & {
     validAnswersCount: { [cell: string]: number }
 };
 
+export interface WordleData {
+    answerId: number;
+}
+
 // when the retrieval is userFacing, solutions are not provided but the number
 // of possible solutions per cell is provided
 export async function retrieveGame(id: string, userFacing = false): Promise<
@@ -37,6 +41,19 @@ export async function retrieveGame(id: string, userFacing = false): Promise<
             return data as GameData | UserFacingGameData;
         }
         else throw new Error("Game not found");
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+export async function retrieveWordle(id: string): Promise<WordleData | null> {
+    try {
+        const snap = await firestore.doc(`wordle/${id}`).get();
+
+        if (snap.exists) {
+            return snap.data()! as WordleData;
+        } else throw new Error("Game not found");
     } catch (e) {
         console.error(e);
         return null;

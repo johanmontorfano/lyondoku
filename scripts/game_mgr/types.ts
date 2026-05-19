@@ -1,4 +1,4 @@
-// this file contains all the types about a game/grid
+// this file contains all the types about a game/grid/wordle
 
 // this explicitly defines all valid constraints integrated into the
 // dataset
@@ -26,4 +26,12 @@ export interface Station {
     stationBorough: "odd" | "even";
     stationLocation: string;
     terminus: boolean;
+}
+
+export interface WordleAnswer {
+    guess: Station;
+    validLinesOnStation: string[];
+    cityOrBoroughMatch: boolean;
+    distanceWithAnswer: number;
+    cardinalDirectionTowardsAnswer: number;
 }
