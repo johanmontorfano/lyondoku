@@ -4,6 +4,7 @@ import { GameData } from "@/scripts/game_mgr/game";
 import { WordleAnswer } from "@/scripts/game_mgr/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { DokuSave } from "./doku/doku";
 
 export function WordleArchiveEntry(props: {
     id: string,
@@ -61,7 +62,7 @@ export function GridArchiveEntry(props: {
 
     // https://demystifying-rsc.vercel.app/client-components/no-ssr/
     const [isServer, setServer] = useState(true);
-    const gameData = useMemo<GameData | null>(() => {
+    const gameData = useMemo<DokuSave | null>(() => {
         if (isServer) return null;
         const data = localStorage.getItem(`${props.id}`);
 
@@ -90,11 +91,8 @@ export function GridArchiveEntry(props: {
         </p>
         {gameData && <div>
             <span className={`text-base-200 badge badge-sm ${
-                Object.keys(gameData.validAnswers).length === 9 ?
-                    "badge-success" : "badge-error"
-            }`}>{Object.keys(gameData.validAnswers).length === 9 ?
-                "Gagné" : "Perdu"
-            }</span>
+                gameData.won ? "badge-success" : "badge-error"
+            }`}>{gameData.won ? "Gagné" : "Perdu"}</span>
         </div>}
     </button>
 }

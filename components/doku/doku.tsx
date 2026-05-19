@@ -22,6 +22,14 @@ export interface CellData {
     errors: number;
 };
 
+export interface DokuSave {
+    won: boolean;
+    cells: CellData[];
+    attempts: number;
+    startedAt: number;
+    endedAt: number;
+}
+
 function ConstraintCell(props: {
     constraint: Constraints,
     group: "row" | "column"
@@ -255,7 +263,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                 won, cells, attempts,
                 startedAt: startedAtRef.current.getTime(),
                 endedAt: endedAtRef.current.getTime()
-            }));
+            } satisfies DokuSave));
         getAllAnswers();
     }
 
