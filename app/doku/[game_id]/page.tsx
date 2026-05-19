@@ -1,0 +1,24 @@
+import { SSRDokuLoader } from "@/components/doku/doku_loader";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
+export default async function Page(props: {
+    params: Promise<{ game_id: string }>
+}) {
+    const params = await props.params;
+
+    return (
+        <Suspense
+            fallback={
+                <div className="w-full flex justify-center">
+                    <span className="loading loading-spinner" />
+                </div>
+            }
+        >
+            <SSRDokuLoader
+                id={params.game_id}
+                onNotFound={notFound}
+            />
+        </Suspense>
+    );
+}

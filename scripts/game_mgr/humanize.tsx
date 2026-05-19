@@ -70,7 +70,7 @@ export function humanizeConstraint(
                         {linesData.byColor[val as "green"].sort().map((l: string) =>
                             <img
                                 key={l}
-                                src={"lines/" + l + ".svg"}
+                                src={"/lines/" + l + ".svg"}
                                 className="w-[clamp(0.5rem,4cqi,2.2rem)]"
                             />)}
                     </div>
@@ -93,7 +93,7 @@ export function humanizeConstraint(
                 return <>
                     Sur la ligne
                     <img
-                         src={"lines/" + val + ".svg"}
+                         src={"/lines/" + val + ".svg"}
                          className="w-[clamp(0.5rem,4cqi,2.2rem)]"
                     />
                 </> 

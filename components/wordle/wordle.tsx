@@ -157,7 +157,13 @@ export function Wordle(props: { id: string }) {
                             )
                     }`}
                 </h3>
-                <span ref={countdownRef}>00:01</span>
+                <div className="flex items-center gap-2">
+                    <span ref={countdownRef}>00:01</span>
+                    {won !== null &&
+                        <span className={`text-base-200 badge badge-sm ${
+                            won ? "badge-success" : "badge-error"
+                        }`}>{won ? "Gagné" : "Perdu"}</span>}
+                </div>
             </header>
             <br />
             <div className="grid grid-cols-[40%_27%_18%_15%] w-full">

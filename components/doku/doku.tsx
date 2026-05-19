@@ -13,6 +13,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Confetti from "react-confetti-boom";
 import { buttonAnimate } from "@/scripts/motion";
 import { shareGame } from "@/scripts/share_game";
+import { isToday } from "@/scripts/date";
 
 export interface CellData {
     answer?: Station;
@@ -88,7 +89,7 @@ function Cell(props: {
                         .map(c => <img
                              key={c}
                              className="w-[clamp(0.5rem,4cqi,2.2rem)]"
-                             src={"lines/" + c + ".svg"}
+                             src={"/lines/" + c + ".svg"}
                         />)}
                 </div>
                 <div className="flex gap-1 px-2">
@@ -102,7 +103,7 @@ function Cell(props: {
                         .map(c => <img
                              key={c}
                              className="mt-1 w-[clamp(0.5rem,4cqi,2.2rem)]"
-                             src={"lines/" + c + ".svg"}
+                             src={"/lines/" + c + ".svg"}
                         />)}
                 </div>
                 <div className="flex gap-1 px-2">
@@ -112,7 +113,7 @@ function Cell(props: {
                         .map(c => <img
                              key={c}
                              className="mt-1 w-[clamp(0.5rem,4cqi,2.2rem)]"
-                             src={"lines/" + c + ".svg"}
+                             src={"/lines/" + c + ".svg"}
                         />)}
                 </div>
                 <p className="w-full text-center bg-base-200 py-0.5 text-[clamp(0.3rem,2.4cqi,0.65rem)] mt-1">
@@ -173,8 +174,10 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         .reduce((p, c) => p + c, 0),
     [cells]);
     const focusedCellKey = useRef("tl");
-    const startedAt = useRef(Date.now());
-    const endedAt = useRef(Infinity);
+
+    const startedAtRef = useRef(new Date());
+    const endedAtRef = useRef<Date | null>(null);
+    const countdownRef = useRef<HTMLSpanElement>(null);
 
     const getKeyId = (k: string) => cellKeys.flat().findIndex(v => v === k);
 
@@ -245,13 +248,13 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     }
     
     function handleGameEnd(won: boolean) {
-        endedAt.current = Date.now();
+        endedAtRef.current = new Date();
         setWon(won);
         if (!props.gameData.id.startsWith("random_"))
             localStorage.setItem(props.gameData.id, JSON.stringify({
                 won, cells, attempts,
-                startedAt: startedAt.current,
-                endedAt: endedAt.current
+                startedAt: startedAtRef.current.getTime(),
+                endedAt: endedAtRef.current.getTime()
             }));
         getAllAnswers();
     }
@@ -271,8 +274,8 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         if (saveGame !== null) {
             const saveData = JSON.parse(saveGame);
 
-            startedAt.current = saveData.startedAt;
-            endedAt.current = saveData.endedAt;
+            startedAtRef.current = new Date(saveData.startedAt);
+            endedAtRef.current = new Date(saveData.endedAt);
             setWon(saveData.won);
             setCells(saveData.cells);
             setAttemps(saveData.attempts);
@@ -311,9 +314,48 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         }
     }, [cells, errorCount]);
 
+    useEffect(() => {
+        function updateCountdown() {
+            const elapsed = Math.ceil(
+                ((
+                    endedAtRef.current ?
+                        new Date(endedAtRef.current).getTime() : Date.now()
+                )- startedAtRef.current.getTime()) / 1000
+            );
+
+            if (countdownRef.current !== null)
+                countdownRef.current.textContent = `${
+                    (elapsed / 60).toFixed(0).padStart(2, "0")
+                }:${
+                    (elapsed % 60).toString().padStart(2, "0")
+                }`;
+            if (endedAtRef.current === null)
+                requestAnimationFrame(updateCountdown);
+        }
+        updateCountdown();
+    }, []);
+
     return (
-        <>
+        <div>
             {won && <Confetti mode="fall" />}
+            <header className="header flex items-center justify-between">
+                <h3 className="text-lg font-semibold">
+                    {isToday(new Date(props.gameData.id)) ?
+                        "Grille du jour" : `Archive du ${
+                            new Intl.DateTimeFormat('fr-FR').format(
+                                new Date(props.gameData.id).getTime()
+                            )
+                    }`}
+                </h3>
+                <div className="flex items-center gap-2">
+                    <span ref={countdownRef}>00:01</span>
+                    {won !== null &&
+                        <span className={`text-base-200 badge badge-sm ${
+                        won ? "badge-success" : "badge-error"
+                        }`}>{won ? "Gagné" : "Perdu"}</span>}
+                </div>
+            </header>
+            <br />
             <StationSelectorPopup />
             <div className="grid grid-cols-4 grid-rows-4 gap-1 w-full aspect-square">
                 <div />
@@ -413,6 +455,6 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                 </div>
                 <Counter score={score - attempts * 50} count={errorCount} />
             </div>
-        </>
+        </div>
     );
 }

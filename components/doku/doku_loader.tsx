@@ -14,23 +14,5 @@ export async function SSRDokuLoader(props: {
     const gameData = await retrieveGame(props.id, true);
 
     if (gameData === null) return props.onNotFound();
-    return <div>
-        <header className="font-(family-name:--font-mono)">
-            <h3 className="text-xl font-(family-name:--font-mono">
-                {props.id.startsWith("random_") ?
-                    "grille aléatoire" :
-                    isToday(new Date(gameData.id)) ?
-                        "grille du jour" : "archive du"}
-            </h3>
-            {!props.id.startsWith("random_") &&
-                <h4 className="text-lg font-(family-name:--font-mono)">
-                    {new Intl.DateTimeFormat('fr-FR').format(
-                        new Date(gameData.id).getTime()
-                    )}
-                </h4>
-            }
-        </header>
-        <br />
-        <DokuGrid gameData={gameData as UserFacingGameData} />
-    </div>
+    return <DokuGrid gameData={gameData as UserFacingGameData} />;
 }

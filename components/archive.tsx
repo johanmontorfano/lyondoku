@@ -1,5 +1,6 @@
 "use client";
 
+import { GameData } from "@/scripts/game_mgr/game";
 import { WordleAnswer } from "@/scripts/game_mgr/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -47,7 +48,53 @@ export function WordleArchiveEntry(props: {
         {gameData && <div>
             <span className={`text-base-200 badge badge-sm ${
                 gameData.won ? "badge-success" : "badge-error"
-            }`}>{gameData.won ? "Gagnée" : "Perdue"}</span>
+            }`}>{gameData.won ? "Gagné" : "Perdu"}</span>
+        </div>}
+    </button>
+}
+
+export function GridArchiveEntry(props: {
+    id: string,
+    accent: boolean
+}) {
+    const router = useRouter();
+
+    // https://demystifying-rsc.vercel.app/client-components/no-ssr/
+    const [isServer, setServer] = useState(true);
+    const gameData = useMemo<GameData | null>(() => {
+        if (isServer) return null;
+        const data = localStorage.getItem(`${props.id}`);
+
+        if (data !== null) return JSON.parse(data);
+        return null;
+    }, [props.id, isServer]);
+
+    useEffect(() => {
+        setServer(false);
+    }, []);
+
+    return <button
+        role="link"
+        onClick={() => router.push("/doku/" + props.id)}
+        className={
+            "w-full p-2 flex items-center justify-between cursor-pointer " +
+            "hover:bg-base-300 " + (props.accent ? "bg-base-200" : "")
+        }
+    >
+        <p>
+            {new Intl.DateTimeFormat("fr-FR", {
+                month: "long",
+                day: "2-digit",
+                year: "numeric",
+            }).format(new Date(props.id))}
+        </p>
+        {gameData && <div>
+            <span className={`text-base-200 badge badge-sm ${
+                Object.keys(gameData.validAnswers).length === 9 ?
+                    "badge-success" : "badge-error"
+            }`}>{Object.keys(gameData.validAnswers).length === 9 ?
+                "Gagné" : "Perdu"
+            }</span>
         </div>}
     </button>
 }
