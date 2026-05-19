@@ -33,7 +33,9 @@ export function shareGame(
         `Lyondle Doku #${dailyNumber} (${
             new Intl.DateTimeFormat('fr-FR').format(new Date(id).getTime())
         })`,
-        `${(elapsed/60).toFixed(0)}:${elapsed%60} – ${score}/900 – ${
+        `${(elapsed / 60).toFixed(0).padStart(2, "0")}:${
+            (elapsed % 60).toString().padStart(2, "0")
+        } – ${score}/900 – ${
             errors 
         } erreur(s)`,
         "",
@@ -64,7 +66,9 @@ export function shareWordleGame(
         `Lyondle #${dailyNumber} (${
             new Intl.DateTimeFormat('fr-FR').format(new Date(id).getTime())
         })`,
-        `${(elapsed/60).toFixed(0)}:${elapsed%60}`,
+        `${(elapsed / 60).toFixed(0).padStart(2, "0")}:${
+            (elapsed % 60).toString().padStart(2, "0")
+        }`,
         "",
         ...answers.map(r => {
             return `${
