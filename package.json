@@ -9,6 +9,8 @@
         "lint": "eslint"
     },
     "dependencies": {
+        "@turf/bearing": "^7.3.5",
+        "@turf/distance": "^7.3.5",
         "daisyui": "^5.5.19",
         "firebase-admin": "^13.9.0",
         "framer-motion": "^12.38.0",
