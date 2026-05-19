@@ -8,6 +8,8 @@ import { getStorage } from "firebase-admin/storage";
 function getInstance() {
     const found = getApps().find((app) => app.name === "[DEFAULT]");
 
+    console.log(found);
+
     if (found) return found;
     return firebase.initializeApp({
         credential: firebase.credential.cert({
@@ -21,8 +23,6 @@ function getInstance() {
 
 const admin = getInstance();
 
-export const firestore = getFirestore(
-    admin, process.env.NEXT_PUBLIC_FIRESTORE_DB_NAME!
-);
+export const firestore = getFirestore(admin);
 export const auth = getAuth(admin);
 export const storage = getStorage(admin);
