@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-    themes: lyondoku --default, lyondarku --prefersdark;
+    themes: lyondle --default;
 }
 
 @theme {
@@ -27,63 +27,47 @@
 }
 
 @plugin "daisyui/theme" {
-    name: "lyondoku";
+    name: "lyondle";
     default: true;
     
-    --color-primary: oklch(52.19% 0.231 24.58);
-    --color-primary-content: oklch(98% 0.01 24.58);
-    --color-base-100: oklch(99% 0.005 24.58); 
-    --color-base-200: oklch(97% 0.025 24.58);
-    --color-base-300: oklch(94% 0.037 24.58);
-    --color-base-content: oklch(15% 0 0);
-    --color-secondary: oklch(45% 0 0);
-    --color-secondary-content: oklch(98% 0 0);
-    --color-accent: oklch(85% 0.15 90);
-    --color-accent-content: oklch(25% 0.05 90);
-    --color-neutral: oklch(25% 0.02 24.58);
-    --color-neutral-content: oklch(98% 0 0);
-    --color-info: oklch(65% 0.15 250);
-    --color-success: oklch(70% 0.18 150);
-    --color-warning: oklch(80% 0.17 70);
-    --color-error: oklch(55% 0.22 25);
-    --radius-selector: 0.125rem;
-    --radius-field: 0.125rem;
-    --radius-box: 0.25rem;
+    --color-primary: oklch(42% 0.12 28);
+    --color-primary-content: oklch(96% 0.02 80);
+    --color-secondary: oklch(38% 0.05 240);
+    --color-secondary-content: oklch(96% 0.01 240);
+    --color-accent: oklch(78% 0.09 85);
+    --color-accent-content: oklch(30% 0.05 85);
+    --color-base-100: oklch(94% 0.035 80); 
+    --color-base-200: oklch(89% 0.045 80);
+    --color-base-300: oklch(82% 0.055 80);
+    --color-base-content: oklch(22% 0.018 75);
+    --color-neutral: oklch(28% 0.02 75);
+    --color-neutral-content: oklch(93% 0.03 80);
+    --color-info: oklch(55% 0.08 240);
+    --color-success: oklch(58% 0.08 140);
+    --color-warning: oklch(75% 0.11 80);
+    --color-error: oklch(48% 0.14 25);
+    --radius-selector: 0rem;
+    --radius-field: 0rem;
+    --radius-box: 0rem;
     --border: 1px;
 }
 
+.text-dyn-lg {
+    @apply text-[clamp(0.8rem,2.5cqi,0.85rem)];
+}
 
-@plugin "daisyui/theme" {
-  name: "lyondarku";
-  default: false;
-  prefersdark: true;
-  color-scheme: "dark";
-  --color-base-100: oklch(0% 0 0);
-  --color-base-200: oklch(19% 0 0);
-  --color-base-300: oklch(22% 0 0);
-  --color-base-content: oklch(87.609% 0 0);
-  --color-primary: oklch(52.2% 0.297 24.580);
-  --color-primary-content: oklch(98% 0.01 24.58);
-  --color-secondary: oklch(45% 0 0);
-  --color-secondary-content: oklch(98% 0 0);
-  --color-accent: oklch(85% 0.15 90);
-  --color-accent-content: oklch(25% 0.05 90);
-  --color-neutral: oklch(5.1% 0.370 24.580);
-  --color-neutral-content: oklch(98% 0 0);
-  --color-info: oklch(65% 0.15 250);
-  --color-info-content: oklch(28% 0.091 267.935);
-  --color-success: oklch(70% 0.18 150);
-  --color-success-content: oklch(100% 0.051 172.552);
-  --color-warning: oklch(80% 0.17 70);
-  --color-warning-content: oklch(26% 0.079 36.259);
-  --color-error: oklch(55% 0.22 25);
-  --color-error-content: oklch(100% 0.109 3.907);
-  --radius-selector: 0.125rem;
-  --radius-field: 0.125rem;
-  --radius-box: 0.25rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 1px;
-  --depth: 0;
-  --noise: 0;
+.text-dyn-md {
+    @apply text-[clamp(0.56rem,2.35cqi,0.80rem)];
+}
+
+.text-dyn-sm {
+    @apply text-[clamp(0.43rem,2.3cqi,0.70rem)];
+}
+
+.text-dyn-xs {
+    @apply text-[clamp(0.3rem,2.2cqi,0.65rem)];
+}
+
+.img-w-dyn {
+    @apply w-[clamp(1.3rem,4cqi,2.2rem)];
 }
