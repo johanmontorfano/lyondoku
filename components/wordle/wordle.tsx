@@ -45,11 +45,15 @@ export function Wordle(props: { id: string }) {
 
         if (latestAnswer) final.push(latestAnswer);
         setWon(won);
-        localStorage.setItem(`lyondle-${props.id}`, JSON.stringify({
-            won, answers: final,
-            startedAt: startedAtRef.current.getTime(),
-            endedAt: endedAtRef.current!.getTime()
-        }));
+        localStorage.setItem(
+            `lyondle-${props.id}`,
+            JSON.stringify({
+                won,
+                answers: final,
+                startedAt: startedAtRef.current.getTime(),
+                endedAt: endedAtRef.current!.getTime(),
+            }),
+        );
     }
 
     async function handleCheck(guess: number) {
@@ -67,7 +71,7 @@ export function Wordle(props: { id: string }) {
             setAnswers((p) => [...p, body.data]);
             popup.setForbiddenStations([
                 ...popup.forbiddenStations,
-                body.data.guess.id
+                body.data.guess.id,
             ]);
 
             if (body.won) onWinOrLost(true, body.data);
@@ -78,26 +82,6 @@ export function Wordle(props: { id: string }) {
             console.error(e);
         }
         setLoading(false);
-    }
-
-    function NewAttemptButton(props: {
-        children: ReactNode,
-        accentCol?: boolean,
-        noRightBorder?: boolean
-    }) {
-        return  <button className={
-            (props.accentCol ? "bg-base-200 " : "") +
-            (props.noRightBorder !== true ? "border-r " : "") +
-            "text-dyn-sm italic text-base-content/60 py-4 border-t border-base-content/20 p-2 cursor-pointer"
-            }
-            onClick={async () => {
-                await getStations();
-                popup.setPlaceholder("Entrez le nom d'une station")
-                popup.setShow(true);
-            }}
-        >
-            {props.children}
-        </button>
     }
 
     useEffect(() => {
@@ -115,18 +99,19 @@ export function Wordle(props: { id: string }) {
 
         function updateCountdown() {
             const elapsed = Math.ceil(
-                ((
-                    endedAtRef.current ?
-                        new Date(endedAtRef.current).getTime() : Date.now()
-                )- startedAtRef.current.getTime()) / 1000
+                ((endedAtRef.current
+                    ? new Date(endedAtRef.current).getTime()
+                    : Date.now()) -
+                    startedAtRef.current.getTime()) /
+                    1000,
             );
 
             if (countdownRef.current !== null)
-                countdownRef.current.textContent = `${
-                    (elapsed / 60).toFixed(0).padStart(2, "0")
-                }:${
-                    (elapsed % 60).toString().padStart(2, "0")
-                }`;
+                countdownRef.current.textContent = `${(elapsed / 60)
+                    .toFixed(0)
+                    .padStart(2, "0")}:${(elapsed % 60)
+                    .toString()
+                    .padStart(2, "0")}`;
             if (endedAtRef.current === null)
                 requestAnimationFrame(updateCountdown);
         }
@@ -142,88 +127,102 @@ export function Wordle(props: { id: string }) {
 
     return (
         <div>
-            {won && <Confetti
-                mode="fall"
-                fadeOutHeight={Infinity}
-                colors={[
-                    "#D9A050",
-                    "#C86A4C",
-                    "#B55261",
-                    "#A24936"
-                ]}
-            />}
+            {won && <Confetti mode="fall" />}
             <StationSelectorPopup />
             <header className="header flex items-center justify-between">
                 <h3 className="text-lg font-semibold">
-                    {isToday(new Date(props.id)) ?
-                        "Grille du jour" : `Archive du ${
-                            new Intl.DateTimeFormat('fr-FR').format(
-                                new Date(props.id).getTime()
-                            )
-                    }`}
+                    {isToday(new Date(props.id))
+                        ? "Grille du jour"
+                        : `Archive du ${new Intl.DateTimeFormat("fr-FR").format(
+                              new Date(props.id).getTime(),
+                          )}`}
                 </h3>
                 <div className="flex items-center gap-2">
                     <span ref={countdownRef}>00:01</span>
-                    {won !== null &&
-                        <span className={`text-base-200 badge badge-sm ${
-                            won ? "badge-success" : "badge-error"
-                        }`}>{won ? "Gagné" : "Perdu"}</span>}
+                    {won !== null && (
+                        <span
+                            className={`text-base-200 badge badge-sm ${
+                                won ? "badge-success" : "badge-error"
+                            }`}
+                        >
+                            {won ? "Gagné" : "Perdu"}
+                        </span>
+                    )}
                 </div>
             </header>
             <br />
-            <div className="grid grid-cols-[40%_27%_18%_15%] w-full">
-                <p className="text-dyn-sm bg-base-200 border-r border-base-content/20 p-1 md:p-2">
-                    Station
-                </p>
-                <p className="text-dyn-sm border-r border-base-content/20 p-1 md:p-2">
-                    Lignes en commun
-                </p>
-                <p className="text-dyn-sm border-r border-base-content/20 p-1 md:p-2">Ville</p>
-                <p className="text-dyn-sm p-1 md:p-2">Distance</p>
-                {answers.map((a) => (
-                    <WordleRow {...a} key={a.guess.id} />
-                ))}
-                {(answers.length < 6 && won === null) && <>
-                    <NewAttemptButton accentCol>
-                        Encore {6 - answers.length} essais...
-                    </NewAttemptButton>
-                    <NewAttemptButton>...</NewAttemptButton>
-                    <NewAttemptButton>...</NewAttemptButton>
-                    <NewAttemptButton noRightBorder>...</NewAttemptButton>
-                </>}
-                {((won ? 6 : 5) - answers.length) > 0 && new Array((won ? 6 : 5) - answers.length).fill(0).map((_, i) => (
-                    <WordleRowSkeleton key={i} />
-                ))}
-            </div>
+            <table className="table table-zebra">
+                <thead>
+                    <tr className="bg-base-200 text-base-content/80 border-b border-base-300 text-xs">
+                        <th className="w-[38%] py-3 px-3 font-bold">Station</th>
+                        <th className="w-[24%] py-3 px-2 font-bold text-center">
+                            Correspondances
+                        </th>
+                        <th className="w-[20%] py-3 px-2 font-bold text-center">
+                            Commune
+                        </th>
+                        <th className="w-[18%] py-3 px-3 font-bold text-right">
+                            Distance
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {answers.map((a) => (
+                        <WordleRow {...a} key={a.guess.id} />
+                    ))}
+                    {answers.length < 6 && won === null && (
+                        <tr
+                            className="bg-base-200/50 hover:bg-base-200 cursor-pointer transition-colors"
+                            onClick={async () => {
+                                popup.setPlaceholder(
+                                    `Encore ${6 - answers.length} essai(s)`,
+                                );
+                                popup.setStations(
+                                    await getDataset("stations_dict"),
+                                );
+                                popup.setShow(true);
+                            }}
+                        >
+                            <td colSpan={4}>
+                                {loading ? (
+                                    <span className="loading loading-spinner loading-sm" />
+                                ) : (
+                                    <span className="opacity-60 italic">
+                                        Encore {6 - answers.length} essai(s)...
+                                    </span>
+                                )}
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
             <br />
-            <div className="flex justify-between items-center">
-                <div className="flex gap-2">
-                    <AnimatePresence>
-                        {won === null && <motion.button
-                            variants={buttonAnimate}
-                            initial="exit"
-                            animate="show"
-                            exit="exit"
-                            onClick={() => onWinOrLost(false)}
-                            className="btn btn-primary"
-                            key="giveup"
-                        >Abandonner</motion.button>}
-                        {won !== null && <motion.button
-                            variants={buttonAnimate}
-                            initial="exit"
-                            animate="show"
-                            exit="exit"
-                            onClick={() => shareWordleGame(
+            <div className="flex justify-end w-full">
+                {won === null && (
+                    <button
+                        onClick={() => onWinOrLost(false)}
+                        className="btn btn-primary"
+                        key="giveup"
+                    >
+                        Abandonner
+                    </button>
+                )}
+                {won !== null && (
+                    <button
+                        onClick={() =>
+                            shareWordleGame(
                                 props.id,
                                 startedAtRef.current,
                                 endedAtRef.current!,
-                                answers
-                            )}
-                            className="btn btn-primary"
-                            key="share"
-                        >Partager</motion.button>}
-                    </AnimatePresence>
-                </div>
+                                answers,
+                            )
+                        }
+                        className="btn btn-primary"
+                        key="share"
+                    >
+                        Partager
+                    </button>
+                )}
             </div>
         </div>
     );

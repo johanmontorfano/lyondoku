@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { create } from "zustand";
 import { motion, AnimatePresence } from "framer-motion";
 import { BsX } from "react-icons/bs";
@@ -95,13 +95,13 @@ export function StationSelectorPopup() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed top-0 left-0 w-full h-dvh z-50 flex justify-center bg-black/40 items-start"
+                    className="fixed top-0 left-0 w-full h-dvh z-50 bg-black/40 flex justify-center items-start"
                     onClick={() => state.setShow(false)}
                 >
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                        exit={{ scale: 0.95, opacity: 0 }}
                         transition={{
                             type: "spring",
                             damping: 25,
@@ -109,8 +109,14 @@ export function StationSelectorPopup() {
                         }}
                         className="bg-base-100 shadow-2xl max-w-[450px] w-full rounded-2xl overflow-hidden border border-base-300 mt-5 mx-5"
                         onClick={(ev) => ev.stopPropagation()}
+                        drag
+                        dragMomentum={false}
                     >
-                        <div className="px-4 pt-2 flex justify-end">
+                        <div className="px-4 pt-2 flex justify-between items-center">
+                            <div />
+                            <div className="flex justify-center mb-1 opacity-40">
+                                <div className="w-8 h-1 rounded-full bg-base-content/40" />
+                            </div>
                             <button className="btn btn-sm btn-ghost btn-circle" onClick={() => {
                                 state.setShow(false);
                             }}>

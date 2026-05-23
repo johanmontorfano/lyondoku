@@ -80,7 +80,7 @@ export function shareWordleGame(
                 r.cityOrBoroughMatch ? "🟩" : "🟥"
             } ${
                 r.distanceWithAnswer === 0 ? "🟩" : "🟥"
-            }`
+            }   ${r.distanceWithAnswer > 0 ? r.guess.name : ""}`
         }),
         "",
         "https://lyondoku.vercel.app"

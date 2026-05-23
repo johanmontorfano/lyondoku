@@ -15,7 +15,7 @@ export function ResetProgress() {
         return () => clearInterval(interval);
     }, []);
 
-    return <button className="btn btn-primary" disabled={disabled} onClick={() => {
+    return <button className="btn" disabled={disabled} onClick={() => {
         localStorage.clear();
         window.location.reload();
     }}>
