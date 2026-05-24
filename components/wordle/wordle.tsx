@@ -8,7 +8,7 @@ import {
 } from "@/components/select_station";
 import { getDataset } from "@/scripts/firebase/data_provider";
 import { isToday } from "@/scripts/date";
-import { WordleRow, WordleRowSkeleton } from "./row";
+import { WordleRow } from "./row";
 import Confetti from "react-confetti-boom";
 import { shareWordleGame } from "@/scripts/share_game";
 
@@ -30,11 +30,6 @@ export function Wordle(props: { id: string }) {
     const endedAtRef = useRef<Date | null>(null);
     const countdownRef = useRef<HTMLSpanElement>(null);
     const shareWithGuesses = useRef(false);
-
-    async function getStations() {
-        const data = await getDataset("stations_dict");
-        if (data) popup.setStations(data);
-    }
 
     // we must get the latest answer as this function is called in the answer
     // checker which will not provide it with the new state scope upon call
