@@ -56,7 +56,8 @@ export function shareWordleGame(
     id: string,
     startedAt: Date,
     endedAt: Date,
-    answers: WordleAnswer[]
+    answers: WordleAnswer[],
+    withGuesses: boolean
 ) {
     const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
     const dailyNumber = Math.ceil(
@@ -80,7 +81,7 @@ export function shareWordleGame(
                 r.cityOrBoroughMatch ? "🟩" : "🟥"
             } ${
                 r.distanceWithAnswer === 0 ? "🟩" : "🟥"
-            }   ${r.distanceWithAnswer > 0 ? r.guess.name : ""}`
+            }   ${r.distanceWithAnswer > 0 && withGuesses ? r.guess.name : ""}`
         }),
         "",
         "https://lyondoku.vercel.app"

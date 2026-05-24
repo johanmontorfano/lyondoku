@@ -31,6 +31,7 @@ export function Wordle(props: { id: string }) {
     const startedAtRef = useRef(new Date());
     const endedAtRef = useRef<Date | null>(null);
     const countdownRef = useRef<HTMLSpanElement>(null);
+    const shareWithGuesses = useRef(false);
 
     async function getStations() {
         const data = await getDataset("stations_dict");
@@ -197,7 +198,7 @@ export function Wordle(props: { id: string }) {
                 </tbody>
             </table>
             <br />
-            <div className="flex justify-end w-full">
+            <div className="flex justify-end w-full gap-2">
                 {won === null && (
                     <button
                         onClick={() => onWinOrLost(false)}
@@ -207,7 +208,7 @@ export function Wordle(props: { id: string }) {
                         Abandonner
                     </button>
                 )}
-                {won !== null && (
+                {won !== null && <>
                     <button
                         onClick={() =>
                             shareWordleGame(
@@ -215,6 +216,7 @@ export function Wordle(props: { id: string }) {
                                 startedAtRef.current,
                                 endedAtRef.current!,
                                 answers,
+                                shareWithGuesses.current
                             )
                         }
                         className="btn btn-primary"
@@ -222,7 +224,17 @@ export function Wordle(props: { id: string }) {
                     >
                         Partager
                     </button>
-                )}
+                    <label className="label text-xs">
+                        Incl. stations
+                        <input
+                            type="checkbox"
+                            className="toggle toggle-xs"
+                            onChange={ev => {
+                                shareWithGuesses.current = ev.target.checked;
+                            }}
+                        />
+                    </label>
+                </>}
             </div>
         </div>
     );
