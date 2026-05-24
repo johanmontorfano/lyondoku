@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 export function FontEditor() {
     const [show, setShow] = useState(false);
     const [selectedFont, setSelectedFont] = useState("Space Grotesk");
-    const [targetVariable, setTargetVariable] = useState("--font-grotesk");
+    const [targetVariable, setTargetVariable] = useState("--font-serif");
 
     useEffect(() => {
         const targetSequence = ["d", "k", "b", "g"];
@@ -107,13 +107,7 @@ export function FontEditor() {
                     onChange={(e) => setTargetVariable(e.target.value)}
                     className="select select-bordered select-sm w-full bg-base-300 focus:outline-none"
                 >
-                    <option value="--font-grotesk">
-                        --font-grotesk
-                    </option>
-                    <option value="--font-mono">
-                        --font-mono
-                    </option>
-                    <option value="--font-mono">
+                    <option value="--font-serif">
                         --font-serif
                     </option>
                 </select>

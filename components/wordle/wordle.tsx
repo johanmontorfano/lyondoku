@@ -1,7 +1,7 @@
 "use client";
 
 import { WordleAnswer } from "@/scripts/game_mgr/types";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     StationSelectorPopup,
     useStationSelectorPopup,
@@ -9,8 +9,6 @@ import {
 import { getDataset } from "@/scripts/firebase/data_provider";
 import { isToday } from "@/scripts/date";
 import { WordleRow, WordleRowSkeleton } from "./row";
-import { motion, AnimatePresence } from "framer-motion";
-import { buttonAnimate } from "@/scripts/motion";
 import Confetti from "react-confetti-boom";
 import { shareWordleGame } from "@/scripts/share_game";
 
@@ -152,19 +150,13 @@ export function Wordle(props: { id: string }) {
                 </div>
             </header>
             <br />
-            <table className="table table-zebra">
+            <table className="table font-(family-name:--font-doto) bg-base-200 rounded-lg">
                 <thead>
-                    <tr className="bg-base-200 text-base-content/80 border-b border-base-300 text-xs">
-                        <th className="w-[38%] py-3 px-3 font-bold">Station</th>
-                        <th className="w-[24%] py-3 px-2 font-bold text-center">
-                            Correspondances
-                        </th>
-                        <th className="w-[20%] py-3 px-2 font-bold text-center">
-                            Commune
-                        </th>
-                        <th className="w-[18%] py-3 px-3 font-bold text-right">
-                            Distance
-                        </th>
+                    <tr className="text-base-content/80 font-bold p-1">
+                        <th className="w-[52%]">Station</th>
+                        <th className="w-[10%] text-center">Correspondances</th>
+                        <th className="w-[20%] text-center">Commune</th>
+                        <th className="w-[18%] text-right">Distance</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -208,7 +200,7 @@ export function Wordle(props: { id: string }) {
                         Abandonner
                     </button>
                 )}
-                {won !== null && <>
+                {won !== null && <div className="flex flex-col gap-1">
                     <button
                         onClick={() =>
                             shareWordleGame(
@@ -234,7 +226,7 @@ export function Wordle(props: { id: string }) {
                             }}
                         />
                     </label>
-                </>}
+                </div>}
             </div>
         </div>
     );

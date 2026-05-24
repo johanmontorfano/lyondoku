@@ -3,6 +3,7 @@ import { Navbar } from "@/components/navbar";
 import { FontEditor } from "@/components/font_editor";
 import "./globals.css";
 import { ResetProgress } from "@/components/reset_progress";
+import { dots, serif } from "@/scripts/fonts";
 
 export const metadata: Metadata = {
     title: "Lyondle",
@@ -15,7 +16,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="font-(family-name:--font-serif) h-full">
+        <html lang="en" className={`${serif.variable} ${dots.variable} h-full`}>
             <body className="min-h-dvh flex flex-col max-w-[600px] w-[96%] mx-auto">
                 <div>
                     <br />

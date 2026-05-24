@@ -16,27 +16,12 @@ export function WordleRow(props: WordleAnswer) {
 
     return (
         <tr className="text-dyn-sm border-b [&>td]:p-3">
-            <td className={isExactMatch ?
-                "bg-success/40 text-success-content" : "bg-error/40"
-            }>
+            <td className={isExactMatch ? "text-success" : "text-error"}>
                 <p className="text-base mb-1 text-dyn-md">
                     {props.guess.name}
                 </p>
-                <div className="flex flex-wrap gap-1">
-                    {props.guess.connections.sort().map((c) => (
-                        <img
-                            key={`${props.guess.id}-conn-${c}`}
-                            className="img-w-dyn"
-                            src={`/lines/${c}.svg`}
-                            alt={`Ligne ${c}`}
-                        />
-                    ))}
-                </div>
             </td>
-            <td className={
-                props.validLinesOnStation.length > 0 ?
-                    "bg-success/40" : "bg-error/40"
-            }>
+            <td>
                 <div className="flex flex-wrap gap-1 justify-center">
                     {props.validLinesOnStation.sort().map((c) => (
                         <img
@@ -48,17 +33,14 @@ export function WordleRow(props: WordleAnswer) {
                     ))}
                 </div>
             </td>
-            <td className={`p-2 text-center text-dyn-sm ${
-                props.cityOrBoroughMatch ? "bg-success/40" : "bg-error/40"
+            <td className={`p-2 text-center text-dyn-md ${
+                props.cityOrBoroughMatch ? "text-success" : "text-error"
             }`}>
                 {props.guess.stationLocation}
             </td>
-            <td className={isExactMatch ?
-                "bg-success/40" :
-                "bg-error/40"
-            }>
+            <td className={isExactMatch ? "text-success" : "text-error"}>
                 <div className="flex items-center justify-end gap-1.5">
-                    <span className="text-dyn-sm">
+                    <span className="text-dyn-md">
                         {props.distanceWithAnswer === 0 ? "Exact" : `${
                             props.distanceWithAnswer
                                 .toFixed(2)

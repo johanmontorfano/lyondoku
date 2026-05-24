@@ -1,16 +1,16 @@
-import { Poppins, Space_Grotesk, Space_Mono } from "next/font/google";
+import { Doto, Plus_Jakarta_Sans } from "next/font/google";
 
 // NOTE: the migration towards variable-based fonts inclusion is for the only
 // aim of allowing Ju to test fonts with a easy-to-use UI
 
-export const grotesk = Space_Grotesk({ 
-    variable: "--font-grotesk" 
+export const serif = Plus_Jakarta_Sans({
+    weight: ["400", "600", "700", "800"],
+    variable: "--font-serif",
+    display: "swap"
 });
-export const mono = Space_Mono({ 
-    weight: ["400", "700"], 
-    variable: "--font-mono" 
+
+export const dots = Doto({
+    subsets: ["latin"],
+    variable: "--font-doto",
+    display: "swap"
 });
-export const serif = Poppins({
-    weight: ["400", "800"],
-    variable: "--font-serif"
-})

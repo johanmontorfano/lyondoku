@@ -1,12 +1,12 @@
 <svg width="166" height="166" viewBox="0 0 166 166" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="166" height="166" rx="16" fill="black"/>
-<path d="M4 16C4 9.37258 9.37258 4 16 4H54V54H4V16Z" fill="#F8E9D2"/>
-<rect x="58" y="4" width="50" height="50" fill="#F8E9D2"/>
-<path d="M112 4H150C156.627 4 162 9.37258 162 16V54H112V4Z" fill="#F8E9D2"/>
-<path d="M4 112H54V162H16C9.37258 162 4 156.627 4 150V112Z" fill="#822C25"/>
-<rect x="58" y="112" width="50" height="50" fill="#822C25"/>
-<path d="M112 112H162V150C162 156.627 156.627 162 150 162H112V112Z" fill="#822C25"/>
-<rect x="4" y="58" width="50" height="50" fill="#F8E9D2"/>
-<rect x="58" y="58" width="50" height="50" fill="#D2A657"/>
-<rect x="112" y="58" width="50" height="50" fill="#822C25"/>
+<path d="M4 16C4 9.37258 9.37258 4 16 4H49C51.7614 4 54 6.23858 54 9V49C54 51.7614 51.7614 54 49 54H9C6.23858 54 4 51.7614 4 49V16Z" fill="#FFFAFA"/>
+<rect x="58" y="4" width="50" height="50" rx="5" fill="#FFFAFA"/>
+<path d="M112 9C112 6.23858 114.239 4 117 4H150C156.627 4 162 9.37258 162 16V49C162 51.7614 159.761 54 157 54H117C114.239 54 112 51.7614 112 49V9Z" fill="#FFFAFA"/>
+<path d="M4 117C4 114.239 6.23858 112 9 112H49C51.7614 112 54 114.239 54 117V157C54 159.761 51.7614 162 49 162H16C9.37258 162 4 156.627 4 150V117Z" fill="#CD0015"/>
+<rect x="58" y="112" width="50" height="50" rx="5" fill="#CD0015"/>
+<path d="M112 117C112 114.239 114.239 112 117 112H157C159.761 112 162 114.239 162 117V150C162 156.627 156.627 162 150 162H117C114.239 162 112 159.761 112 157V117Z" fill="#CD0015"/>
+<rect x="4" y="58" width="50" height="50" rx="5" fill="#FFFAFA"/>
+<rect x="58" y="58" width="50" height="50" rx="5" fill="#28BC5E"/>
+<rect x="112" y="58" width="50" height="50" rx="5" fill="#CD0015"/>
 </svg>
