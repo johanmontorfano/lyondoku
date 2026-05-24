@@ -40,7 +40,7 @@ export function WordleRow(props: WordleAnswer) {
             </td>
             <td className={isExactMatch ? "text-success" : "text-error"}>
                 <div className="flex items-center justify-end gap-1.5">
-                    <span className="text-dyn-md">
+                    <span className="text-dyn-md whitespace-nowrap">
                         {props.distanceWithAnswer === 0 ? "Exact" : `${
                             props.distanceWithAnswer
                                 .toFixed(2)
