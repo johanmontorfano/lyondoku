@@ -154,7 +154,7 @@ export function Wordle(props: { id: string }) {
                 <thead>
                     <tr className="text-base-content/80 font-bold p-1">
                         <th className="w-[52%]">Station</th>
-                        <th className="w-[10%] text-center">Correspondances</th>
+                        <th className="w-[10%] text-center">Lignes</th>
                         <th className="w-[20%] text-center">Commune</th>
                         <th className="w-[18%] text-right">Distance</th>
                     </tr>
