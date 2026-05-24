@@ -128,6 +128,7 @@ export function StationSelectorPopup() {
                                 <input
                                     autoFocus
                                     type="text"
+                                    autoComplete="off"
                                     className="input input-bordered input-primary w-full"
                                     placeholder={state.placeholder}
                                     value={search}
