@@ -34,7 +34,7 @@ export function Wordle(props: { id: string }) {
     // we must get the latest answer as this function is called in the answer
     // checker which will not provide it with the new state scope upon call
     function onWinOrLost(won: boolean, latestAnswer?: WordleAnswer) {
-        const final = answers;
+        const final = [...answers];
         endedAtRef.current = new Date();
 
         if (latestAnswer) final.push(latestAnswer);
