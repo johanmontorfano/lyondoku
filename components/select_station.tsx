@@ -59,7 +59,11 @@ export function StationSelectorPopup() {
         setActiveMatch(-1);
         if (search.trim() === "") return [];
         return Object.entries(state.stations).filter((s) =>
-            s[1].toLowerCase().includes(search.toLowerCase()) &&
+            s[1]
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, "")
+                .toLowerCase()
+                .includes(search.toLowerCase()) &&
             !state.forbiddenStations.includes(parseInt(s[0]))
         );
     }, [search, state.stations]);
