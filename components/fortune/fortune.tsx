@@ -2,8 +2,6 @@
 
 import { isToday } from "@/scripts/date";
 import { FortuneData, UserFacingFortuneData } from "@/scripts/game_mgr/game";
-import { buttonAnimate } from "@/scripts/motion";
-import { AnimatePresence, motion } from "framer-motion";
 import React, { useState, useRef, useEffect } from "react";
 import Confetti from "react-confetti-boom";
 
@@ -135,13 +133,13 @@ export function Fortune(props: {
         flatIndex: number,
     ) => {
         const val = e.target.value.toUpperCase().slice(-1);
-        if (val && !/^[A-Z]$/.test(val)) return; // Only allow letters
+        if (val && !/^[A-Z]$/.test(val)) return; // only allow letters
 
         const newInputs = [...inputs];
         newInputs[flatIndex] = val;
         setInputs(newInputs);
 
-        // Move focus forward automatically if a letter was typed
+        // move focus forward automatically if a letter was typed
         if (val && flatIndex < letters - 1) {
             const nextUnlocked = lockedIndices.findIndex(
                 (locked, idx) => !locked && idx > flatIndex,
@@ -158,12 +156,12 @@ export function Fortune(props: {
     ) => {
         if (e.key === "Backspace") {
             if (inputs[flatIndex] !== "") {
-                // Clear current cell
+                // clear current cell
                 const newInputs = [...inputs];
                 newInputs[flatIndex] = "";
                 setInputs(newInputs);
             } else {
-                // Move focus to previous unlocked cell if current is empty
+                // move focus to previous unlocked cell if current is empty
                 const prevUnlocked = [...lockedIndices]
                     .map((locked, idx) => ({ locked, idx }))
                     .reverse()
@@ -309,6 +307,7 @@ export function Fortune(props: {
                             <button
                                 onClick={() => setWon(false)}
                                 className="btn"
+                                type="button"
                                 key="giveup"
                             >
                                 Abandonner
