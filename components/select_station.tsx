@@ -114,7 +114,7 @@ export function StationSelectorPopup() {
                             damping: 25,
                             stiffness: 300,
                         }}
-                        className="bg-base-100 shadow-2xl max-w-[450px] w-full rounded-2xl overflow-hidden border border-base-300 mt-5 mx-5"
+                        className="bg-base-200 shadow-2xl max-w-[450px] w-full rounded-2xl overflow-hidden border border-base-300 mt-5 mx-5"
                         onClick={(ev) => ev.stopPropagation()}
                         drag
                         dragMomentum={false}
