@@ -1,6 +1,12 @@
 import { FortuneArchiveEntry, GridArchiveEntry, WordleArchiveEntry } from "@/components/archive";
-import { getDateRange } from "@/scripts/date";
 import { firstEverFortune, firstEverGrid, firstEverWordle } from "@/scripts/game_mgr/data";
+import { getDateRange } from "@/scripts/date";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Lyondle – Archive",
+    description: "Si vous êtes Lyonnais, vous êtes capable de gagner chaque partie de l'archive.",
+};
 
 export default function Page() {
     // HACK: since a new wordle is available every day and we know the date of

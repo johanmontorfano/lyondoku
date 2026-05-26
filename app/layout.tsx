@@ -7,7 +7,7 @@ import { dots, serif } from "@/scripts/fonts";
 
 export const metadata: Metadata = {
     title: "Lyondle",
-    description: "Metrodoku clone 4 Lyon"
+    description: "Connaissez-vous vraiment les TCL ?",
 };
 
 export default function RootLayout({
