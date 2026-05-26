@@ -147,7 +147,7 @@ export function Wordle(props: { id: string }) {
             <br />
             <table className="table font-(family-name:--font-doto) bg-base-200 rounded-lg">
                 <thead>
-                    <tr className="text-base-content/80 font-bold p-1">
+                    <tr className="text-base-content/80 text-dyn-md font-bold p-1">
                         <th className="w-[52%]">Station</th>
                         <th className="w-[10%] text-center">Lignes</th>
                         <th className="w-[20%] text-center">Commune</th>

@@ -5,7 +5,7 @@ export function WordleRow(props: WordleAnswer) {
     const isExactMatch = props.distanceWithAnswer === 0;
 
     return (
-        <tr className="text-dyn-sm border-b [&>td]:p-3">
+        <tr className="border-b [&>td]:p-3 font-semibold">
             <td className={isExactMatch ? "text-success-content" : "text-error-content"}>
                 <p className="text-base mb-1 text-dyn-md">
                     {props.guess.name}

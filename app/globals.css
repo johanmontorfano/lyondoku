@@ -44,10 +44,10 @@
     --color-neutral-content: oklch(98% 0 0);
     --color-info: oklch(65% 0.15 250);
     --color-success: oklch(70% 0.18 150);
-    --color-success-content: oklch(32% 0.18 150);
+    --color-success-content: oklch(52% 0.23 150);
     --color-warning: oklch(80% 0.17 70);
     --color-error: oklch(55% 0.22 25);
-    --color-error-content: oklch(35% 0.22 25);
+    --color-error-content: oklch(50% 0.25 25);
     --radius-selector: 0.125rem;
     --radius-field: 0.125rem;
     --radius-box: 0.25rem;
@@ -95,7 +95,7 @@
 }
 
 .text-dyn-md {
-    @apply text-[clamp(0.65rem,2.4cqi,0.80rem)];
+    @apply text-[clamp(0.75rem,2.4cqi,0.80rem)];
 }
 
 .text-dyn-sm {
