@@ -32,9 +32,9 @@
 
     --color-primary: oklch(52.19% 0.231 24.58);
     --color-primary-content: oklch(98% 0.01 24.58);
-    --color-base-100: oklch(99% 0.005 24.58); 
-    --color-base-200: oklch(97% 0.025 24.58);
-    --color-base-300: oklch(94% 0.037 24.58);
+    --color-base-100: oklch(99% 0.005 85); 
+    --color-base-200: oklch(97% 0.012 85);
+    --color-base-300: oklch(94% 0.018 85);
     --color-base-content: oklch(15% 0 0);
     --color-secondary: oklch(45% 0 0);
     --color-secondary-content: oklch(98% 0 0);
@@ -44,8 +44,10 @@
     --color-neutral-content: oklch(98% 0 0);
     --color-info: oklch(65% 0.15 250);
     --color-success: oklch(70% 0.18 150);
+    --color-success-content: oklch(32% 0.18 150);
     --color-warning: oklch(80% 0.17 70);
     --color-error: oklch(55% 0.22 25);
+    --color-error-content: oklch(35% 0.22 25);
     --radius-selector: 0.125rem;
     --radius-field: 0.125rem;
     --radius-box: 0.25rem;
@@ -73,11 +75,11 @@
   --color-info: oklch(65% 0.15 250);
   --color-info-content: oklch(28% 0.091 267.935);
   --color-success: oklch(70% 0.18 150);
-  --color-success-content: oklch(100% 0.051 172.552);
+  --color-success-content: oklch(92% 0.22 150);
   --color-warning: oklch(80% 0.17 70);
   --color-warning-content: oklch(26% 0.079 36.259);
   --color-error: oklch(55% 0.22 25);
-  --color-error-content: oklch(100% 0.109 3.907);
+  --color-error-content: oklch(90% 0.24 25);
   --radius-selector: 0.125rem;
   --radius-field: 0.125rem;
   --radius-box: 0.25rem;
@@ -93,7 +95,7 @@
 }
 
 .text-dyn-md {
-    @apply text-[clamp(0.56rem,2.35cqi,0.80rem)];
+    @apply text-[clamp(0.65rem,2.4cqi,0.80rem)];
 }
 
 .text-dyn-sm {

@@ -6,7 +6,7 @@ export function WordleRow(props: WordleAnswer) {
 
     return (
         <tr className="text-dyn-sm border-b [&>td]:p-3">
-            <td className={isExactMatch ? "text-success" : "text-error"}>
+            <td className={isExactMatch ? "text-success-content" : "text-error-content"}>
                 <p className="text-base mb-1 text-dyn-md">
                     {props.guess.name}
                 </p>
@@ -24,11 +24,11 @@ export function WordleRow(props: WordleAnswer) {
                 </div>
             </td>
             <td className={`p-2 text-center text-dyn-md ${
-                props.cityOrBoroughMatch ? "text-success" : "text-error"
+                props.cityOrBoroughMatch ? "text-success-content" : "text-error-content"
             }`}>
                 {props.guess.stationLocation}
             </td>
-            <td className={isExactMatch ? "text-success" : "text-error"}>
+            <td className={isExactMatch ? "text-success-content" : "text-error-content"}>
                 <div className="flex items-center justify-end gap-1.5">
                     <span className="text-dyn-md whitespace-nowrap">
                         {props.distanceWithAnswer === 0 ? "Exact" : `${
