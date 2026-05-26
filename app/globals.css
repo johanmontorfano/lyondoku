@@ -109,3 +109,7 @@
 .img-w-dyn {
     @apply w-[clamp(1.3rem,4cqi,2.2rem)];
 }
+
+strong {
+    @apply text-primary;
+}

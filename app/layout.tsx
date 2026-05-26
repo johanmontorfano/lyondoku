@@ -40,6 +40,11 @@ export default function RootLayout({
                             station à trouver
                         </li>
                         <li>
+                            Les indices suivants sont fournis: <strong>
+                            lignes en commun, commune correcte, distance et 
+                            direction.</strong>
+                        </li>
+                        <li>
                             Une nouvelle partie est disponible à <strong>
                                 minuit
                             </strong> chaque jour
@@ -55,7 +60,7 @@ export default function RootLayout({
                         </li>
                         <li>
                             Chaque station doit avoir les caractéristiques de
-                            <strong>sa ligne et sa colonne</strong>
+                            <strong> sa ligne et sa colonne</strong>
                         </li>
                         <li>
                             Vous avez droit à <strong>3 erreurs</strong>
