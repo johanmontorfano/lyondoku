@@ -45,6 +45,11 @@ export default function RootLayout({
                             direction.</strong>
                         </li>
                         <li>
+                            Un indice en vert/la présence d'un pictogramme de 
+                            ligne indique que la station les partage 
+                            avec la station à deviner.
+                        </li>
+                        <li>
                             Une nouvelle partie est disponible à <strong>
                                 minuit
                             </strong> chaque jour
