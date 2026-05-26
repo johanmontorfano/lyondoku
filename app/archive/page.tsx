@@ -17,14 +17,14 @@ export default function Page() {
             </header>
             <br />
             <h3 className="text-lg font-semibold">Lyondles</h3>
-            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify">
+            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
                 {allWordles.reverse().map((t, i) => (
                     <WordleArchiveEntry id={t} key={t} accent={!(i % 2)} />
                 ))}
             </ul>
             <br />
             <h3 className="text-lg font-semibold">Dokus</h3>
-            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify">
+            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
                 {allGrids.reverse().map((t, i) => (
                     <GridArchiveEntry id={t} key={t} accent={!(i % 2)} />
                 ))}
