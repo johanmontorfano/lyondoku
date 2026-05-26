@@ -75,7 +75,7 @@ export function FortuneArchiveEntry(props: {
 
     return <button
         role="link"
-        onClick={() => router.push("/" + props.id)}
+        onClick={() => router.push("/fortune/" + props.id)}
         className={
             "w-full p-2 flex items-center justify-between cursor-pointer " +
             "hover:bg-base-300 " + (props.accent ? "bg-base-200" : "")
