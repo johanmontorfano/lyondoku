@@ -1,12 +1,13 @@
-import { GridArchiveEntry, WordleArchiveEntry } from "@/components/archive";
+import { FortuneArchiveEntry, GridArchiveEntry, WordleArchiveEntry } from "@/components/archive";
 import { getDateRange } from "@/scripts/date";
-import { firstEverGrid, firstEverWordle } from "@/scripts/game_mgr/data";
+import { firstEverFortune, firstEverGrid, firstEverWordle } from "@/scripts/game_mgr/data";
 
 export default function Page() {
     // HACK: since a new wordle is available every day and we know the date of
     // the first one, we just statically compute all dates from the creation
     const allWordles = getDateRange(firstEverWordle);
     const allGrids = getDateRange(firstEverGrid);
+    const allFortunes = getDateRange(firstEverFortune);
 
     return (
         <div className="pb-8">
@@ -20,6 +21,13 @@ export default function Page() {
             <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
                 {allWordles.reverse().map((t, i) => (
                     <WordleArchiveEntry id={t} key={t} accent={!(i % 2)} />
+                ))}
+            </ul>
+            <br />
+            <h3 className="text-lg font-semibold">Fortunes</h3>
+            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
+                {allFortunes.reverse().map((t, i) => (
+                    <FortuneArchiveEntry id={t} key={t} accent={!(i % 2)} />
                 ))}
             </ul>
             <br />
