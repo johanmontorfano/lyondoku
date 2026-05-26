@@ -126,7 +126,7 @@ export function Wordle(props: { id: string }) {
             <header className="header flex items-center justify-between">
                 <h3 className="text-lg font-semibold">
                     {isToday(new Date(props.id))
-                        ? "Grille du jour"
+                        ? "Station du jour"
                         : `Archive du ${new Intl.DateTimeFormat("fr-FR").format(
                               new Date(props.id).getTime(),
                           )}`}
