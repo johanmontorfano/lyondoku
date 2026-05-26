@@ -236,7 +236,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
 
     async function getAllAnswers() {
         try {
-            const res = await fetch("/api/solutions?id=" + props.gameData.id);
+            const res = await fetch("/api/solution/doku?id=" + props.gameData.id);
             
             if (!res.ok)
                 throw new Error("Request error");
