@@ -4,6 +4,7 @@ import { isToday } from "@/scripts/date";
 import { GuessData, UserFacingGuessData } from "@/scripts/game_mgr/game";
 import React, { useState, useRef, useEffect } from "react";
 import Confetti from "react-confetti-boom";
+import { RuledPopup } from "../popup";
 
 function Counter(props: { count: number }) {
     const dot = "h-3 w-3 border border-2 rounded-full transition-colors ";
@@ -227,6 +228,32 @@ export function Guess(props: {
     return (
         <div>
             {won && <Confetti mode="fall" />}
+            <RuledPopup rule="guess-rules">
+                <p className="font-semibold text-xl">Comment jouer à devine</p>
+                <br />
+                <ul className="list-disc [&>li]:ml-6">
+                    <li>
+                        Trouvez la station TCL en <strong>
+                            5 essais
+                        </strong> maximum.
+                    </li>
+                    <li>
+                        Chaque essai vous indique <strong>
+                            l'ensemble des lettres
+                        </strong> qui composent le nom de la station.
+                    </li>
+                    <li>
+                        Chaque lettre <strong>
+                            valide
+                        </strong> reste affichée.
+                    </li>
+                    <li>
+                        Une nouvelle partie est disponible à <strong>
+                            minuit
+                        </strong> chaque jour.
+                    </li>
+                </ul>
+            </RuledPopup>
             <header className="header flex items-center justify-between">
                 <div>
                     <h3 className="text-lg font-semibold">
