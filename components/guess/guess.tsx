@@ -78,7 +78,7 @@ export function Guess(props: {
                     won: false,
                     attempts: 5,
                     inputs: body.name.replaceAll(" ","").split(""),
-                    locked: lockedIndices,
+                    locked: indices,
                     startedAt: startedAtRef.current.getTime(),
                     endedAt: endedAtRef.current.getTime()
                 }));
@@ -88,7 +88,7 @@ export function Guess(props: {
                 won: true,
                 inputs,
                 attempts,
-                locked: lockedIndices,
+                locked: indices,
                 startedAt: startedAtRef.current.getTime(),
                 endedAt: endedAtRef.current.getTime()
             }));
@@ -309,7 +309,7 @@ export function Guess(props: {
                     <div className="flex gap-2">
                         {won === null && (
                             <button
-                                onClick={() => setWon(false)}
+                                onClick={() => handleGameEnd(false, lockedIndices)}
                                 className="btn"
                                 type="button"
                                 key="giveup"
