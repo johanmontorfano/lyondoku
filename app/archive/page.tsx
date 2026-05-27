@@ -24,17 +24,17 @@ export default function Page() {
                 </h2>
             </header>
             <br />
-            <h3 className="text-lg font-semibold">Lyondles</h3>
-            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
-                {allWordles.reverse().map((t, i) => (
-                    <WordleArchiveEntry id={t} key={t} accent={!(i % 2)} />
-                ))}
-            </ul>
-            <br />
-            <h3 className="text-lg font-semibold">Guess</h3>
+            <h3 className="text-lg font-semibold">Devines</h3>
             <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
                 {allGuesses.reverse().map((t, i) => (
                     <GuessArchiveEntry id={t} key={t} accent={!(i % 2)} />
+                ))}
+            </ul>
+            <br />
+            <h3 className="text-lg font-semibold">Wordles</h3>
+            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
+                {allWordles.reverse().map((t, i) => (
+                    <WordleArchiveEntry id={t} key={t} accent={!(i % 2)} />
                 ))}
             </ul>
             <br />
