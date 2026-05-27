@@ -1,6 +1,12 @@
+import { firestore } from "@/scripts/firebase/server";
 import Link from "next/link";
 
-export function Navbar() {
+export async function Navbar() {
+    // since the navbar title can be updated, we must load it here to show it
+    // WARN: this component MUST NOT be a client component thus
+    const titleSnap = await firestore.doc("config/ui").get();
+    const title = titleSnap.data()!.title as string;
+
     const games = [
         ["Wordle", "/"],
         ["Doku", "/doku"],
@@ -11,7 +17,7 @@ export function Navbar() {
         <div className="navbar bg-base-100 w-full px-4 justify-between">
             <div className="navbar-start w-auto">
                 <Link href="/" className="flex items-center">
-                    <h1 className="text-2xl font-bold font-(family:--font-serif) hover:text-primary transition-colors">LYONDLE</h1>
+                    <h1 className="text-2xl font-bold font-(family:--font-serif) hover:text-primary transition-colors">{title}</h1>
                 </Link>
             </div>
             <div className="navbar-end w-auto">
