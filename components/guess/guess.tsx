@@ -137,9 +137,8 @@ export function Guess(props: {
         flatIndex: number,
     ) => {
         const val = e.target.value.toUpperCase().slice(-1);
-        if (val && !/^[A-Z]$/.test(val)) return; // only allow letters
-
         const newInputs = [...inputs];
+
         newInputs[flatIndex] = val;
         setInputs(newInputs);
 
