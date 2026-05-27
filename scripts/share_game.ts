@@ -89,3 +89,35 @@ export function shareWordleGame(
 
     navigator.share({ text });
 }
+
+export function shareGuessGame(
+    id: string,
+    startedAt: Date,
+    endedAt: Date,
+    locked: boolean[],
+    wordsLength: number[]
+) {
+    const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
+    const dailyNumber = Math.ceil(
+        (Date.now() - getDateTZ(firstEverWordle).getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    const text = [
+        `Lyondle Devine #${dailyNumber} (${
+            new Intl.DateTimeFormat('fr-FR').format(new Date(id).getTime())
+        })`,
+        `${(elapsed / 60).toFixed(0).padStart(2, "0")}:${
+            (elapsed % 60).toString().padStart(2, "0")
+        }`,
+        "",
+        wordsLength.map((w, i) => new Array(w).fill(0).map((_, x) => {
+            return locked[x + [0, ...wordsLength.slice(
+                0, i
+            )].reduce((p, c) => p + c)] ? "🟩" : "🟥";
+        }).join("")).join("  "),
+        "",
+        "https://lyondoku.vercel.app/devine"
+    ].join("\n");
+
+    navigator.share({ text });
+}

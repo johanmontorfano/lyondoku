@@ -5,6 +5,7 @@ import { GuessData, UserFacingGuessData } from "@/scripts/game_mgr/game";
 import React, { useState, useRef, useEffect } from "react";
 import Confetti from "react-confetti-boom";
 import { RuledPopup } from "../popup";
+import { shareGuessGame } from "@/scripts/share_game";
 
 function Counter(props: { count: number }) {
     const dot = "h-3 w-3 border border-2 rounded-full transition-colors ";
@@ -45,7 +46,7 @@ export function Guess(props: {
     const [attempts, setAttempts] = useState(0);
     const [inputs, setInputs] = useState(Array(letters).fill(""));
     const [lockedIndices, setLockedIndices] = useState(
-        Array(letters).fill(false),
+        Array<boolean>(letters).fill(false),
     );
 
     const startedAtRef = useRef(new Date());
@@ -345,6 +346,22 @@ export function Guess(props: {
                                 key="try"
                             >
                                 Tenter
+                            </button>
+                        )}
+                        {won !== null && (
+                            <button
+                                onClick={() => shareGuessGame(
+                                    props.id,
+                                    startedAtRef.current,
+                                    endedAtRef.current!,
+                                    lockedIndices,
+                                    props.gameData.answerWordsLength
+                                )}
+                                className="btn btn-primary"
+                                type="button"
+                                key="try"
+                            >
+                                Partager
                             </button>
                         )}
                     </div>
