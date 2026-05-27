@@ -5,7 +5,7 @@ export async function Navbar() {
     // since the navbar title can be updated, we must load it here to show it
     // WARN: this component MUST NOT be a client component thus
     const titleSnap = await firestore.doc("config/ui").get();
-    const title = titleSnap.data()!.title as string;
+    const title = titleSnap.data()!.navbarTitle as string;
 
     const games = [
         ["Wordle", "/"],

@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
     if (auth === `Bearer ${process.env.JWS_ACCESS_SECRET}`) {
         const titleSnap = await firestore.doc("config/ui").get();
-        const title = titleSnap.data()!.title as string;
+        const title = titleSnap.data()!.navbarTitle as string;
 
         return NextResponse.json({ title }, { headers });
     } else return NextResponse.json({ title: null }, { status: 401, headers });
