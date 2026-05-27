@@ -27,16 +27,6 @@ function Counter(props: { count: number }) {
                     dot + (props.count > 2 ? "border-error bg-error" : "")
                 }
             />
-            <div
-                className={
-                    dot + (props.count > 3 ? "border-error bg-error" : "")
-                }
-            />
-            <div
-                className={
-                    dot + (props.count > 4 ? "border-error bg-error" : "")
-                }
-            />
         </div>
     );
 }
@@ -77,7 +67,7 @@ export function Guess(props: {
                 setInputs(body.name.replaceAll(" ", "").split(""));
                 localStorage.setItem(`guess-${props.id}`, JSON.stringify({
                     won: false,
-                    attempts: 5,
+                    attempts: 3,
                     inputs: body.name.replaceAll(" ","").split(""),
                     locked: indices,
                     startedAt: startedAtRef.current.getTime(),
@@ -113,14 +103,11 @@ export function Guess(props: {
             if (!res.ok) throw new Error("Request error");
 
             const body = await res.json();
-            let li: typeof lockedIndices = [];
+            const li = lockedIndices.map((was, i) => was || body.match[i]);
 
             // to ensure entries stay locked while new ones switch to be locked
             // we must run the matches through a filter before setting
-            setLockedIndices((p) => {
-                li = p.map((was, i) => was || body.match[i]);
-                return li;
-            });
+            setLockedIndices(li);
             if (!body.won) setAttempts((p) => p + 1);
             else handleGameEnd(true, li);
 
@@ -128,7 +115,7 @@ export function Guess(props: {
             if (firstEmpty !== -1 && inputRefs.current[firstEmpty])
                 inputRefs.current[firstEmpty].focus();
 
-            if (!body.won && attempts > 3) handleGameEnd(false, li);
+            if (!body.won && attempts > 1) handleGameEnd(false, li);
         } catch (e) {}
         setLoading(false);
     }
