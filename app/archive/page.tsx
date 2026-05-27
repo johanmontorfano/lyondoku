@@ -16,6 +16,12 @@ export default function Page() {
     const allGrids = getDateRange(firstEverGrid);
     const allGuesses = getDateRange(firstEverGuess);
 
+    const collapsableContent = [
+        ["Wordles", allWordles],
+        ["Dokus", allGrids],
+        ["Devines", allGuesses]
+    ] as const;
+
     return (
         <div className="pb-8">
             <header className="header">
@@ -24,27 +30,15 @@ export default function Page() {
                 </h2>
             </header>
             <br />
-            <h3 className="text-lg font-semibold">Devines</h3>
-            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
-                {allGuesses.reverse().map((t, i) => (
-                    <GuessArchiveEntry id={t} key={t} accent={!(i % 2)} />
-                ))}
-            </ul>
-            <br />
-            <h3 className="text-lg font-semibold">Wordles</h3>
-            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
-                {allWordles.reverse().map((t, i) => (
-                    <WordleArchiveEntry id={t} key={t} accent={!(i % 2)} />
-                ))}
-            </ul>
-            <br />
-            <h3 className="text-lg font-semibold">Dokus</h3>
-            <ul className="list-disc [&>li]:ml-4 [&>li]:text-justify border-2 border-base-200 rounded-lg">
-                {allGrids.reverse().map((t, i) => (
-                    <GridArchiveEntry id={t} key={t} accent={!(i % 2)} />
-                ))}
-            </ul>
-            <br />
+            {collapsableContent.map(c => <div className="collapse collapse-arrow bg-base-200 mb-4">
+                <input type="radio" name="archive" />
+                <h3 className="text-lg font-semibold collapse-title">{c[0]}</h3>
+                <ul className="collapse-content list-disc">
+                    {c[1].reverse().map((t, i) => (
+                        <GuessArchiveEntry id={t} key={t} accent={false} />
+                    ))}
+                </ul>
+            </div>)}
             <div className="flex justify-end">
                 <ResetProgress />
             </div>
