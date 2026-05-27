@@ -33,8 +33,8 @@ export async function Navbar() {
                                 </summary>
                                 <ul className="menu dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-52 p-2 shadow-md">
                                     {games.map((g) => (
-                                        <li>
-                                            <Link key={`m-${g[1]}`} href={g[1]}>
+                                        <li key={`m-${g[1]}`}>
+                                            <Link href={g[1]}>
                                                 {g[0]}
                                             </Link>
                                         </li>
@@ -53,9 +53,8 @@ export async function Navbar() {
                     </ul>
                     <ul className="hidden md:flex menu menu-horizontal text-sm">
                         {games.map((g) => (
-                            <li>
+                            <li key={`h-${g[1]}`}>
                                 <Link
-                                    key={`h-${g[1]}`}
                                     href={g[1]}
                                     className="rounded-full"
                                 >
@@ -65,10 +64,13 @@ export async function Navbar() {
                         ))}
                     </ul>
                 </div>
-                <div className="hidden md:inline bg-base-200 rounded-full shadow-xl my-4">
+                <div className="hidden md:flex bg-base-200 rounded-full shadow-xl my-4">
                     <ul className="menu menu-horizontal">
                         <li>
-                            <Link href="/archive" className="rounded-full">Archive</Link>
+                            <Link
+                                href="/archive"
+                                className="rounded-full"
+                            >Archive</Link>
                         </li>
                     </ul>
                 </div>

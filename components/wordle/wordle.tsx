@@ -1,6 +1,6 @@
 "use client";
 
-import { WordleAnswer } from "@/scripts/game_mgr/types";
+import { Station, WordleAnswer } from "@/scripts/game_mgr/types";
 import { useEffect, useRef, useState } from "react";
 import {
     StationSelectorPopup,
@@ -34,11 +34,33 @@ export function Wordle(props: { id: string }) {
 
     // we must get the latest answer as this function is called in the answer
     // checker which will not provide it with the new state scope upon call
-    function onWinOrLost(won: boolean, latestAnswer?: WordleAnswer) {
+    async function handleGameEnd(won: boolean, latestAnswer?: WordleAnswer) {
         const final = [...answers];
         endedAtRef.current = new Date();
 
         if (latestAnswer) final.push(latestAnswer);
+        if (!won) try {
+            const res = await fetch(`/api/solution/wordle?id=${
+                props.id
+            }`);
+
+            if (!res.ok)
+                throw new Error("Request failed");
+
+            const body = await res.json() as Record<"station", Station>;
+
+            final.push({
+                guess: body.station,
+                cardinalDirectionTowardsAnswer: 0,
+                distanceWithAnswer: 0,
+                cityOrBoroughMatch: true,
+                validLinesOnStation: body.station.connections
+            });
+            setAnswers(final);
+        } catch (e) {
+            console.error(e);
+        }
+
         setWon(won);
         localStorage.setItem(
             `lyondle-${props.id}`,
@@ -69,10 +91,10 @@ export function Wordle(props: { id: string }) {
                 body.data.guess.id,
             ]);
 
-            if (body.won) onWinOrLost(true, body.data);
+            if (body.won) handleGameEnd(true, body.data);
             // for incults: a function updating a state doesn't get the new
             // state value in its scope unless we are talking about a ref
-            else if (answers.length >= 5) onWinOrLost(false, body.data);
+            else if (answers.length >= 5) handleGameEnd(false, body.data);
         } catch (e) {
             console.error(e);
         }
@@ -131,11 +153,11 @@ export function Wordle(props: { id: string }) {
                     <li>
                         Trouvez la station TCL en <strong>
                             6 essais
-                        </strong> maximum
+                        </strong> maximum.
                     </li>
                     <li>
                         Chaque essai vous fourni des indices sur la
-                        station à trouver
+                        station à trouver.
                     </li>
                     <li>
                         Les indices suivants sont fournis: <strong>
@@ -150,7 +172,7 @@ export function Wordle(props: { id: string }) {
                     <li>
                         Une nouvelle partie est disponible à <strong>
                             minuit
-                        </strong> chaque jour
+                        </strong> chaque jour.
                     </li>
                 </ul>
             </RuledPopup>
@@ -227,7 +249,7 @@ export function Wordle(props: { id: string }) {
             <div className="flex justify-end w-full gap-2">
                 {won === null && (
                     <button
-                        onClick={() => onWinOrLost(false)}
+                        onClick={() => handleGameEnd(false)}
                         className="btn btn-primary"
                         key="giveup"
                     >
