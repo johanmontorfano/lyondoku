@@ -1,7 +1,4 @@
-import Image from "next/image";
 import Link from "next/link";
-import Icon from "@/public/icon.svg";
-import { BsEnvelope } from "react-icons/bs";
 
 export function Navbar() {
     const games = [
@@ -14,10 +11,10 @@ export function Navbar() {
         <div className="navbar bg-base-100 w-full px-4 justify-between">
             <div className="navbar-start w-auto">
                 <Link href="/" className="flex items-center">
-                    <Image src={Icon} alt="icon" width={25} height={25} />
+                    <h1 className="text-2xl font-bold font-(family:--font-serif) hover:text-primary transition-colors">LYONDLE</h1>
                 </Link>
             </div>
-            <div className="navbar-center">
+            <div className="navbar-end w-auto">
                 <ul className="md:hidden menu menu-horizontal">
                     <li>
                     <details>
@@ -33,21 +30,12 @@ export function Navbar() {
                         Archive
                     </Link>
                 </ul>
-                <ul className="hidden md:flex menu menu-horizontal px-1 text-sm">
+                <ul className="hidden md:flex menu menu-horizontal text-sm">
                     {games.map(g => <li>
                         <Link key={`h-${g[1]}`} href={g[1]}>{g[0]}</Link>
                     </li>)}
                     <li><Link href="/archive">Archive</Link></li>
                 </ul>
-            </div>
-            <div className="navbar-end w-auto">
-                <Link
-                    className="btn btn-ghost btn-circle"
-                    href="mailto:hello@johanmontorfano.com"
-                    aria-label="Contact"
-                >
-                    <BsEnvelope size={20} />
-                </Link>
             </div>
         </div>
     );

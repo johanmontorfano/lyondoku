@@ -14,6 +14,7 @@ import Confetti from "react-confetti-boom";
 import { buttonAnimate } from "@/scripts/motion";
 import { shareGame } from "@/scripts/share_game";
 import { isToday } from "@/scripts/date";
+import { RuledPopup } from "../popup";
 
 export interface CellData {
     answer?: Station;
@@ -345,6 +346,29 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     return (
         <div>
             {won && <Confetti mode="fall" />}
+            <RuledPopup key="doku-rules">
+                <p className="font-semibold text-xl">Comment jouer au doku</p>
+                <br />
+                <ul className="list-disc [&>li]:ml-6">
+                    <li>
+                        Remplissez la grille avec <strong>
+                            9 stations TCL
+                        </strong> différentes
+                    </li>
+                    <li>
+                        Chaque station doit avoir les caractéristiques de
+                        <strong> sa ligne et sa colonne</strong>
+                    </li>
+                    <li>
+                        Vous avez droit à <strong>3 erreurs</strong>
+                    </li>
+                    <li>
+                        Une nouvelle partie est disponible à <strong>
+                            minuit
+                        </strong> chaque jour
+                    </li>
+                </ul>
+            </RuledPopup>
             <header className="header flex items-center justify-between">
                 <h3 className="text-lg font-semibold">
                     {isToday(new Date(props.gameData.id)) ?

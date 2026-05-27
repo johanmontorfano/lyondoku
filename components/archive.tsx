@@ -53,7 +53,7 @@ export function WordleArchiveEntry(props: {
     </button>
 }
 
-export function FortuneArchiveEntry(props: {
+export function GuessArchiveEntry(props: {
     id: string,
     accent: boolean
 }) {
@@ -63,7 +63,7 @@ export function FortuneArchiveEntry(props: {
     const [isServer, setServer] = useState(true);
     const gameData = useMemo<{ won: boolean } | null>(() => {
         if (isServer) return null;
-        const data = localStorage.getItem(`fortune-${props.id}`);
+        const data = localStorage.getItem(`guess-${props.id}`);
 
         if (data !== null) return JSON.parse(data);
         return null;
@@ -75,7 +75,7 @@ export function FortuneArchiveEntry(props: {
 
     return <button
         role="link"
-        onClick={() => router.push("/fortune/" + props.id)}
+        onClick={() => router.push("/guess/" + props.id)}
         className={
             "w-full p-2 flex items-center justify-between cursor-pointer " +
             "hover:bg-base-300 " + (props.accent ? "bg-base-200" : "")

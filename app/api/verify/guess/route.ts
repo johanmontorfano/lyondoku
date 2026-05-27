@@ -1,4 +1,4 @@
-import { FortuneData, retrieveFortune } from "@/scripts/game_mgr/game";
+import { GuessData, retrieveGuess } from "@/scripts/game_mgr/game";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     if (body.error)
         return NextResponse.json({ error: "invalid req" }, { status: 400 });
 
-    const game = await retrieveFortune(body.data.id) as FortuneData;
+    const game = await retrieveGuess(body.data.id) as GuessData;
 
     if (game === null)
         return NextResponse.json({ error: "game not found" }, { status: 404 });

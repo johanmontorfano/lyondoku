@@ -1,4 +1,4 @@
-import { SSRFortuneLoader } from "@/components/fortune/fortune_loader";
+import { SSRGuessLoader } from "@/components/guess/guess_loader";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -15,7 +15,7 @@ export default async function Page(props: {
                 </div>
             }
         >
-            <SSRFortuneLoader
+            <SSRGuessLoader
                 id={params.game_id}
                 onNotFound={notFound}
             />

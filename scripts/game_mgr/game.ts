@@ -19,12 +19,12 @@ export interface WordleData {
     answerId: number;
 }
 
-export interface FortuneData {
+export interface GuessData {
     answerId: number;
     name: string;
 }
 
-export type UserFacingFortuneData = Omit<FortuneData, "name"> & {
+export type UserFacingGuessData = Omit<GuessData, "name"> & {
     answerWordsLength: number[];
 }
 
@@ -69,19 +69,19 @@ export async function retrieveWordle(id: string): Promise<WordleData | null> {
     }
 }
 
-export async function retrieveFortune(id: string, userFacing = false): Promise<
-    FortuneData | UserFacingFortuneData | null
+export async function retrieveGuess(id: string, userFacing = false): Promise<
+    GuessData | UserFacingGuessData | null
 > {
     try {
-        const snap = await firestore.doc(`fortune/${id}`).get();
+        const snap = await firestore.doc(`guess/${id}`).get();
 
         if (snap.exists) {
-            const data = snap.data()! as FortuneData;
+            const data = snap.data()! as GuessData;
 
             if (userFacing) return {
                 answerId: data.answerId,
                 answerWordsLength: data.name.split(" ").map(s => s.length)
-            } satisfies UserFacingFortuneData;
+            } satisfies UserFacingGuessData;
             return data;
         } else throw new Error("Game not found");
     } catch (e) {

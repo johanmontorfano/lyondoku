@@ -1,7 +1,7 @@
 "use client";
 
 import { isToday } from "@/scripts/date";
-import { FortuneData, UserFacingFortuneData } from "@/scripts/game_mgr/game";
+import { GuessData, UserFacingGuessData } from "@/scripts/game_mgr/game";
 import React, { useState, useRef, useEffect } from "react";
 import Confetti from "react-confetti-boom";
 
@@ -40,8 +40,8 @@ function Counter(props: { count: number }) {
     );
 }
 
-export function Fortune(props: {
-    gameData: UserFacingFortuneData;
+export function Guess(props: {
+    gameData: UserFacingGuessData;
     id: string;
 }) {
     // WARN: since the back-end doesn't want any whitespaces, we are provided
@@ -62,19 +62,19 @@ export function Fortune(props: {
     const countdownRef = useRef<HTMLSpanElement>(null);
     const inputRefs = useRef<HTMLInputElement[]>([]);
 
-    async function handleGameEnd(won: boolean) {
+    async function handleGameEnd(won: boolean, indices: typeof lockedIndices) {
         setWon(won);
         endedAtRef.current = new Date();
         if (!won) {
             try {
-                const res = await fetch("/api/solution/fortune?id=" + props.id);
+                const res = await fetch("/api/solution/guess?id=" + props.id);
                 
                 if (!res.ok) throw new Error("Request error");
 
-                const body = await res.json() as FortuneData;
+                const body = await res.json() as GuessData;
 
                 setInputs(body.name.replaceAll(" ", "").split(""));
-                localStorage.setItem(`fortune-${props.id}`, JSON.stringify({
+                localStorage.setItem(`guess-${props.id}`, JSON.stringify({
                     won: false,
                     attempts: 5,
                     inputs: body.name.replaceAll(" ","").split(""),
@@ -84,7 +84,7 @@ export function Fortune(props: {
                 }));
             } catch (e) {}
         } else {
-            localStorage.setItem(`fortune-${props.id}`, JSON.stringify({
+            localStorage.setItem(`guess-${props.id}`, JSON.stringify({
                 won: true,
                 inputs,
                 attempts,
@@ -101,7 +101,7 @@ export function Fortune(props: {
         // and the underlying handlers
         setLoading(true);
         try {
-            const res = await fetch("/api/verify/fortune", {
+            const res = await fetch("/api/verify/guess", {
                 method: "POST",
                 body: JSON.stringify({
                     id: props.id,
@@ -112,18 +112,22 @@ export function Fortune(props: {
             if (!res.ok) throw new Error("Request error");
 
             const body = await res.json();
+            let li: typeof lockedIndices = [];
 
             // to ensure entries stay locked while new ones switch to be locked
             // we must run the matches through a filter before setting
-            setLockedIndices((p) => p.map((was, i) => was || body.match[i]));
+            setLockedIndices((p) => {
+                li = p.map((was, i) => was || body.match[i]);
+                return li;
+            });
             if (!body.won) setAttempts((p) => p + 1);
-            else handleGameEnd(true);
+            else handleGameEnd(true, li);
 
             const firstEmpty = body.match.indexOf(false);
             if (firstEmpty !== -1 && inputRefs.current[firstEmpty])
                 inputRefs.current[firstEmpty].focus();
 
-            if (!body.won && attempts > 3) handleGameEnd(false);
+            if (!body.won && attempts > 3) handleGameEnd(false, li);
         } catch (e) {}
         setLoading(false);
     }
@@ -175,7 +179,7 @@ export function Fortune(props: {
     };
 
     useEffect(() => {
-        const saveGame = localStorage.getItem(`fortune-${props.id}`);
+        const saveGame = localStorage.getItem(`guess-${props.id}`);
 
         if (saveGame !== null) {
             const data = JSON.parse(saveGame);

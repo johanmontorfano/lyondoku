@@ -1,4 +1,4 @@
-import { FortuneData, retrieveFortune } from "@/scripts/game_mgr/game";
+import { GuessData, retrieveGuess } from "@/scripts/game_mgr/game";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     if (!url.searchParams.has("id"))
         return NextResponse.json({ error: "invalid req" }, { status: 400 });
 
-    const game = await retrieveFortune(url.searchParams.get("id")!) as FortuneData;
+    const game = await retrieveGuess(url.searchParams.get("id")!) as GuessData;
 
     return NextResponse.json(game);
 }

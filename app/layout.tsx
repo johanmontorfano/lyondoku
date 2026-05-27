@@ -26,62 +26,6 @@ export default function RootLayout({
                     {children}
                     <br />
                 </div>
-                <div>
-                    <div className="divider" />
-                    <p className="font-semibold text-xl">Comment jouer à Lyondle</p>
-                    <ul className="list-disc [&>li]:ml-6">
-                        <li>
-                            Trouvez la station TCL en <strong>
-                                6 essais
-                            </strong> maximum
-                        </li>
-                        <li>
-                            Chaque essai vous fourni des indices sur la
-                            station à trouver
-                        </li>
-                        <li>
-                            Les indices suivants sont fournis: <strong>
-                            lignes en commun, commune correcte, distance et 
-                            direction.</strong>
-                        </li>
-                        <li>
-                            Un indice en vert/la présence d'un pictogramme de 
-                            ligne indique que la station les partage 
-                            avec la station à deviner.
-                        </li>
-                        <li>
-                            Une nouvelle partie est disponible à <strong>
-                                minuit
-                            </strong> chaque jour
-                        </li>
-                    </ul>
-                    <br />
-                    <p className="font-semibold text-xl">Comment jouer au doku</p>
-                    <ul className="list-disc [&>li]:ml-6">
-                        <li>
-                            Remplissez la grille avec <strong>
-                                9 stations TCL
-                            </strong> différentes
-                        </li>
-                        <li>
-                            Chaque station doit avoir les caractéristiques de
-                            <strong> sa ligne et sa colonne</strong>
-                        </li>
-                        <li>
-                            Vous avez droit à <strong>3 erreurs</strong>
-                        </li>
-                        <li>
-                            Une nouvelle partie est disponible à <strong>
-                                minuit
-                            </strong> chaque jour
-                        </li>
-                    </ul>
-                    <br />
-                    <div className="flex justify-end">
-                        <ResetProgress />
-                    </div>
-                    <br />
-                </div>
             </body>
         </html>
     );

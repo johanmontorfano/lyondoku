@@ -11,6 +11,7 @@ import { isToday } from "@/scripts/date";
 import { WordleRow } from "./row";
 import Confetti from "react-confetti-boom";
 import { shareWordleGame } from "@/scripts/share_game";
+import { RuledPopup } from "../popup";
 
 // this game works by making the user guess in 5 tries a station based on 5
 // criterias:
@@ -123,6 +124,36 @@ export function Wordle(props: { id: string }) {
         <div>
             {won && <Confetti mode="fall" />}
             <StationSelectorPopup />
+            <RuledPopup key="dle-rules">
+                <p className="font-semibold text-xl">Comment jouer à Lyondle</p>
+                <br />
+                <ul className="list-disc [&>li]:ml-6">
+                    <li>
+                            Trouvez la station TCL en <strong>
+                                6 essais
+                            </strong> maximum
+                        </li>
+                        <li>
+                            Chaque essai vous fourni des indices sur la
+                            station à trouver
+                        </li>
+                        <li>
+                            Les indices suivants sont fournis: <strong>
+                            lignes en commun, commune correcte, distance et 
+                            direction.</strong>
+                        </li>
+                        <li>
+                            Un indice en vert/la présence d'un pictogramme de 
+                            ligne indique que la station les partage 
+                            avec la station à deviner.
+                        </li>
+                        <li>
+                            Une nouvelle partie est disponible à <strong>
+                                minuit
+                            </strong> chaque jour
+                        </li>
+                    </ul>
+            </RuledPopup>
             <header className="header flex items-center justify-between">
                 <h3 className="text-lg font-semibold">
                     {isToday(new Date(props.id))
