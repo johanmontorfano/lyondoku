@@ -4,12 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ReactNode, useEffect, useState } from "react";
 
 // shows a popup if a key is not present in local storage
-export function RuledPopup(props: { key: string, children: ReactNode }) {
+export function RuledPopup(props: { rule: string, children: ReactNode }) {
     const [show, setShow] = useState(false);
 
     useEffect(() => {
         if (typeof window === "undefined") return;
-        setShow(localStorage.getItem(props.key) === null);
+        setShow(localStorage.getItem(props.rule) === null);
     }, []);
 
     return (
@@ -46,7 +46,7 @@ export function RuledPopup(props: { key: string, children: ReactNode }) {
                             <button
                                 className="btn"
                                 onClick={() => {
-                                    localStorage.setItem(props.key, "ok");
+                                    localStorage.setItem(props.rule, "ok");
                                     setShow(false);
                                 }}
                             >Ne plus afficher</button>

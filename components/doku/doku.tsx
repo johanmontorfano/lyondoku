@@ -346,7 +346,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     return (
         <div>
             {won && <Confetti mode="fall" />}
-            <RuledPopup key="doku-rules">
+            <RuledPopup rule="doku-rules">
                 <p className="font-semibold text-xl">Comment jouer au doku</p>
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
@@ -370,14 +370,21 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                 </ul>
             </RuledPopup>
             <header className="header flex items-center justify-between">
-                <h3 className="text-lg font-semibold">
-                    {isToday(new Date(props.gameData.id)) ?
-                        "Grille du jour" : `Archive du ${
-                            new Intl.DateTimeFormat('fr-FR').format(
-                                new Date(props.gameData.id).getTime()
-                            )
-                    }`}
-                </h3>
+                <div>
+                    <h3 className="text-lg font-semibold">
+                        {isToday(new Date(props.gameData.id)) ?
+                            "Grille du jour" : `Archive du ${
+                                new Intl.DateTimeFormat('fr-FR').format(
+                                    new Date(props.gameData.id).getTime()
+                                )
+                        }`}
+                    </h3>
+                    {isToday(new Date(props.gameData.id)) && <h2>
+                        {new Intl.DateTimeFormat('fr-FR').format(
+                            new Date(props.gameData.id).getTime()
+                        )}
+                    </h2>}
+                </div>
                 <div className="flex items-center gap-2">
                     <span ref={countdownRef}>00:01</span>
                     {won !== null &&
