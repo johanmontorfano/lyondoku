@@ -34,3 +34,14 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true });
     } else return NextResponse.json({ success: false }, { status: 401 });
 }
+
+export async function OPTIONS() {
+    return new NextResponse(null, {
+        status: 204,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        }
+    })
+}
