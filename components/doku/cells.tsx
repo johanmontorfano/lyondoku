@@ -10,15 +10,21 @@ function _ConstraintCell(props: {
     constraint: Constraints,
     group: "row" | "column"
 }) {
+    const [isServer, setServer] = useState(true);
+
+    useEffect(() => {
+        setServer(false);
+    }, []);
+
     return <div className={`bg-base-200 border-base-300 flex items-center ${
         props.group === "row" ?
             "rounded-l-[20%_50%]" :
             "rounded-t-[50%_20%]"
     } rounded-sm`}>
         <div className="mx-2 font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)]">
-            <Suspense>
+            {!isServer && <Suspense>
                 {humanizeConstraint(props.constraint)}
-            </Suspense>
+            </Suspense>}
         </div>
     </div>;
 }

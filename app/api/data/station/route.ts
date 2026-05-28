@@ -2,7 +2,7 @@ import { retrieveStation } from "@/scripts/game_mgr/game";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-    const url = new URL(req.url);
+    const url = new URL(req.url, "https://dummy.com/");
     const id = url.searchParams.get("id");
 
     if (id === null)
