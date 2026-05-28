@@ -31,7 +31,7 @@ export default function Page() {
             </header>
             <br />
             {collapsableContent.map(c => <div className="collapse collapse-arrow bg-base-200 mb-4">
-                <input type="radio" name="archive" />
+                <input type="checkbox" />
                 <h3 className="text-lg font-semibold collapse-title">{c[0]}</h3>
                 <ul className="collapse-content list-disc">
                     {c[1].reverse().map(t => <ArchiveEntry
