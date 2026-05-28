@@ -238,7 +238,10 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             const deltaElapsed = (now - lastTime) / 1000;
             lastTime = now;
 
-            setScorePenality(p => p + deltaElapsed * Math.floor(elapsed / 60));
+            setScorePenality(p => Math.min(
+                p + deltaElapsed * Math.floor(elapsed / 120),
+                score
+            ));
 
             if (countdownRef.current !== null) {
                 countdownRef.current.textContent = `${
