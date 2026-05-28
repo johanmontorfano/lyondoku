@@ -1,11 +1,9 @@
-import { ReactNode } from "react";
-import { Constraints } from "./types";
-
+import { Constraints, Station } from "./types";
 import linesData from "@/public/data/lines.json";
 
-export function humanizeConstraint(
+export async function humanizeConstraint(
     constraint: Constraints
-): ReactNode | string {
+) {
     const [prop, op, val] = (constraint as unknown as string).split(":");
     const formatOr = (input: string): string => {
         if (!input) return "";
@@ -52,9 +50,34 @@ export function humanizeConstraint(
             const distance = parseInt(op);
             const place = val.split("->")[0];
 
-            return `A moins de ${
+            return `À moins de ${
                 (distance / 1000).toString().replace(".", ",")
             }km ${place}`;
+        // NOTE: this one too
+        case "farFromStation":
+            const distanceFfs = parseInt(op);
+            const stationFfsRes = await fetch("/api/data/station?id=" + val);
+
+            if (!stationFfsRes.ok)
+                return "Erreur (code: station-retrieval-issue)";
+
+            const stationffs = await stationFfsRes.json() as Record<
+                "station", Station
+            >;
+
+            return <>
+                <p>À au moins {
+                    (distanceFfs / 1000).toString().replace(".", ",")
+                }km de {stationffs.station.name}</p>
+                <div className="flex flex-wrap gap-1 mt-1">
+                    {stationffs.station.connections.sort().map((l: string) =>
+                        <img
+                            key={l}
+                            src={"/lines/" + l + ".svg"}
+                            className="w-[clamp(0.5rem,4cqi,2.2rem)]"
+                        />)}
+                </div>
+            </>
         case "linesColor":
             const colorstl: Record<string, string> = {
                 green: "verte",
