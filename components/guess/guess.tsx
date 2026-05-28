@@ -131,13 +131,12 @@ export function Guess(props: {
         newInputs[flatIndex] = val;
         setInputs(newInputs);
 
-        // move focus forward automatically if a letter was typed
         if (val && flatIndex < letters - 1) {
             const nextUnlocked = lockedIndices.findIndex(
                 (locked, idx) => !locked && idx > flatIndex,
             );
             if (nextUnlocked !== -1 && inputRefs.current[nextUnlocked]) {
-                inputRefs.current[nextUnlocked].focus();
+                setTimeout(() => inputRefs.current[nextUnlocked].focus(), 0);
             }
         }
     };
@@ -210,9 +209,6 @@ export function Guess(props: {
         updateCountdown();
     }, []);
 
-    // Helper index counter for nested JSX loops
-    let globalIndexCounter = 0;
-
     return (
         <div>
             {won && <Confetti mode="fall" />}
@@ -220,26 +216,10 @@ export function Guess(props: {
                 <p className="font-semibold text-xl">Comment jouer à devine</p>
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
-                    <li>
-                        Trouvez la station TCL en <strong>
-                            5 essais
-                        </strong> maximum.
-                    </li>
-                    <li>
-                        Chaque essai vous indique <strong>
-                            l'ensemble des lettres
-                        </strong> qui composent le nom de la station.
-                    </li>
-                    <li>
-                        Chaque lettre <strong>
-                            valide
-                        </strong> reste affichée.
-                    </li>
-                    <li>
-                        Une nouvelle partie est disponible à <strong>
-                            minuit
-                        </strong> chaque jour.
-                    </li>
+                    <li>Trouvez la station TCL en <strong>5 essais</strong> maximum.</li>
+                    <li>Chaque essai vous indique <strong>l'ensemble des lettres</strong>.</li>
+                    <li>Chaque lettre <strong>valide</strong> reste affichée.</li>
+                    <li>Une nouvelle partie est disponible à <strong>minuit</strong> chaque jour.</li>
                 </ul>
             </RuledPopup>
             <header className="header flex items-center justify-between">
@@ -247,25 +227,17 @@ export function Guess(props: {
                     <h3 className="text-lg font-semibold">
                         {isToday(new Date(props.id)) ?
                             "Station du jour" : `Archive du ${
-                                new Intl.DateTimeFormat('fr-FR').format(
-                                    new Date(props.id).getTime()
-                                )
+                                new Intl.DateTimeFormat('fr-FR').format(new Date(props.id).getTime())
                         }`}
                     </h3>
                     {isToday(new Date(props.id)) && <h2>
-                        {new Intl.DateTimeFormat('fr-FR').format(
-                            new Date(props.id).getTime()
-                        )}
+                        {new Intl.DateTimeFormat('fr-FR').format(new Date(props.id).getTime())}
                     </h2>}
                 </div>
                 <div className="flex items-center gap-2">
                     <span ref={countdownRef}>00:01</span>
                     {won !== null && (
-                        <span
-                            className={`text-base-200 badge badge-sm ${
-                                won ? "badge-success" : "badge-error"
-                            }`}
-                        >
+                        <span className={`text-base-200 badge badge-sm ${won ? "badge-success" : "badge-error"}`}>
                             {won ? "Gagné" : "Perdu"}
                         </span>
                     )}
@@ -280,71 +252,53 @@ export function Guess(props: {
                 className="flex flex-col items-center justify-center"
             >
                 <div className="flex flex-wrap justify-center gap-6 mb-8">
-                    {props.gameData.answerWordsLength.map((length, i) => (
-                        <div
-                            key={i}
-                            className="flex gap-2 p-3 bg-base-300 rounded-xl"
-                        >
-                            {Array.from({ length: length }).map(() => {
-                                const currentFlatIndex = globalIndexCounter;
-                                globalIndexCounter++;
+                    {props.gameData.answerWordsLength.map((wordLength, wordIdx) => {
+                        // Compute the starting flat index offset for this specific word block cleanly
+                        const wordOffset = props.gameData.answerWordsLength
+                            .slice(0, wordIdx)
+                            .reduce((acc, len) => acc + len, 0);
 
-                                const isLocked =
-                                    lockedIndices[currentFlatIndex];
+                        return (
+                            <div key={wordIdx} className="flex gap-2 p-3 bg-base-300 rounded-xl">
+                                {Array.from({ length: wordLength }).map((_, letterIdx) => {
+                                    const currentFlatIndex = wordOffset + letterIdx;
+                                    const isLocked = lockedIndices[currentFlatIndex];
 
-                                return (
-                                    <input
-                                        key={currentFlatIndex}
-                                        ref={(el) => {
-                                            if (el)
-                                                inputRefs.current[
-                                                    currentFlatIndex
-                                                ] = el;
-                                        }}
-                                        type="text"
-                                        maxLength={1}
-                                        value={inputs[currentFlatIndex]}
-                                        disabled={isLocked || won !== null}
-                                        onChange={(e) =>
-                                            handleInputChange(
-                                                e,
-                                                currentFlatIndex,
-                                            )
-                                        }
-                                        onKeyDown={(e) =>
-                                            handleKeyDown(e, currentFlatIndex)
-                                        }
-                                        className={`w-12 h-14 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none focus:scale-105
-                                            ${
-                                                isLocked
-                                                    ? "bg-success text-success-content border-success shadow-md scale-95"
-                                                    : "bg-base-100 border-base-content/20 focus:border-primary text-base-content"
-                                            }
-                                        `}
-                                    />
-                                );
-                            })}
-                        </div>
-                    ))}
+                                    return (
+                                        <input
+                                            key={currentFlatIndex}
+                                            ref={(el) => {
+                                                if (el) inputRefs.current[currentFlatIndex] = el;
+                                            }}
+                                            type="text"
+                                            maxLength={1}
+                                            value={inputs[currentFlatIndex] || ""}
+                                            disabled={isLocked || won !== null}
+                                            onChange={(e) => handleInputChange(e, currentFlatIndex)}
+                                            onKeyDown={(e) => handleKeyDown(e, currentFlatIndex)}
+                                            className={`w-12 h-14 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none
+                                                ${
+                                                    isLocked
+                                                        ? "bg-success text-success-content border-success shadow-md scale-95"
+                                                        : "bg-base-100 border-base-content/20 focus:border-primary text-base-content"
+                                                }
+                                            `}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        );
+                    })}
                 </div>
                 <div className="flex justify-between items-center w-full">
                     <div className="flex gap-2">
                         {won === null && (
-                            <button
-                                onClick={() => handleGameEnd(false, lockedIndices)}
-                                className="btn"
-                                type="button"
-                                key="giveup"
-                            >
+                            <button onClick={() => handleGameEnd(false, lockedIndices)} className="btn" type="button">
                                 Abandonner
-                        </button>
+                            </button>
                         )}
                         {won === null && (
-                            <button
-                                className="btn btn-primary"
-                                type="submit"
-                                key="try"
-                            >
+                            <button className="btn btn-primary" type="submit">
                                 Tenter
                             </button>
                         )}
@@ -359,7 +313,6 @@ export function Guess(props: {
                                 )}
                                 className="btn btn-primary"
                                 type="button"
-                                key="try"
                             >
                                 Partager
                             </button>
