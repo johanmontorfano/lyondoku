@@ -151,7 +151,7 @@ export function Wordle(props: { id: string }) {
     }, [popup.lastSelected]);
 
     return (
-        <div className="flex flex-col justify-between grow">
+        <div className="flex flex-col justify-between grow gap-8">
             {won && <Confetti mode="fall" />}
             <StationSelectorPopup />
             <RuledPopup rule="dle-rules">

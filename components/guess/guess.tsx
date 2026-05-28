@@ -179,7 +179,7 @@ export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
     }, []);
 
     return (
-        <div className="flex flex-col justify-between grow">
+        <div className="flex flex-col justify-between grow gap-8">
             {won && <Confetti mode="fall" />}
             <RuledPopup rule="guess-rules">
                 <p className="font-semibold text-xl">Comment jouer à devine</p>
