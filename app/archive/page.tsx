@@ -30,19 +30,23 @@ export default function Page() {
                 </h2>
             </header>
             <br />
-            {collapsableContent.map(c => <div className="collapse collapse-arrow bg-base-200 mb-4">
-                <input type="checkbox" />
-                <h3 className="text-lg font-semibold collapse-title">{c[0]}</h3>
-                <ul className="collapse-content list-disc">
-                    {c[1].reverse().map(t => <ArchiveEntry
-                        id={t}
-                        key={`archive-${c[0]}-${t}`}
-                        savePrefix={c[3]}
-                        gamePathSegment={c[2]}
-                        accent
-                    />)}
-                </ul>
-            </div>)}
+            {collapsableContent.map(c =>
+                <div key={c[0]} className="collapse collapse-arrow bg-base-200 mb-4">
+                    <input type="checkbox" />
+                    <h3 className="text-lg font-semibold collapse-title">
+                        {c[0]}
+                    </h3>
+                    <ul className="collapse-content list-disc">
+                        {c[1].reverse().map(t => <ArchiveEntry
+                            id={t}
+                            key={`archive-${c[0]}-${t}`}
+                            savePrefix={c[3]}
+                            gamePathSegment={c[2]}
+                            accent
+                        />)}
+                    </ul>
+                </div>
+            )}
             <div className="flex justify-end">
                 <ResetProgress />
             </div>

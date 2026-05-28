@@ -1,5 +1,6 @@
 import { firestore } from "@/scripts/firebase/server";
 import Link from "next/link";
+import { GamesDropdown } from "./dropdown";
 
 export async function Navbar() {
     // since the navbar title can be updated, we must load it here to show it
@@ -27,20 +28,7 @@ export async function Navbar() {
                 <div className="bg-base-200 rounded-full border border-base-300 my-4">
                     <ul className="md:hidden menu menu-horizontal">
                         <li>
-                            <details>
-                                <summary className="btn btn-ghost btn-sm rounded-full">
-                                    Jeux
-                                </summary>
-                                <ul className="menu dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-52 p-2 shadow-md">
-                                    {games.map((g) => (
-                                        <li key={`m-${g[1]}`}>
-                                            <Link href={g[1]}>
-                                                {g[0]}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </details>
+                            <GamesDropdown games={games} />
                         </li>
                         <li>
                             <Link

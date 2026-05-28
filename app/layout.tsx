@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/navbar";
+import { Navbar } from "@/components/navbar/navbar";
 import { FontEditor } from "@/components/font_editor";
 import { dots, serif } from "@/scripts/fonts";
 import { Footer } from "@/components/footer";
