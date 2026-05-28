@@ -2,11 +2,12 @@
 
 import { isToday } from "@/scripts/date";
 import { GuessData, UserFacingGuessData } from "@/scripts/game_mgr/game";
-import React, { useState, useRef, useEffect } from "react";
-import Confetti from "react-confetti-boom";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { RuledPopup, useRuledPopupContext } from "../popup";
 import { shareGuessGame } from "@/scripts/share_game";
 import { LetterPosition } from "@/scripts/game_mgr/types";
+import { CharInput } from "./char_input";
+import Confetti from "react-confetti-boom";
 
 function Counter(props: { count: number }) {
     const dot = "h-3 w-3 border border-2 rounded-full transition-colors ";
@@ -39,21 +40,19 @@ export function Guess(props: {
 }) {
     // WARN: since the back-end doesn't want any whitespaces, we are provided
     // with the length of each word of the station name
-    const letters = props.gameData.answerWordsLength.reduce((p, c) => p + c, 0);
+    const length = props.gameData.answerWordsLength.reduce((p, c) => p + c, 0);
 
     // State for current board letters, locked letters, and game loop
     const [won, setWon] = useState<boolean | null>(null);
     const [loading, setLoading] = useState(false);
     const [attempts, setAttempts] = useState(0);
-    const [inputs, setInputs] = useState(Array(letters).fill(""));
-    const [lockedIndices, setLockedIndices] = useState(
-        Array<LetterPosition>(letters).fill(LetterPosition.Invalid),
-    );
+    const [inputs, setInputs] = useState<string[]>([]);
+    const [lockedIndices, setLockedIndices] = useState<LetterPosition[]>([]);
+    const [initialAttemptSent, setInitialAttemptSent] = useState(false);
 
     const startedAtRef = useRef(new Date());
     const endedAtRef = useRef<Date | null>(null);
     const countdownRef = useRef<HTMLSpanElement>(null);
-    const inputRefs = useRef<HTMLInputElement[]>([]);
 
     async function handleGameEnd(won: boolean, indices: typeof lockedIndices) {
         setWon(won);
@@ -93,6 +92,9 @@ export function Guess(props: {
         // spaces to avoid any logic issues between the component repr and
         // and the underlying handlers
         setLoading(true);
+        setInputs(keys.slice(0, length));
+        if (!initialAttemptSent)
+            setInitialAttemptSent(true);
         try {
             const res = await fetch("/api/verify/guess", {
                 method: "POST",
@@ -115,60 +117,10 @@ export function Guess(props: {
             setLockedIndices(li);
             if (!body.won) setAttempts((p) => p + 1);
             else handleGameEnd(true, li);
-
-            const firstEmpty = body.match.indexOf(false);
-            if (firstEmpty !== -1 && inputRefs.current[firstEmpty])
-                inputRefs.current[firstEmpty].focus();
-
             if (!body.won && attempts > 1) handleGameEnd(false, li);
         } catch (e) {}
         setLoading(false);
     }
-
-    const handleInputChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        flatIndex: number,
-    ) => {
-        const val = e.target.value.toUpperCase().slice(-1);
-        const newInputs = [...inputs];
-
-        newInputs[flatIndex] = val;
-        setInputs(newInputs);
-
-        if (val && flatIndex < letters - 1) {
-            const nextUnlocked = lockedIndices.findIndex(
-                (locked, idx) => locked !== LetterPosition.Valid && idx > flatIndex,
-            );
-            if (nextUnlocked !== -1 && inputRefs.current[nextUnlocked]) {
-                setTimeout(() => inputRefs.current[nextUnlocked].focus(), 0);
-            }
-        }
-    };
-
-    const handleKeyDown = (
-        e: React.KeyboardEvent<HTMLInputElement>,
-        flatIndex: number,
-    ) => {
-        if (e.key === "Backspace") {
-            if (inputs[flatIndex] !== "") {
-                // clear current cell
-                const newInputs = [...inputs];
-                newInputs[flatIndex] = "";
-                setInputs(newInputs);
-            } else {
-                // move focus to previous unlocked cell if current is empty
-                const prevUnlocked = [...lockedIndices]
-                    .map((locked, idx) => ({ locked, idx }))
-                    .reverse()
-                    .find((item) => item.locked !== LetterPosition.Valid &&
-                          item.idx < flatIndex);
-
-                if (prevUnlocked && inputRefs.current[prevUnlocked.idx]) {
-                    inputRefs.current[prevUnlocked.idx].focus();
-                }
-            }
-        }
-    };
 
     useEffect(() => {
         const saveGame = localStorage.getItem(`guess-${props.id}`);
@@ -177,6 +129,7 @@ export function Guess(props: {
             const data = JSON.parse(saveGame);
 
             setWon(data.won);
+            setInitialAttemptSent(true);
             setAttempts(data.attempts);
             setInputs(data.inputs);
             setLockedIndices(data.locked);
@@ -185,8 +138,8 @@ export function Guess(props: {
         } else {
             setWon(null);
             setAttempts(0);
-            setInputs(Array(letters).fill(""));
-            setLockedIndices(Array(letters).fill(false));
+            setInputs(Array(length).fill(""));
+            setLockedIndices(Array(length).fill(LetterPosition.Invalid));
             startedAtRef.current = new Date();
             endedAtRef.current = null;
         }
@@ -264,55 +217,44 @@ export function Guess(props: {
                 }}
                 className="flex flex-col items-center justify-center"
             >
-                <div className="flex flex-wrap justify-center gap-6 mb-8">
-                    {props.gameData.answerWordsLength.map((wordLength, wordIdx) => {
-                        // Compute the starting flat index offset for this specific word block cleanly
-                        const wordOffset = props.gameData.answerWordsLength
-                            .slice(0, wordIdx)
-                            .reduce((acc, len) => acc + len, 0);
-
-                        return (
-                            <div key={wordIdx} className="flex gap-2 p-3 bg-base-300 rounded-xl">
-                                {Array.from({ length: wordLength }).map((_, letterIdx) => {
-                                    const idx = wordOffset + letterIdx;
-                                    const status = lockedIndices[idx];
-
-                                    return (
-                                        <input
-                                            key={idx}
-                                            ref={(el) => {
-                                                if (el) inputRefs.current[idx] = el;
-                                            }}
-                                            type="text"
-                                            maxLength={1}
-                                            value={inputs[idx] || ""}
-                                            disabled={status === LetterPosition.Valid || won !== null}
-                                            onChange={(e) => handleInputChange(e, idx)}
-                                            onKeyDown={(e) => handleKeyDown(e, idx)}
-                                            className={`w-12 h-14 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none
-                                                ${
-                                                    status === LetterPosition.Valid
-                                                        ? "bg-success text-success-content border-success shadow-md scale-95"
-                                                        : status === LetterPosition.Misplaced ? "bg-warning text-warning-content border-warning" : "bg-base-100 border-base-content/20 focus:border-primary text-base-content"
-                                                }
-                                            `}
-                                        />
-                                    );
-                                })}
-                            </div>
-                        );
-                    })}
-                </div>
+                {initialAttemptSent ?
+                    <CharInput
+                        value={inputs}
+                        onChange={setInputs}
+                        locked={lockedIndices}
+                        disabled={won !== null}
+                        wordsLength={props.gameData.answerWordsLength}
+                    /> :
+                    <input
+                        type="text"
+                        className="input h-14 border-2 text-2xl font-bold uppercase my-8 rounded-lg w-full text-center"
+                        placeholder="Tentez quelque chose..."
+                        onChange={(ev) => {
+                            setInputs(ev.target.value.replaceAll(" ", "").split(""))
+                        }}
+                    />
+                }
                 <div className="flex justify-between items-center w-full">
                     <div className="flex gap-2">
                         {won === null && (
-                            <button onClick={() => handleGameEnd(false, lockedIndices)} className="btn" type="button">
+                            <button
+                                onClick={() => handleGameEnd(false, lockedIndices)}
+                                className="btn"
+                                type="button"
+                                disabled={loading}
+                            >
                                 Abandonner
                             </button>
                         )}
                         {won === null && (
-                            <button className="btn btn-primary" type="submit">
-                                Tenter
+                            <button
+                                className="btn btn-primary"
+                                type="submit"
+                                disabled={loading}
+                            >
+                                {loading ?
+                                    <span className="loading loading-spinner" /> :
+                                    "Tenter"}
                             </button>
                         )}
                         {won !== null && (
