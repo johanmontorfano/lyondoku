@@ -24,11 +24,11 @@ export async function Navbar() {
                 </span>
             </div>
             <div className="flex gap-2">
-                <div className="bg-base-200 rounded-full shadow-sm my-4">
+                <div className="bg-base-200 rounded-full border border-base-300 my-4">
                     <ul className="md:hidden menu menu-horizontal">
                         <li>
                             <details>
-                                <summary className="btn btn-ghost">
+                                <summary className="btn btn-ghost rounded-full">
                                     Jeux
                                 </summary>
                                 <ul className="menu dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-52 p-2 shadow-md">
@@ -64,7 +64,7 @@ export async function Navbar() {
                         ))}
                     </ul>
                 </div>
-                <div className="hidden md:flex bg-base-200 rounded-full shadow-sm my-4">
+                <div className="hidden md:flex bg-base-200 rounded-full border border-base-300 my-4">
                     <ul className="menu menu-horizontal">
                         <li>
                             <Link
