@@ -24,9 +24,13 @@ export function WordleRow(props: WordleAnswer) {
                 </div>
             </td>
             <td className={`p-2 text-center text-dyn-md ${
-                props.cityOrBoroughMatch ? "text-success-content" : "text-error-content"
+                props.cityMatch ? "text-success-content" : "text-error-content"
             }`}>
-                {props.guess.stationLocation}
+                {props.guess.stationLocation} {
+                    props.guess.stationBorough > -1 ?
+                        props.guess.stationBorough :
+                        ""
+                }
             </td>
             <td className={isExactMatch ? "text-success-content" : "text-error-content"}>
                 <div className="flex items-center justify-end gap-1.5">

@@ -25,8 +25,9 @@ export async function POST(req: NextRequest) {
         won: game.answerId === body.data.guess,
         data: {
             guess: guessStation!,
-            cityOrBoroughMatch:
-                answerStation!.stationLocation === guessStation!.stationLocation,
+            cityMatch:
+                answerStation!.stationLocation === guessStation!.stationLocation &&
+                answerStation!.stationBorough === guessStation!.stationBorough,
             validLinesOnStation:
                 guessStation!.connections.filter(
                     c => answerStation!.connections.includes(c)

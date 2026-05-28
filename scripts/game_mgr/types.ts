@@ -22,8 +22,8 @@ export interface Station {
     location: string;
     lat: number;
     lon: number;
-    // NOTE: when the station is outside of Lyon, we default to odd
-    stationBorough: "odd" | "even";
+    // NOTE: when the station is outside of Lyon, we default to -1
+    stationBorough: number;
     stationLocation: string;
     terminus: boolean;
 }
@@ -31,7 +31,7 @@ export interface Station {
 export interface WordleAnswer {
     guess: Station;
     validLinesOnStation: string[];
-    cityOrBoroughMatch: boolean;
+    cityMatch: boolean;
     distanceWithAnswer: number;
     cardinalDirectionTowardsAnswer: number;
 }
