@@ -11,7 +11,7 @@ import { isToday } from "@/scripts/date";
 import { WordleRow } from "./row";
 import Confetti from "react-confetti-boom";
 import { shareWordleGame } from "@/scripts/share_game";
-import { RuledPopup } from "../popup";
+import { RuledPopup, useRuledPopupContext } from "../popup";
 
 // this game works by making the user guess in 5 tries a station based on 5
 // criterias:
@@ -115,6 +115,14 @@ export function Wordle(props: { id: string }) {
         }
 
         function updateCountdown() {
+            // NOTE: if the rule popup is still visible the countdown must not
+            // start.
+            // HACK: to avoid too much overhead, the startAt date is just reset
+            if (useRuledPopupContext.getState().currentRule === "dle-rules") {
+                startedAtRef.current = new Date();
+                return requestAnimationFrame(updateCountdown);
+            }
+
             const elapsed = Math.ceil(
                 ((endedAtRef.current
                     ? new Date(endedAtRef.current).getTime()

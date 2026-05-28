@@ -4,7 +4,7 @@ import { isToday } from "@/scripts/date";
 import { GuessData, UserFacingGuessData } from "@/scripts/game_mgr/game";
 import React, { useState, useRef, useEffect } from "react";
 import Confetti from "react-confetti-boom";
-import { RuledPopup } from "../popup";
+import { RuledPopup, useRuledPopupContext } from "../popup";
 import { shareGuessGame } from "@/scripts/share_game";
 import { LetterPosition } from "@/scripts/game_mgr/types";
 
@@ -194,6 +194,14 @@ export function Guess(props: {
 
     useEffect(() => {
         function updateCountdown() {
+            // NOTE: if the rule popup is still visible the countdown must not
+            // start.
+            // HACK: to avoid too much overhead, the startAt date is just reset
+            if (useRuledPopupContext.getState().currentRule === "guess-rules") {
+                startedAtRef.current = new Date();
+                return requestAnimationFrame(updateCountdown);
+            }
+
             const elapsed = Math.ceil(
                 ((endedAtRef.current
                     ? new Date(endedAtRef.current).getTime()

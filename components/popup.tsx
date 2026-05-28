@@ -1,16 +1,39 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
+import { create } from "zustand";
+
+export const useRuledPopupContext = create<{
+    currentRule: string | null;
+    setCurrentRule(rule: string | null): void;
+}>((update) => ({
+    currentRule: null,
+    setCurrentRule(rule) {
+        update({ currentRule: rule });
+    },
+}));
 
 // shows a popup if a key is not present in local storage
 export function RuledPopup(props: { rule: string, children: ReactNode }) {
     const [show, setShow] = useState(false);
+    const popupCtx = useRuledPopupContext();
 
     useEffect(() => {
         if (typeof window === "undefined") return;
-        setShow(localStorage.getItem(props.rule) === null);
+
+        const shouldShow = localStorage.getItem(props.rule) === null;
+
+        if (shouldShow) {
+            popupCtx.setCurrentRule(props.rule);
+            setShow(shouldShow);
+        }
+        return () => popupCtx.setCurrentRule(null);
     }, []);
+
+    useEffect(() => {
+        popupCtx.setCurrentRule(show ? props.rule : null);
+    }, [show]);
 
     return (
         <AnimatePresence>

@@ -13,7 +13,7 @@ import Confetti from "react-confetti-boom";
 import { buttonAnimate } from "@/scripts/motion";
 import { shareGame } from "@/scripts/share_game";
 import { isToday } from "@/scripts/date";
-import { RuledPopup } from "../popup";
+import { RuledPopup, useRuledPopupContext } from "../popup";
 import { Cell, ConstraintCell } from "./cells";
 
 export interface CellData {
@@ -224,6 +224,14 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         let lastTime = Date.now();
 
         function updateCountdown() {
+            // NOTE: if the rule popup is still visible the countdown must not
+            // start.
+            // HACK: to avoid too much overhead, the startAt date is just reset
+            if (useRuledPopupContext.getState().currentRule === "doku-rules") {
+                startedAtRef.current = new Date();
+                return requestAnimationFrame(updateCountdown);
+            }
+
             const now = Date.now();
             const elapsed = Math.ceil(
                 ((endedAtRef.current ? new Date(endedAtRef.current).getTime() : now) - startedAtRef.current.getTime()) / 1000
