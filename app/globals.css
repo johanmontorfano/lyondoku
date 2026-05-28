@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-    themes: lyonwhitle --default, lyondarkle --prefersdark;
+    themes:
+        lyonwhitle --default,
+        lyondarkle --prefersdark;
 }
 
 @theme {
@@ -8,7 +10,8 @@
     --animate-flash-green: flash-green 1s ease;
 
     @keyframes flash-red {
-        0%, 100% {
+        0%,
+        100% {
             background: transparent;
         }
         50% {
@@ -17,7 +20,8 @@
     }
 
     @keyframes flash-green {
-        0%, 100% {
+        0%,
+        100% {
             background: transparent;
         }
         50% {
@@ -32,7 +36,7 @@
 
     --color-primary: oklch(52.19% 0.231 24.58);
     --color-primary-content: oklch(98% 0.01 24.58);
-    --color-base-100: oklch(99% 0.005 85); 
+    --color-base-100: oklch(99% 0.005 85);
     --color-base-200: oklch(97% 0.012 85);
     --color-base-300: oklch(94% 0.018 85);
     --color-base-content: oklch(15% 0 0);
@@ -43,51 +47,53 @@
     --color-neutral: oklch(25% 0.02 24.58);
     --color-neutral-content: oklch(98% 0 0);
     --color-info: oklch(65% 0.15 250);
-    --color-success: oklch(70% 0.18 150);
-    --color-success-content: oklch(52% 0.23 150);
+    --color-info-content: oklch(28% 0.091 267.935);
+    --color-success: oklch(80% 0.16 145);
+    --color-success-content: oklch(20% 0.06 145);
     --color-warning: oklch(80% 0.17 70);
-    --color-error: oklch(55% 0.22 25);
-    --color-error-content: oklch(50% 0.25 25);
+    --color-warning-content: oklch(26% 0.079 36.259);
+    --color-error: oklch(75% 0.22 25);
+    --color-error-content: oklch(20% 0.07 25);
     --radius-selector: 0.125rem;
     --radius-field: 0.125rem;
     --radius-box: 0.25rem;
     --border: 1px;
 }
 
-
 @plugin "daisyui/theme" {
-  name: "lyondarkle";
-  default: false;
-  prefersdark: true;
-  color-scheme: "dark";
-  --color-base-100: oklch(0% 0 0);
-  --color-base-200: oklch(19% 0 0);
-  --color-base-300: oklch(22% 0 0);
-  --color-base-content: oklch(87.609% 0 0);
-  --color-primary: oklch(52.2% 0.297 24.580);
-  --color-primary-content: oklch(98% 0.01 24.58);
-  --color-secondary: oklch(45% 0 0);
-  --color-secondary-content: oklch(98% 0 0);
-  --color-accent: oklch(85% 0.15 90);
-  --color-accent-content: oklch(25% 0.05 90);
-  --color-neutral: oklch(5.1% 0.370 24.580);
-  --color-neutral-content: oklch(98% 0 0);
-  --color-info: oklch(65% 0.15 250);
-  --color-info-content: oklch(28% 0.091 267.935);
-  --color-success: oklch(70% 0.18 150);
-  --color-success-content: oklch(92% 0.22 150);
-  --color-warning: oklch(80% 0.17 70);
-  --color-warning-content: oklch(26% 0.079 36.259);
-  --color-error: oklch(55% 0.22 25);
-  --color-error-content: oklch(90% 0.24 25);
-  --radius-selector: 0.125rem;
-  --radius-field: 0.125rem;
-  --radius-box: 0.25rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 1px;
-  --depth: 0;
-  --noise: 0;
+    name: "lyondarkle";
+    default: false;
+    prefersdark: true;
+    color-scheme: "dark";
+
+    --color-base-100: oklch(0% 0 0);
+    --color-base-200: oklch(19% 0 0);
+    --color-base-300: oklch(22% 0 0);
+    --color-base-content: oklch(87.609% 0 0);
+    --color-primary: oklch(52.2% 0.297 24.58);
+    --color-primary-content: oklch(98% 0.01 24.58);
+    --color-secondary: oklch(45% 0 0);
+    --color-secondary-content: oklch(98% 0 0);
+    --color-accent: oklch(85% 0.15 90);
+    --color-accent-content: oklch(25% 0.05 90);
+    --color-neutral: oklch(5.1% 0.37 24.58);
+    --color-neutral-content: oklch(98% 0 0);
+    --color-info: oklch(65% 0.15 250);
+    --color-info-content: oklch(98% 0.01 250);
+    --color-success: oklch(60% 0.16 145);
+    --color-success-content: oklch(98% 0.01 145);
+    --color-warning: oklch(75% 0.15 75);
+    --color-warning-content: oklch(20% 0.05 75);
+    --color-error: oklch(58% 0.22 25);
+    --color-error-content: oklch(98% 0.01 25);
+    --radius-selector: 0.125rem;
+    --radius-field: 0.125rem;
+    --radius-box: 0.25rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 0;
+    --noise: 0;
 }
 
 .text-dyn-lg {

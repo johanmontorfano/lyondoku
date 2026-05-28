@@ -6,12 +6,18 @@ export function WordleRow(props: WordleAnswer) {
 
     return (
         <tr className="border-b [&>td]:p-3 font-semibold">
-            <td className={isExactMatch ? "text-success-content" : "text-error-content"}>
+            <td className={isExactMatch ?
+                "text-success-content bg-success" :
+                "text-error-content bg-error"
+            }>
                 <p className="text-base mb-1 text-dyn-md">
                     {props.guess.name}
                 </p>
             </td>
-            <td>
+            <td className={
+                props.validLinesOnStation.length > 0 ?
+                    "bg-success" : "bg-error"
+            }>
                 <div className="flex flex-wrap gap-1 justify-center">
                     {props.validLinesOnStation.sort().map((c) => (
                         <img
@@ -24,7 +30,9 @@ export function WordleRow(props: WordleAnswer) {
                 </div>
             </td>
             <td className={`p-2 text-center text-dyn-md ${
-                props.cityMatch ? "text-success-content" : "text-error-content"
+                props.cityMatch ?
+                    "text-success-content bg-success" :
+                    "text-error-content bg-error"
             }`}>
                 {props.guess.stationLocation} {
                     props.guess.stationBorough > -1 ?
@@ -32,7 +40,10 @@ export function WordleRow(props: WordleAnswer) {
                         ""
                 }
             </td>
-            <td className={isExactMatch ? "text-success-content" : "text-error-content"}>
+            <td className={isExactMatch ?
+                "text-success-content bg-success" :
+                "text-error-content bg-error"
+            }>
                 <div className="flex items-center justify-end gap-1.5">
                     <span className="text-dyn-md whitespace-nowrap">
                         {props.distanceWithAnswer === 0 ? "Exact" : `${
