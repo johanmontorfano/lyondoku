@@ -4,9 +4,9 @@ import { Constraints } from "@/scripts/game_mgr/types";
 import { CellData } from "./doku";
 import { humanizeConstraint, humanizeRarity } from "@/scripts/game_mgr/humanize";
 import { motion } from "framer-motion";
-import { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 
-export function ConstraintCell(props: {
+function _ConstraintCell(props: {
     constraint: Constraints,
     group: "row" | "column"
 }) {
@@ -22,6 +22,8 @@ export function ConstraintCell(props: {
         </div>
     </div>;
 }
+
+export const ConstraintCell = React.memo(_ConstraintCell);
 
 export function Cell(props: {
     data: CellData,

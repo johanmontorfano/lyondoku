@@ -1,8 +1,8 @@
-import { GridArchiveEntry, GuessArchiveEntry, WordleArchiveEntry } from "@/components/archive";
 import { firstEverGrid, firstEverGuess, firstEverWordle } from "@/scripts/game_mgr/data";
 import { getDateRange } from "@/scripts/date";
 import { Metadata } from "next";
 import { ResetProgress } from "@/components/reset_progress";
+import { ArchiveEntry } from "@/components/archive";
 
 export const metadata: Metadata = {
     title: "Lyondle – Archive",
@@ -17,9 +17,9 @@ export default function Page() {
     const allGuesses = getDateRange(firstEverGuess);
 
     const collapsableContent = [
-        ["Wordles", allWordles],
-        ["Dokus", allGrids],
-        ["Devines", allGuesses]
+        ["Wordles", allWordles, "", "lyondle"],
+        ["Dokus", allGrids, "doku", "doku"],
+        ["Devines", allGuesses, "guess", "guess"]
     ] as const;
 
     return (
@@ -34,9 +34,13 @@ export default function Page() {
                 <input type="radio" name="archive" />
                 <h3 className="text-lg font-semibold collapse-title">{c[0]}</h3>
                 <ul className="collapse-content list-disc">
-                    {c[1].reverse().map((t, i) => (
-                        <GuessArchiveEntry id={t} key={t} accent={false} />
-                    ))}
+                    {c[1].reverse().map(t => <ArchiveEntry
+                        id={t}
+                        key={`archive-${c[0]}-${t}`}
+                        savePrefix={c[3]}
+                        gamePathSegment={c[2]}
+                        accent
+                    />)}
                 </ul>
             </div>)}
             <div className="flex justify-end">

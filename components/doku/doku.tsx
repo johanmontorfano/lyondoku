@@ -156,7 +156,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         endedAtRef.current = new Date();
         setWon(won);
         if (!props.gameData.id.startsWith("random_"))
-            localStorage.setItem(props.gameData.id, JSON.stringify({
+            localStorage.setItem(`doku-${props.gameData.id}`, JSON.stringify({
                 won, cells, attempts,
                 startedAt: startedAtRef.current.getTime(),
                 endedAt: endedAtRef.current.getTime()
@@ -173,7 +173,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
         // if there is a record for this game on local storage, it means the
         // grid has already been played and the user might have either won or
         // lost
-        const saveGame = localStorage.getItem(props.gameData.id);
+        const saveGame = localStorage.getItem(`doku-${props.gameData.id}`);
 
         popup.setShowSpecificStationsReadonly(null);
         if (saveGame !== null) {

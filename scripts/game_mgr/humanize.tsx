@@ -72,7 +72,7 @@ export async function humanizeConstraint(
                 <div className="flex flex-wrap gap-1 mt-1">
                     {stationffs.station.connections.sort().map((l: string) =>
                         <img
-                            key={l}
+                            key={"ffs-" + l}
                             src={"/lines/" + l + ".svg"}
                             className="w-[clamp(0.5rem,4cqi,2.2rem)]"
                         />)}
