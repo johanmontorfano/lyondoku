@@ -19,9 +19,15 @@ export async function POST(req: NextRequest) {
     // without spaces too
     const match = game.name
         .toLowerCase()
+        .normalize("NFD")
+        .replaceAll(/\p{Diacritic}/gu, "")
         .replaceAll(" ", "")
         .split("")
-        .map((c, i) => c === body.data.guess[i].toLowerCase());
+        .map((c, i) => c === body.data.guess[i].toLowerCase()
+            .normalize("NFD")
+            .replaceAll(/\p{Diacritic}/gu, "")
+            .replaceAll(" ", "")
+        );
 
     return NextResponse.json({ won: match.reduce((p, c) => p && c), match });
 }
