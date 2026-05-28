@@ -105,7 +105,7 @@ export async function humanizeConstraint(
         case "stationCharacteristics":
             return `Est ${labels[val] || val}`;
         case "stationBorough":
-            return `Dans un arrondissement ${op === "odd" ? "impair" : "pair"}`;
+            return `Dans le ${val}${val === "1" ? "er" : "ème"} arrondissement`;
         case "stationLocation":
             if (op === "not") return `Ne se situe pas à ${formatOr(val)}`;
             if (op === "equals") return `Se situe à ${val}`;

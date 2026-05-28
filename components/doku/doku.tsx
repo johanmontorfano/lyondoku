@@ -277,13 +277,9 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                 <div>
                     <h3 className="text-lg font-semibold">
                         {isToday(new Date(props.gameData.id)) ?
-                            "Grille du jour" : `Archive du ${
-                                new Intl.DateTimeFormat('fr-FR').format(
-                                    new Date(props.gameData.id).getTime()
-                                )
-                        }`}
+                            "Grille du jour" : "Archive"}
                     </h3>
-                    {isToday(new Date(props.gameData.id)) && <h2>
+                    {!isNaN(Date.parse(props.gameData.id)) && <h2>
                         {new Intl.DateTimeFormat('fr-FR').format(
                             new Date(props.gameData.id).getTime()
                         )}
