@@ -17,23 +17,24 @@ export async function Footer() {
 
     return (
         <footer className="footer sm:footer-horizontal text-base-content p-4 bg-base-200 border border-base-300 rounded-xl mb-4">
-            <aside className="flex flex-row sm:flex-col space-between max-sm:items-center max-sm:bg-base-300 p-4 rounded-lg">
+            <aside className="flex flex-row sm:flex-col space-between max-sm:items-center max-sm:bg-base-300 p-4 rounded-lg w-full gap-2">
+                <Image
+                    className="border-3 max-sm:mr-6"
+                    alt="lyondle logo"
+                    src="/icon.svg"
+                    width={80}
+                    height={80}
+                />
                 <div>
-                    <Image
-                        alt="lyondle logo"
-                        src="/icon.svg"
-                        width={40}
-                        height={40}
-                    />
-                    <p className="mt-2">
+                    <p className="mb-2">
                         Aujourd'hui Lyondle s'appelle,
                         <br />
                         <strong>
                             {title}
                         </strong>
                     </p>
+                    <KofiButton />
                 </div>
-                <KofiButton />
             </aside>
             <nav>
                 <h6 className="footer-title">Jeux</h6>
