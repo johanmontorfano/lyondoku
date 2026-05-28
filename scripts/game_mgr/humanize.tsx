@@ -49,8 +49,9 @@ export async function humanizeConstraint(
         case "near":
             const distance = parseInt(op);
             const place = val.split("->")[0];
+            const prefix = distance.toString()[0] === "1" ? "d'" : "de ";
 
-            return `À moins de ${
+            return `À moins ${prefix}${
                 (distance / 1000).toString().replace(".", ",")
             }km ${place}`;
         // NOTE: this one too
@@ -64,9 +65,10 @@ export async function humanizeConstraint(
             const stationffs = await stationFfsRes.json() as Record<
                 "station", Station
             >;
+            const prefixffs = distanceFfs.toString()[0] === "1" ? "d'" : "de ";
 
             return <>
-                <p>À au moins {
+                <p>À plus {prefixffs}{
                     (distanceFfs / 1000).toString().replace(".", ",")
                 }km de {stationffs.station.name}</p>
                 <div className="flex flex-wrap gap-1 mt-1">
