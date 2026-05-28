@@ -47,6 +47,7 @@ export async function humanizeConstraint(
             break;
         // NOTE: THIS PROPERTY IS SPECIAL AS NO METHOD APPLIES TO IT
         case "near":
+        case "notNear":
             const distance = parseInt(op);
             const place = val.split("->")[0];
             const prefix = distance.toString()[0] === "1" ? "d'" : "de ";
