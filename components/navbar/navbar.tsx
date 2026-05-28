@@ -9,9 +9,9 @@ export async function Navbar() {
     const title = titleSnap.data()!.navbarTitle as string;
 
     const games = [
-        ["Wordle", "/"],
+        ["Lyondle", "/"],
         ["Doku", "/doku"],
-        ["Devine", "/guess"],
+        ["Wordle", "/guess"],
     ];
 
     return (

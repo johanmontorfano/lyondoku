@@ -17,9 +17,9 @@ export default function Page() {
     const allGuesses = getDateRange(firstEverGuess);
 
     const collapsableContent = [
-        ["Wordles", allWordles, "", "lyondle"],
-        ["Dokus", allGrids, "doku", "doku"],
-        ["Devines", allGuesses, "guess", "guess"]
+        ["Lyondle", allWordles, "", "lyondle"],
+        ["Doku", allGrids, "doku", "doku"],
+        ["Wordle", allGuesses, "guess", "guess"]
     ] as const;
 
     return (
