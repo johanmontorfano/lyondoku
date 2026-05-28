@@ -190,8 +190,13 @@ export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
                         maximum.
                     </li>
                     <li>
+                        Vous ne verrez la forme du nom de la station qu'après
+                        le premier essai.
+                    </li>
+                    <li>
                         Chaque essai vous indique{" "}
-                        <strong>l'ensemble des lettres</strong>.
+                        <strong>l'ensemble des lettres</strong>{" "}
+                        valides (vertes) ou mal placées (jaunes).
                     </li>
                     <li>
                         Chaque lettre <strong>valide</strong> reste affichée.
