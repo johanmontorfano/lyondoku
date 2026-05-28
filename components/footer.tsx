@@ -1,6 +1,7 @@
 import { firestore } from "@/scripts/firebase/server";
 import Image from "next/image"
 import Link from "next/link";
+import { KofiButton } from "./kofi";
 
 export async function Footer() {
     // since the navbar title can be updated, we must load it here to show it
@@ -23,13 +24,14 @@ export async function Footer() {
                     width={40}
                     height={40}
                 />
-                <p>
+                <p className="mb-2">
                     Aujourd'hui Lyondle s'appelle,
                     <br />
                     <strong>
                         {title}
                     </strong>
                 </p>
+                <KofiButton />
             </aside>
             <nav>
                 <h6 className="footer-title">Jeux</h6>

@@ -8,13 +8,11 @@ import {
 } from "@/components/select_station";
 import { Station } from "@/scripts/game_mgr/types";
 import { getDataset } from "@/scripts/firebase/data_provider";
-import { AnimatePresence, motion } from "framer-motion";
-import Confetti from "react-confetti-boom";
-import { buttonAnimate } from "@/scripts/motion";
 import { shareGame } from "@/scripts/share_game";
 import { isToday } from "@/scripts/date";
 import { RuledPopup, useRuledPopupContext } from "../popup";
 import { Cell, ConstraintCell } from "./cells";
+import Confetti from "react-confetti-boom";
 
 export interface CellData {
     answer?: Station;
@@ -360,44 +358,30 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             <br />
             <div className="flex justify-between items-center">
                 <div className="flex gap-2">
-                    <AnimatePresence>
-                        {won === null && <motion.button
-                            variants={buttonAnimate}
-                            initial="exit"
-                            animate="show"
-                            exit="exit"
-                            onClick={() => handleGameEnd(false)}
-                            className="btn btn-primary"
-                            key="giveup"
-                        >Abandonner</motion.button>}
-                        {won === false && <motion.button
-                            variants={buttonAnimate}
-                            initial="exit"
-                            animate="show"
-                            exit="exit"
-                            onClick={() => {
-                                setAttemps(p => p + 1);
-                                setWon(null);
-                            }}
-                            className="btn btn-ghost"
-                            disabled={errorCount < 3}
-                            key="retry"
-                        >Réessayer</motion.button>}
-                        {won !== null && !props.gameData.id.startsWith("random_") && <motion.button
-                            variants={buttonAnimate}
-                            initial="exit"
-                            animate="show"
-                            exit="exit"
-                            onClick={() => shareGame(
-                                props.gameData.id,
-                                startedAtRef.current,
-                                endedAtRef.current!,
-                                cells
-                            )}
-                            className="btn btn-primary"
-                            key="share"
-                        >Partager</motion.button>}
-                    </AnimatePresence>
+                    {won === null && <button
+                        onClick={() => handleGameEnd(false)}
+                        className="btn btn-primary"
+                        key="giveup"
+                    >Abandonner</button>}
+                    {won === false && <button
+                        onClick={() => {
+                            setAttemps(p => p + 1);
+                            setWon(null);
+                        }}
+                        className="btn btn-ghost"
+                        disabled={errorCount < 3}
+                        key="retry"
+                    >Réessayer</button>}
+                    {won !== null && <button
+                        onClick={() => shareGame(
+                            props.gameData.id,
+                            startedAtRef.current,
+                            endedAtRef.current!,
+                            cells
+                        )}
+                        className="btn btn-primary"
+                        key="share"
+                    >Partager</button>}
                 </div>
                 <Counter score={Math.floor(score) - attempts * 50} count={errorCount} />
             </div>
