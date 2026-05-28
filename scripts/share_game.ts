@@ -116,7 +116,7 @@ export function shareGuessGame(
             )].reduce((p, c) => p + c)] ? "🟩" : "🟥";
         }).join("")).join("  "),
         "",
-        "https://lyondoku.vercel.app/devine"
+        "https://lyondoku.vercel.app/guess"
     ].join("\n");
 
     navigator.share({ text });
