@@ -186,7 +186,7 @@ export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
                     <li>
-                        Trouvez la station TCL en <strong>5 essais</strong>{" "}
+                        Trouvez la station TCL en <strong>3 essais</strong>{" "}
                         maximum.
                     </li>
                     <li>
@@ -200,6 +200,9 @@ export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
                     </li>
                     <li>
                         Chaque lettre <strong>valide</strong> reste affichée.
+                    </li>
+                    <li>
+                        Vous devez <strong>respecter</strong> la ponctuation.
                     </li>
                     <li>
                         Une nouvelle partie est disponible à{" "}
