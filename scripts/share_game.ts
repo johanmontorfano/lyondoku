@@ -1,7 +1,7 @@
 "use client";
 import type { CellData } from "@/components/doku/doku";
 import { firstEverGrid, firstEverWordle } from "./game_mgr/data";
-import { WordleAnswer } from "./game_mgr/types";
+import { LetterPosition, WordleAnswer } from "./game_mgr/types";
 import { getDateTZ } from "./date";
 
 function cellData2Emoji(data: CellData) {
@@ -78,7 +78,7 @@ export function shareWordleGame(
             } ${
                 r.validLinesOnStation.length > 0 ? "🟩": "🟥"
             } ${
-                r.cityOrBoroughMatch ? "🟩" : "🟥"
+                r.cityMatch ? "🟩" : "🟥"
             } ${
                 r.distanceWithAnswer === 0 ? "🟩" : "🟥"
             }   ${r.distanceWithAnswer > 0 && withGuesses ? r.guess.name : ""}`
@@ -94,7 +94,7 @@ export function shareGuessGame(
     id: string,
     startedAt: Date,
     endedAt: Date,
-    locked: boolean[],
+    locked: LetterPosition[],
     wordsLength: number[]
 ) {
     const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
@@ -113,7 +113,7 @@ export function shareGuessGame(
         wordsLength.map((w, i) => new Array(w).fill(0).map((_, x) => {
             return locked[x + [0, ...wordsLength.slice(
                 0, i
-            )].reduce((p, c) => p + c)] ? "🟩" : "🟥";
+            )].reduce((p, c) => p + c)] === LetterPosition.Valid ? "🟩" : "🟥";
         }).join("")).join("  "),
         "",
         "https://lyondoku.vercel.app/guess"

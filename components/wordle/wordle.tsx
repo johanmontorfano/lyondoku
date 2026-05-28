@@ -53,7 +53,7 @@ export function Wordle(props: { id: string }) {
                 guess: body.station,
                 cardinalDirectionTowardsAnswer: 0,
                 distanceWithAnswer: 0,
-                cityOrBoroughMatch: true,
+                cityMatch: true,
                 validLinesOnStation: body.station.connections
             });
             setAnswers(final);

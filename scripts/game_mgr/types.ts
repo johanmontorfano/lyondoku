@@ -35,3 +35,9 @@ export interface WordleAnswer {
     distanceWithAnswer: number;
     cardinalDirectionTowardsAnswer: number;
 }
+
+export enum LetterPosition {
+    Valid,
+    Misplaced,
+    Invalid
+}

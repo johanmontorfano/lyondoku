@@ -6,6 +6,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Confetti from "react-confetti-boom";
 import { RuledPopup } from "../popup";
 import { shareGuessGame } from "@/scripts/share_game";
+import { LetterPosition } from "@/scripts/game_mgr/types";
 
 function Counter(props: { count: number }) {
     const dot = "h-3 w-3 border border-2 rounded-full transition-colors ";
@@ -46,7 +47,7 @@ export function Guess(props: {
     const [attempts, setAttempts] = useState(0);
     const [inputs, setInputs] = useState(Array(letters).fill(""));
     const [lockedIndices, setLockedIndices] = useState(
-        Array<boolean>(letters).fill(false),
+        Array<LetterPosition>(letters).fill(LetterPosition.Invalid),
     );
 
     const startedAtRef = useRef(new Date());
@@ -104,7 +105,10 @@ export function Guess(props: {
             if (!res.ok) throw new Error("Request error");
 
             const body = await res.json();
-            const li = lockedIndices.map((was, i) => was || body.match[i]);
+            const li = lockedIndices.map((was, i) =>
+                was === LetterPosition.Valid ?
+                    LetterPosition.Valid : body.match[i]
+            );
 
             // to ensure entries stay locked while new ones switch to be locked
             // we must run the matches through a filter before setting
@@ -133,7 +137,7 @@ export function Guess(props: {
 
         if (val && flatIndex < letters - 1) {
             const nextUnlocked = lockedIndices.findIndex(
-                (locked, idx) => !locked && idx > flatIndex,
+                (locked, idx) => locked !== LetterPosition.Valid && idx > flatIndex,
             );
             if (nextUnlocked !== -1 && inputRefs.current[nextUnlocked]) {
                 setTimeout(() => inputRefs.current[nextUnlocked].focus(), 0);
@@ -156,7 +160,8 @@ export function Guess(props: {
                 const prevUnlocked = [...lockedIndices]
                     .map((locked, idx) => ({ locked, idx }))
                     .reverse()
-                    .find((item) => !item.locked && item.idx < flatIndex);
+                    .find((item) => item.locked !== LetterPosition.Valid &&
+                          item.idx < flatIndex);
 
                 if (prevUnlocked && inputRefs.current[prevUnlocked.idx]) {
                     inputRefs.current[prevUnlocked.idx].focus();
@@ -261,26 +266,26 @@ export function Guess(props: {
                         return (
                             <div key={wordIdx} className="flex gap-2 p-3 bg-base-300 rounded-xl">
                                 {Array.from({ length: wordLength }).map((_, letterIdx) => {
-                                    const currentFlatIndex = wordOffset + letterIdx;
-                                    const isLocked = lockedIndices[currentFlatIndex];
+                                    const idx = wordOffset + letterIdx;
+                                    const status = lockedIndices[idx];
 
                                     return (
                                         <input
-                                            key={currentFlatIndex}
+                                            key={idx}
                                             ref={(el) => {
-                                                if (el) inputRefs.current[currentFlatIndex] = el;
+                                                if (el) inputRefs.current[idx] = el;
                                             }}
                                             type="text"
                                             maxLength={1}
-                                            value={inputs[currentFlatIndex] || ""}
-                                            disabled={isLocked || won !== null}
-                                            onChange={(e) => handleInputChange(e, currentFlatIndex)}
-                                            onKeyDown={(e) => handleKeyDown(e, currentFlatIndex)}
+                                            value={inputs[idx] || ""}
+                                            disabled={status === LetterPosition.Valid || won !== null}
+                                            onChange={(e) => handleInputChange(e, idx)}
+                                            onKeyDown={(e) => handleKeyDown(e, idx)}
                                             className={`w-12 h-14 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none
                                                 ${
-                                                    isLocked
+                                                    status === LetterPosition.Valid
                                                         ? "bg-success text-success-content border-success shadow-md scale-95"
-                                                        : "bg-base-100 border-base-content/20 focus:border-primary text-base-content"
+                                                        : status === LetterPosition.Misplaced ? "bg-warning text-warning-content border-warning" : "bg-base-100 border-base-content/20 focus:border-primary text-base-content"
                                                 }
                                             `}
                                         />

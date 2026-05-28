@@ -1,4 +1,5 @@
 import { GuessData, retrieveGuess } from "@/scripts/game_mgr/game";
+import { LetterPosition } from "@/scripts/game_mgr/types";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
@@ -17,17 +18,24 @@ export async function POST(req: NextRequest) {
 
     // NOTE: the guess is provided without spaces, so the verification happens
     // without spaces too
-    const match = game.name
-        .toLowerCase()
+    body.data.guess = body.data.guess.filter(c => c !== " ").map(
+        c => c.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
+    );
+    const gameName =  game.name.toLowerCase()
         .normalize("NFD")
         .replaceAll(/\p{Diacritic}/gu, "")
         .replaceAll(" ", "")
-        .split("")
-        .map((c, i) => c === body.data.guess[i].toLowerCase()
-            .normalize("NFD")
-            .replaceAll(/\p{Diacritic}/gu, "")
-            .replaceAll(" ", "")
-        );
+        .split("");
+    const match = gameName.map((c, i) =>
+        c === body.data.guess[i] ? LetterPosition.Valid :
+        body.data.guess.includes(c) ? LetterPosition.Misplaced :
+        LetterPosition.Invalid
+    );
 
-    return NextResponse.json({ won: match.reduce((p, c) => p && c), match });
+    return NextResponse.json({
+        won: match
+            .map(c => c === LetterPosition.Valid)
+            .reduce((p, c) => p && c),
+        match
+    });
 }
