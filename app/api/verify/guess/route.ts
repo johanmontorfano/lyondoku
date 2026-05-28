@@ -19,12 +19,10 @@ export async function POST(req: NextRequest) {
     // NOTE: the guess is provided without spaces, so the verification happens
     // without spaces too
     body.data.guess = body.data.guess.filter(c => c !== " ").map(
-        c => c.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
+        c => c.toLowerCase()
     );
     const gameName = game.name.toLowerCase()
         .replaceAll(/[- ']/gu, "")
-        .normalize("NFD")
-        .replaceAll(/\p{Diacritic}/gu, "")
         .split("");
     const match = gameName.map((c, i) =>
         c === body.data.guess[i] ? LetterPosition.Valid :
