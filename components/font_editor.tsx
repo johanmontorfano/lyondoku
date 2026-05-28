@@ -31,7 +31,8 @@ export function FontEditor() {
                     ev.preventDefault();
                 }
             } else {
-                keyBuffer = pressedKey === targetSequence[0] ? [pressedKey] : [];
+                keyBuffer =
+                    pressedKey === targetSequence[0] ? [pressedKey] : [];
             }
         }
 
@@ -40,7 +41,6 @@ export function FontEditor() {
             window.removeEventListener("keydown", listener);
         };
     }, []);
-
 
     useEffect(() => {
         setSelectedFont("");
@@ -84,52 +84,55 @@ export function FontEditor() {
         if (fontInput) setSelectedFont(fontInput);
     };
 
-    return show && (
-        <motion.div
-            className="fixed bottom-5 right-5 z-[99999] w-64 rounded-xl border border-base-300 bg-base-200 p-5 shadow-2xl text-base-content cursor-grab active:cursor-grabbing select-none"
-            drag
-            dragMomentum={false}
-        >
-            <div className="flex justify-center mb-1 opacity-40">
-                <div className="w-8 h-1 rounded-full bg-base-content/40" />
-            </div>
-            <h3 className="mb-4 text-center text-base font-semibold tracking-wide">
-                Font Playground
-            </h3>
-            <div className="form-control mb-3 w-full">
-                <label className="label py-1">
-                    <span className="label-text-alt text-xs font-bold uppercase tracking-wider opacity-60">
-                        Modify Variable
-                    </span>
-                </label>
-                <select
-                    value={targetVariable}
-                    onChange={(e) => setTargetVariable(e.target.value)}
-                    className="select select-bordered select-sm w-full bg-base-300 focus:outline-none"
-                >
-                    <option value="--font-serif">
-                        --font-serif
-                    </option>
-                </select>
-            </div>
-            <form onSubmit={handleSubmit} className="form-control w-full">
-                <label className="label py-1">
-                    <span className="label-text-alt text-xs font-bold uppercase tracking-wider opacity-60">
-                        Choose Font
-                    </span>
-                </label>
-                <div className="flex gap-2">
-                    <input
-                        type="text"
-                        name="fontName"
-                        placeholder="e.g., Inter, Roboto"
-                        className="input input-bordered input-sm w-full bg-base-300 focus:outline-none"
-                    />
-                    <button type="submit" className="btn btn-primary btn-sm normal-case">
-                        Add
-                    </button>
+    return (
+        show && (
+            <motion.div
+                className="fixed bottom-5 right-5 z-[99999] w-64 rounded-xl border border-base-300 bg-base-200 p-5 shadow-2xl text-base-content cursor-grab active:cursor-grabbing select-none"
+                drag
+                dragMomentum={false}
+            >
+                <div className="flex justify-center mb-1 opacity-40">
+                    <div className="w-8 h-1 rounded-full bg-base-content/40" />
                 </div>
-            </form>
-        </motion.div>
+                <h3 className="mb-4 text-center text-base font-semibold tracking-wide">
+                    Font Playground
+                </h3>
+                <div className="form-control mb-3 w-full">
+                    <label className="label py-1">
+                        <span className="label-text-alt text-xs font-bold uppercase tracking-wider opacity-60">
+                            Modify Variable
+                        </span>
+                    </label>
+                    <select
+                        value={targetVariable}
+                        onChange={(e) => setTargetVariable(e.target.value)}
+                        className="select select-bordered select-sm w-full bg-base-300 focus:outline-none"
+                    >
+                        <option value="--font-serif">--font-serif</option>
+                    </select>
+                </div>
+                <form onSubmit={handleSubmit} className="form-control w-full">
+                    <label className="label py-1">
+                        <span className="label-text-alt text-xs font-bold uppercase tracking-wider opacity-60">
+                            Choose Font
+                        </span>
+                    </label>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            name="fontName"
+                            placeholder="e.g., Inter, Roboto"
+                            className="input input-bordered input-sm w-full bg-base-300 focus:outline-none"
+                        />
+                        <button
+                            type="submit"
+                            className="btn btn-primary btn-sm normal-case"
+                        >
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </motion.div>
+        )
     );
 }
