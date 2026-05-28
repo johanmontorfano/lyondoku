@@ -26,6 +26,7 @@ export interface Station {
     stationBorough: number;
     stationLocation: string;
     terminus: boolean;
+    cognitiveScore: number;
 }
 
 export interface WordleAnswer {
