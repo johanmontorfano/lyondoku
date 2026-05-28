@@ -24,7 +24,7 @@ export async function Navbar() {
                 </span>
             </div>
             <div className="flex gap-2">
-                <div className="bg-base-200 rounded-full shadow-xl my-4">
+                <div className="bg-base-200 rounded-full shadow-sm my-4">
                     <ul className="md:hidden menu menu-horizontal">
                         <li>
                             <details>
@@ -64,7 +64,7 @@ export async function Navbar() {
                         ))}
                     </ul>
                 </div>
-                <div className="hidden md:flex bg-base-200 rounded-full shadow-xl my-4">
+                <div className="hidden md:flex bg-base-200 rounded-full shadow-sm my-4">
                     <ul className="menu menu-horizontal">
                         <li>
                             <Link
