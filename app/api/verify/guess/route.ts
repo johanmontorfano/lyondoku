@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
     body.data.guess = body.data.guess.filter(c => c !== " ").map(
         c => c.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
     );
-    const gameName =  game.name.toLowerCase()
+    const gameName = game.name.toLowerCase()
+        .replaceAll(/[- ']/gu, "")
         .normalize("NFD")
         .replaceAll(/\p{Diacritic}/gu, "")
-        .replaceAll(" ", "")
         .split("");
     const match = gameName.map((c, i) =>
         c === body.data.guess[i] ? LetterPosition.Valid :

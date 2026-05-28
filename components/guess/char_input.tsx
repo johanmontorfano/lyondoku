@@ -1,14 +1,15 @@
+import { UserFacingGuessData } from "@/scripts/game_mgr/game";
 import { LetterPosition } from "@/scripts/game_mgr/types";
 import { ChangeEvent, KeyboardEvent, useEffect, useRef } from "react";
 
 export function CharInput(props: {
     value: string[],
-    wordsLength: number[],
+    layout: UserFacingGuessData["layout"],
     locked: LetterPosition[],
     onChange: (inputs: string[]) => void,
     disabled: boolean
 }) {
-    const totalLength = props.wordsLength.reduce((p, c) => p + c, 0);
+    const totalLength = props.layout.wordLengths.reduce((p, c) => p + c, 0);
     const inputRefs = useRef<HTMLInputElement[]>([]);
 
     useEffect(() => {
@@ -66,13 +67,13 @@ export function CharInput(props: {
 
     return (
         <div className="flex flex-wrap justify-center gap-6 mb-8">
-            {props.wordsLength.map((length, i) => {
-                const wordOffset = props.wordsLength
+            {props.layout.wordLengths.map((length, i) => {
+                const wordOffset = props.layout.wordLengths
                     .slice(0, i)
                     .reduce((acc, len) => acc + len, 0);
 
-                return (
-                    <div key={i} className="flex gap-2 p-3 bg-base-300 rounded-xl">
+                return (<>
+                    <div key={i} className="flex flex-wrap justify-center gap-1 lg:gap-2 p-1 lg:p-2 bg-base-300 rounded-xl">
                         {Array.from({ length }).map((_, j) => {
                             const idx = wordOffset + j;
                             const status = props.locked[idx];
@@ -90,7 +91,7 @@ export function CharInput(props: {
                                     disabled={isValid || props.disabled}
                                     onChange={(e) => onInput(e, idx)}
                                     onKeyDown={(e) => onKeyDown(e, idx)}
-                                    className={`w-12 h-14 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none
+                                    className={`w-9 h-10.5 lg:w-10 lg:h-12.5 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none
                                         ${
                                             isValid
                                                 ? "bg-success text-success-content border-success shadow-md scale-95"
@@ -103,7 +104,15 @@ export function CharInput(props: {
                             );
                         })}
                     </div>
-                );
+                    <div className="flex items-center">
+                        {props.layout
+                            .delimiters
+                            .filter(d => d.after === i + 1)
+                            .map(d => (
+                                <p>{d.type}</p>
+                            ))}
+                    </div>
+                </>);
             })}
         </div>
     );

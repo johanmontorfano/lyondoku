@@ -37,7 +37,7 @@ function Counter(props: { count: number }) {
 export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
     // WARN: since the back-end doesn't want any whitespaces, we are provided
     // with the length of each word of the station name
-    const length = props.gameData.answerWordsLength.reduce((p, c) => p + c, 0);
+    const length = props.gameData.layout.wordLengths.reduce((p, c) => p + c, 0);
 
     // State for current board letters, locked letters, and game loop
     const [won, setWon] = useState<boolean | null>(null);
@@ -248,7 +248,7 @@ export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
                         onChange={setInputs}
                         locked={lockedIndices}
                         disabled={won !== null}
-                        wordsLength={props.gameData.answerWordsLength}
+                        layout={props.gameData.layout}
                     />
                 ) : (
                     <input

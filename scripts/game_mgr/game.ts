@@ -1,6 +1,7 @@
 import "server-only";
 import { Constraints, Station } from "./types";
 import { firestore } from "../firebase/server";
+import { splitWithDetailsForGuess } from "./guess";
 
 export interface GameData {
     id: string;
@@ -25,7 +26,10 @@ export interface GuessData {
 }
 
 export type UserFacingGuessData = Omit<GuessData, "name"> & {
-    answerWordsLength: number[];
+    layout: {
+        wordLengths: number[],
+        delimiters: { after: number, type: string }[]
+    }
 }
 
 // when the retrieval is userFacing, solutions are not provided but the number
@@ -80,7 +84,7 @@ export async function retrieveGuess(id: string, userFacing = false): Promise<
 
             if (userFacing) return {
                 answerId: data.answerId,
-                answerWordsLength: data.name.split(" ").map(s => s.length)
+                layout: splitWithDetailsForGuess(data.name)
             } satisfies UserFacingGuessData;
             return data;
         } else throw new Error("Game not found");

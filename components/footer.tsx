@@ -27,8 +27,6 @@ export async function Footer() {
                 />
                 <div>
                     <p className="mb-2">
-                        Lyondle ou
-                        <br />
                         <strong>
                             {title}
                         </strong>
