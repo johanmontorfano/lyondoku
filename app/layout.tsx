@@ -18,7 +18,7 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${serif.variable} ${dots.variable} h-full`}>
             <body className="min-h-dvh flex flex-col justify-between max-w-[600px] w-[96%] mx-auto">
-                <div>
+                <div className="flex flex-col grow">
                     <br />
                     <Navbar />
                     <FontEditor />

@@ -34,10 +34,7 @@ function Counter(props: { count: number }) {
     );
 }
 
-export function Guess(props: {
-    gameData: UserFacingGuessData;
-    id: string;
-}) {
+export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
     // WARN: since the back-end doesn't want any whitespaces, we are provided
     // with the length of each word of the station name
     const length = props.gameData.answerWordsLength.reduce((p, c) => p + c, 0);
@@ -60,30 +57,36 @@ export function Guess(props: {
         if (!won) {
             try {
                 const res = await fetch("/api/solution/guess?id=" + props.id);
-                
+
                 if (!res.ok) throw new Error("Request error");
 
-                const body = await res.json() as GuessData;
+                const body = (await res.json()) as GuessData;
 
                 setInputs(body.name.replaceAll(" ", "").split(""));
-                localStorage.setItem(`guess-${props.id}`, JSON.stringify({
-                    won: false,
-                    attempts: 3,
-                    inputs: body.name.replaceAll(" ","").split(""),
-                    locked: indices,
-                    startedAt: startedAtRef.current.getTime(),
-                    endedAt: endedAtRef.current.getTime()
-                }));
+                localStorage.setItem(
+                    `guess-${props.id}`,
+                    JSON.stringify({
+                        won: false,
+                        attempts: 3,
+                        inputs: body.name.replaceAll(" ", "").split(""),
+                        locked: indices,
+                        startedAt: startedAtRef.current.getTime(),
+                        endedAt: endedAtRef.current.getTime(),
+                    }),
+                );
             } catch (e) {}
         } else {
-            localStorage.setItem(`guess-${props.id}`, JSON.stringify({
-                won: true,
-                inputs,
-                attempts,
-                locked: indices,
-                startedAt: startedAtRef.current.getTime(),
-                endedAt: endedAtRef.current.getTime()
-            }));
+            localStorage.setItem(
+                `guess-${props.id}`,
+                JSON.stringify({
+                    won: true,
+                    inputs,
+                    attempts,
+                    locked: indices,
+                    startedAt: startedAtRef.current.getTime(),
+                    endedAt: endedAtRef.current.getTime(),
+                }),
+            );
         }
     }
 
@@ -93,8 +96,7 @@ export function Guess(props: {
         // and the underlying handlers
         setLoading(true);
         setInputs(keys.slice(0, length));
-        if (!initialAttemptSent)
-            setInitialAttemptSent(true);
+        if (!initialAttemptSent) setInitialAttemptSent(true);
         try {
             const res = await fetch("/api/verify/guess", {
                 method: "POST",
@@ -108,8 +110,9 @@ export function Guess(props: {
 
             const body = await res.json();
             const li = lockedIndices.map((was, i) =>
-                was === LetterPosition.Valid ?
-                    LetterPosition.Valid : body.match[i]
+                was === LetterPosition.Valid
+                    ? LetterPosition.Valid
+                    : body.match[i],
             );
 
             // to ensure entries stay locked while new ones switch to be locked
@@ -176,40 +179,57 @@ export function Guess(props: {
     }, []);
 
     return (
-        <div>
+        <div className="flex flex-col justify-between grow">
             {won && <Confetti mode="fall" />}
             <RuledPopup rule="guess-rules">
                 <p className="font-semibold text-xl">Comment jouer à devine</p>
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
-                    <li>Trouvez la station TCL en <strong>5 essais</strong> maximum.</li>
-                    <li>Chaque essai vous indique <strong>l'ensemble des lettres</strong>.</li>
-                    <li>Chaque lettre <strong>valide</strong> reste affichée.</li>
-                    <li>Une nouvelle partie est disponible à <strong>minuit</strong> chaque jour.</li>
+                    <li>
+                        Trouvez la station TCL en <strong>5 essais</strong>{" "}
+                        maximum.
+                    </li>
+                    <li>
+                        Chaque essai vous indique{" "}
+                        <strong>l'ensemble des lettres</strong>.
+                    </li>
+                    <li>
+                        Chaque lettre <strong>valide</strong> reste affichée.
+                    </li>
+                    <li>
+                        Une nouvelle partie est disponible à{" "}
+                        <strong>minuit</strong> chaque jour.
+                    </li>
                 </ul>
             </RuledPopup>
             <header className="header flex items-center justify-between">
                 <div>
                     <h3 className="text-lg font-semibold">
-                        {isToday(new Date(props.id)) ?
-                            "Station du jour" : `Archive du ${
-                                new Intl.DateTimeFormat('fr-FR').format(new Date(props.id).getTime())
-                        }`}
+                        {isToday(new Date(props.id))
+                            ? "Station du jour"
+                            : `Archive du ${new Intl.DateTimeFormat(
+                                  "fr-FR",
+                              ).format(new Date(props.id).getTime())}`}
                     </h3>
-                    {isToday(new Date(props.id)) && <h2>
-                        {new Intl.DateTimeFormat('fr-FR').format(new Date(props.id).getTime())}
-                    </h2>}
+                    {isToday(new Date(props.id)) && (
+                        <h2>
+                            {new Intl.DateTimeFormat("fr-FR").format(
+                                new Date(props.id).getTime(),
+                            )}
+                        </h2>
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     <span ref={countdownRef}>00:01</span>
                     {won !== null && (
-                        <span className={`text-base-200 badge badge-sm ${won ? "badge-success" : "badge-error"}`}>
+                        <span
+                            className={`text-base-200 badge badge-sm ${won ? "badge-success" : "badge-error"}`}
+                        >
                             {won ? "Gagné" : "Perdu"}
                         </span>
                     )}
                 </div>
             </header>
-            <br />
             <form
                 onSubmit={(ev) => {
                     ev.preventDefault();
@@ -217,65 +237,74 @@ export function Guess(props: {
                 }}
                 className="flex flex-col items-center justify-center"
             >
-                {initialAttemptSent ?
+                {initialAttemptSent ? (
                     <CharInput
                         value={inputs}
                         onChange={setInputs}
                         locked={lockedIndices}
                         disabled={won !== null}
                         wordsLength={props.gameData.answerWordsLength}
-                    /> :
+                    />
+                ) : (
                     <input
                         type="text"
-                        className="input h-14 border-2 text-2xl font-bold uppercase my-8 rounded-lg w-full text-center"
+                        className="input border-2 text-xl my-8 rounded-lg w-full max-w-[400px] p-6"
                         placeholder="Tentez quelque chose..."
                         onChange={(ev) => {
-                            setInputs(ev.target.value.replaceAll(" ", "").split(""))
+                            setInputs(
+                                ev.target.value.replaceAll(" ", "").split(""),
+                            );
                         }}
                     />
-                }
-                <div className="flex justify-between items-center w-full">
-                    <div className="flex gap-2">
-                        {won === null && (
-                            <button
-                                onClick={() => handleGameEnd(false, lockedIndices)}
-                                className="btn"
-                                type="button"
-                                disabled={loading}
-                            >
-                                Abandonner
-                            </button>
-                        )}
-                        {won === null && (
-                            <button
-                                className="btn btn-primary"
-                                type="submit"
-                                disabled={loading}
-                            >
-                                {loading ?
-                                    <span className="loading loading-spinner" /> :
-                                    "Tenter"}
-                            </button>
-                        )}
-                        {won !== null && (
-                            <button
-                                onClick={() => shareGuessGame(
+                )}
+                <input type="submit" disabled={loading} hidden />
+            </form>
+            <div className="flex justify-between items-center w-full">
+                <div className="flex gap-2">
+                    {won === null && (
+                        <button
+                            onClick={() => handleGameEnd(false, lockedIndices)}
+                            className="btn"
+                            type="button"
+                            disabled={loading}
+                        >
+                            Abandonner
+                        </button>
+                    )}
+                    {won === null && (
+                        <button
+                            className="btn btn-primary"
+                            type="button"
+                            disabled={loading}
+                            onClick={() => handleCheck(inputs)}
+                        >
+                            {loading ? (
+                                <span className="loading loading-spinner" />
+                            ) : (
+                                "Tenter"
+                            )}
+                        </button>
+                    )}
+                    {won !== null && (
+                        <button
+                            onClick={() =>
+                                shareGuessGame(
                                     props.id,
                                     startedAtRef.current,
                                     endedAtRef.current!,
                                     lockedIndices,
-                                    props.gameData.answerWordsLength
-                                )}
-                                className="btn btn-primary"
-                                type="button"
-                            >
-                                Partager
-                            </button>
-                        )}
-                    </div>
-                    <Counter count={attempts} />
+                                    props.gameData.answerWordsLength,
+                                )
+                            }
+                            className="btn btn-primary"
+                            type="button"
+                        >
+                            Partager
+                        </button>
+                    )}
                 </div>
-            </form>
+                <Counter count={attempts} />
+            </div>
         </div>
     );
 }

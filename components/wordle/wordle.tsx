@@ -151,7 +151,7 @@ export function Wordle(props: { id: string }) {
     }, [popup.lastSelected]);
 
     return (
-        <div>
+        <div className="flex flex-col justify-between grow">
             {won && <Confetti mode="fall" />}
             <StationSelectorPopup />
             <RuledPopup rule="dle-rules">
@@ -213,7 +213,6 @@ export function Wordle(props: { id: string }) {
                     )}
                 </div>
             </header>
-            <br />
             <table className="table font-(family-name:--font-doto) bg-base-200 rounded-lg">
                 <thead>
                     <tr className="text-base-content/80 text-dyn-md font-bold p-1">
@@ -253,7 +252,6 @@ export function Wordle(props: { id: string }) {
                     )}
                 </tbody>
             </table>
-            <br />
             <div className="flex justify-end w-full gap-2">
                 {won === null && (
                     <button

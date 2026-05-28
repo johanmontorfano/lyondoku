@@ -28,7 +28,7 @@ export async function Navbar() {
                     <ul className="md:hidden menu menu-horizontal">
                         <li>
                             <details>
-                                <summary className="btn btn-ghost rounded-full">
+                                <summary className="btn btn-ghost btn-sm rounded-full">
                                     Jeux
                                 </summary>
                                 <ul className="menu dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-52 p-2 shadow-md">
@@ -44,7 +44,7 @@ export async function Navbar() {
                         </li>
                         <li>
                             <Link
-                                className="btn btn-ghost rounded-full"
+                                className="btn btn-ghost rounded-full btn-sm"
                                 href="/archive"
                             >
                                 Archive
