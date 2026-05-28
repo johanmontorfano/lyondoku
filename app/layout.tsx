@@ -3,6 +3,7 @@ import { Navbar } from "@/components/navbar";
 import { FontEditor } from "@/components/font_editor";
 import { dots, serif } from "@/scripts/fonts";
 import { Footer } from "@/components/footer";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({
                     <br />
                 </div>
                 <Footer />
+                <Analytics />
             </body>
         </html>
     );
