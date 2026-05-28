@@ -64,6 +64,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     const [won, setWon] = useState<boolean | null>(null);
     const [loading, setLoading] = useState(false);
     const [attempts, setAttemps] = useState(0);
+    const [scorePenality, setScorePenality] = useState(0);
     const [cells, setCells] = useState<CellData[]>(cellKeys.flat().map(() => ({
         score: 0,
         errors: 0,
@@ -76,8 +77,8 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     [cells]);
     const score = useMemo(() => Object.values(cells)
         .map(c => c.score)
-        .reduce((p, c) => p + c, 0),
-    [cells]);
+        .reduce((p, c) => p + c, 0) - scorePenality,
+    [cells, scorePenality]);
     const focusedCellKey = useRef("tl");
 
     const startedAtRef = useRef(new Date());
@@ -220,24 +221,30 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
     }, [cells, errorCount]);
 
     useEffect(() => {
-        function updateCountdown() {
-            const elapsed = Math.ceil(
-                ((
-                    endedAtRef.current ?
-                        new Date(endedAtRef.current).getTime() : Date.now()
-                )- startedAtRef.current.getTime()) / 1000
-            );
+        let lastTime = Date.now();
 
-            if (countdownRef.current !== null)
+        function updateCountdown() {
+            const now = Date.now();
+            const elapsed = Math.ceil(
+                ((endedAtRef.current ? new Date(endedAtRef.current).getTime() : now) - startedAtRef.current.getTime()) / 1000
+            );
+        
+            const deltaElapsed = (now - lastTime) / 1000;
+            lastTime = now;
+
+            setScorePenality(p => p + deltaElapsed * Math.floor(elapsed / 60));
+
+            if (countdownRef.current !== null) {
                 countdownRef.current.textContent = `${
-                    (elapsed / 60).toFixed(0).padStart(2, "0")
+                    Math.floor(elapsed / 60).toString().padStart(2, "0")
                 }:${
                     (elapsed % 60).toString().padStart(2, "0")
                 }`;
+            }    
             if (endedAtRef.current === null)
                 requestAnimationFrame(updateCountdown);
         }
-        updateCountdown();
+        requestAnimationFrame(updateCountdown); 
     }, []);
 
     return (
@@ -388,7 +395,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                         >Partager</motion.button>}
                     </AnimatePresence>
                 </div>
-                <Counter score={score - attempts * 50} count={errorCount} />
+                <Counter score={Math.floor(score) - attempts * 50} count={errorCount} />
             </div>
         </div>
     );
