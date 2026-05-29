@@ -301,7 +301,7 @@ export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
                                     startedAtRef.current,
                                     endedAtRef.current!,
                                     lockedIndices,
-                                    props.gameData.answerWordsLength,
+                                    props.gameData.layout,
                                 )
                             }
                             className="btn btn-primary"

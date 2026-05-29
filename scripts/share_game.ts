@@ -3,6 +3,7 @@ import type { CellData } from "@/components/doku/doku";
 import { firstEverGrid, firstEverWordle } from "./game_mgr/data";
 import { LetterPosition, WordleAnswer } from "./game_mgr/types";
 import { getDateTZ } from "./date";
+import { UserFacingGuessData } from "./game_mgr/game";
 
 function cellData2Emoji(data: CellData) {
     if (!data.answer) return "🔴";
@@ -95,7 +96,7 @@ export function shareGuessGame(
     startedAt: Date,
     endedAt: Date,
     locked: LetterPosition[],
-    wordsLength: number[]
+    layout: UserFacingGuessData["layout"]
 ) {
     const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
     const dailyNumber = Math.ceil(
@@ -110,11 +111,20 @@ export function shareGuessGame(
             (elapsed % 60).toString().padStart(2, "0")
         }`,
         "",
-        wordsLength.map((w, i) => new Array(w).fill(0).map((_, x) => {
-            return locked[x + [0, ...wordsLength.slice(
-                0, i
-            )].reduce((p, c) => p + c)] === LetterPosition.Valid ? "🟩" : "🟥";
-        }).join("")).join("  "),
+        layout.wordLengths.map((w, i) => {
+            const wordStats = new Array(w).fill(0).map((_, x) => {
+                return locked[x + [0, ...layout.wordLengths.slice(
+                    0, i
+                )].reduce(
+                    (p, c) => p + c
+                )] === LetterPosition.Valid ? "🟩" : "🟥";
+            }).join("");;
+            const delimiters = layout.delimiters.filter(
+                d => d.after === i + 1
+            ).map(d => d.type).join("");
+
+            return wordStats + delimiters;
+        }).join(""),
         "",
         "https://lyondoku.vercel.app/guess"
     ].join("\n");
