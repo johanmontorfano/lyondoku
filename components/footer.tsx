@@ -16,8 +16,8 @@ export async function Footer() {
                         className="hover:scale-200 hover:-rotate-10 transition-all"
                     />
                     <p className="leading-tight">
-                        Développé en solo. Et pourtant, moins de pannes que le 
-                        métro B.
+                        Développé en solo. Et pourtant, moins de pannes que sur 
+                        le métro B.
                     </p>
                 </div>
                 <KofiButton />
