@@ -182,7 +182,7 @@ export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
         <div className="flex flex-col justify-between grow gap-8">
             {won && <Confetti mode="fall" />}
             <RuledPopup rule="guess-rules">
-                <p className="font-semibold text-xl">Comment jouer à devine</p>
+                <p className="font-semibold text-xl">Comment jouer au wordle</p>
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
                     <li>
