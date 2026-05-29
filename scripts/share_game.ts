@@ -47,7 +47,7 @@ export function shareGame(
             ])).join("");
         }),
         "",
-        "https://lyondoku.vercel.app/doku"
+        "https://www.lyondle.fr/doku"
     ].join("\n");
 
     navigator.share({ text });
@@ -85,7 +85,7 @@ export function shareWordleGame(
             }   ${r.distanceWithAnswer > 0 && withGuesses ? r.guess.name : ""}`
         }),
         "",
-        "https://lyondoku.vercel.app"
+        "https://www.lyondle.fr"
     ].join("\n");
 
     navigator.share({ text });
@@ -126,7 +126,7 @@ export function shareGuessGame(
             return wordStats + delimiters;
         }).join(""),
         "",
-        "https://lyondoku.vercel.app/guess"
+        "https://www.lyondle.fr/guess"
     ].join("\n");
 
     navigator.share({ text });
