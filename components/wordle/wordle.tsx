@@ -267,6 +267,7 @@ export function Wordle(props: { id: string }) {
                         onClick={() =>
                             shareWordleGame(
                                 props.id,
+                                won,
                                 startedAtRef.current,
                                 endedAtRef.current!,
                                 answers,

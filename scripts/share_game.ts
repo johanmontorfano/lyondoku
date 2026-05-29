@@ -55,6 +55,7 @@ export function shareGame(
 
 export function shareWordleGame(
     id: string,
+    won: boolean,
     startedAt: Date,
     endedAt: Date,
     answers: WordleAnswer[],
@@ -73,7 +74,7 @@ export function shareWordleGame(
             (elapsed % 60).toString().padStart(2, "0")
         }`,
         "",
-        ...answers.map(r => {
+        ...(!won ? answers.slice(0, answers.length - 1) : answers).map(r => {
             return `${
                 r.distanceWithAnswer === 0 ? "🟩" : "🟥"
             } ${
