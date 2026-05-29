@@ -94,7 +94,7 @@ export function CharInput(props: {
                                     className={`w-9 h-10.5 lg:w-10 lg:h-12.5 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none
                                         ${
                                             isValid
-                                                ? "bg-success text-success-content border-success shadow-md scale-95"
+                                                ? "bg-success text-success-content border-success scale-95"
                                                 : status === LetterPosition.Misplaced
                                                 ? "bg-warning text-warning-content border-warning"
                                                 : "bg-base-100 border-base-content/20 focus:border-primary text-base-content"

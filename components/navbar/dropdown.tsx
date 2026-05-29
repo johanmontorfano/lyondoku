@@ -6,9 +6,9 @@ import { useState } from "react";
 export function GamesDropdown(props: { games: string[][] }) {
     const [open, setOpen] = useState(false);
 
-    return <details open={open}>
+    return <details open={open} className="dropdown">
         <summary
-            className="btn btn-ghost btn-sm rounded-full"
+            className="cursor-pointer list-none hover:text-base-content text-base-content/70 transition-colors"
             onClick={e => {
                 e.preventDefault();
                 setOpen(p => !p);

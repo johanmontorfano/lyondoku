@@ -15,54 +15,28 @@ export async function Navbar() {
     ];
 
     return (
-        <div className="bg-base-100 flex flex-col items-center gap-4">
-            <div className="flex flex-col items-center">
-                <Link href="/" className="flex items-center">
-                    <h1 className="text-2xl font-bold text-center">{title}</h1>
+        <header className="w-full max-w-3xl mx-auto pt-4">
+            <div className="flex items-center justify-between pb-3">
+                <Link href="/" className="hover:opacity-80 transition-opacity">
+                    <h1 className="text-lg font-bold tracking-tight">{title}</h1>
                 </Link>
-                <span className="text-xs text-base-content/50 italic">
-                    LYONDLE
-                </span>
-            </div>
-            <div className="flex gap-2">
-                <div className="bg-base-200 rounded-full border border-base-300 my-4">
-                    <ul className="md:hidden menu menu-horizontal">
-                        <li>
-                            <GamesDropdown games={games} />
-                        </li>
-                        <li>
-                            <Link
-                                className="btn btn-ghost rounded-full btn-sm"
-                                href="/archive"
-                            >
-                                Archive
-                            </Link>
-                        </li>
-                    </ul>
-                    <ul className="hidden md:flex menu menu-horizontal text-sm">
+                <nav className="flex items-center gap-1 text-sm font-medium">
+                    <div className="md:hidden">
+                        <GamesDropdown games={games} />
+                    </div>
+                    <div className="hidden md:flex items-center gap-4 text-base-content/70">
                         {games.map((g) => (
-                            <li key={`h-${g[1]}`}>
-                                <Link
-                                    href={g[1]}
-                                    className="rounded-full"
-                                >
-                                    {g[0]}
-                                </Link>
-                            </li>
+                            <Link key={`h-${g[1]}`} href={g[1]} className="hover:text-base-content transition-colors">
+                                {g[0]}
+                            </Link>
                         ))}
-                    </ul>
-                </div>
-                <div className="hidden md:flex bg-base-200 rounded-full border border-base-300 my-4">
-                    <ul className="menu menu-horizontal">
-                        <li>
-                            <Link
-                                href="/archive"
-                                className="rounded-full"
-                            >Archive</Link>
-                        </li>
-                    </ul>
-                </div>
+                    </div>
+                    <div className="divider divider-horizontal mx-0" />
+                    <Link href="/archive" className="hover:text-base-content text-base-content/70 transition-colors">
+                        Archive
+                    </Link>
+                </nav>
             </div>
-        </div>
+        </header>
     );
 }

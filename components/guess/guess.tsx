@@ -231,7 +231,7 @@ export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
                     <span ref={countdownRef}>00:01</span>
                     {won !== null && (
                         <span
-                            className={`text-base-200 badge badge-sm ${won ? "badge-success" : "badge-error"}`}
+                            className={`badge badge-sm ${won ? "badge-success" : "badge-error"}`}
                         >
                             {won ? "Gagné" : "Perdu"}
                         </span>

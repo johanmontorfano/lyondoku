@@ -204,7 +204,7 @@ export function Wordle(props: { id: string }) {
                     <span ref={countdownRef}>00:01</span>
                     {won !== null && (
                         <span
-                            className={`text-base-200 badge badge-sm ${
+                            className={`badge badge-sm ${
                                 won ? "badge-success" : "badge-error"
                             }`}
                         >

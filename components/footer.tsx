@@ -1,63 +1,49 @@
-import { firestore } from "@/scripts/firebase/server";
-import Image from "next/image"
-import Link from "next/link";
+import Image from "next/image";
 import { KofiButton } from "./kofi";
+import Link from "next/link";
 
 export async function Footer() {
-    // since the navbar title can be updated, we must load it here to show it
-    // WARN: this component MUST NOT be a client component thus
-    const titleSnap = await firestore.doc("config/ui").get();
-    const title = titleSnap.data()!.navbarTitle as string;
-
-    const games = [
-        ["Lyondle", "/"],
-        ["Doku", "/doku"],
-        ["Wordle", "/guess"],
-    ];
-
     return (
-        <footer className="footer sm:footer-horizontal text-base-content p-4 bg-base-200 border border-base-300 rounded-xl mb-4">
-            <aside className="flex flex-row sm:flex-col space-between max-sm:items-center max-sm:bg-base-300 p-4 rounded-lg w-full gap-2">
-                <Image
-                    className="border-3 max-sm:mr-6"
-                    alt="lyondle logo"
-                    src="/icon.svg"
-                    width={80}
-                    height={80}
-                />
-                <div>
-                    <p className="mb-2">
-                        <strong>
-                            {title}
-                        </strong>
+        <footer className="w-full max-w-3xl px-2 py-6 text-base-content/60 text-xs">
+            <div className="flex flex-col min-[464px]:flex-row items-center md:items-center justify-between gap-4 border-t border-base-200 pt-4">
+                
+                <div className="flex items-center gap-3 max-w-md">
+                    <Image
+                        alt="lyondle logo"
+                        src="/icon.svg"
+                        width={40} 
+                        height={40}
+                        className="opacity-80"
+                    />
+                    <p className="leading-tight">
+                        Développé en solo. Et pourtant, moins de pannes que le 
+                        métro B.
                     </p>
-                    <KofiButton />
                 </div>
-            </aside>
-            <nav>
-                <h6 className="footer-title">Jeux</h6>
-                {games.map((g) => (
+                <KofiButton />
+            </div>
+            <div>
+                <nav className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4">
                     <Link
-                        className="link link-hover"
-                        href={g[1]}
-                        key={`footer-games-${g[0]}`}
+                        href="/tech"
+                        className="hover:text-base-content transition-colors"
                     >
-                        {g[0]} 
+                        Technologie
                     </Link>
-                ))}
-            </nav>
-            <nav>
-                <h6 className="footer-title">Divers</h6>
-                <Link className="link link-hover" href="/archive">
-                    Archive
-                </Link>
-                <Link
-                    className="link link-hover"
-                    href="mailto:hello@johanmontorfano.com"
-                >
-                    Contact
-                </Link>
-            </nav>
+                    <Link
+                        href="/archive"
+                        className="hover:text-base-content transition-colors"
+                    >
+                        Archive
+                    </Link>
+                    <Link
+                        href="mailto:hello@johanmontorfano.com"
+                        className="hover:text-base-content transition-colors"
+                    >
+                        Contact
+                    </Link>
+                </nav>
+            </div>
         </footer>
     );
 }

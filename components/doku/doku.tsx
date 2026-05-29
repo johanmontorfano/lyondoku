@@ -297,7 +297,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                 <div className="flex items-center gap-2">
                     <span ref={countdownRef}>00:01</span>
                     {won !== null &&
-                        <span className={`text-base-200 badge badge-sm ${
+                        <span className={`badge badge-sm ${
                         won ? "badge-success" : "badge-error"
                         }`}>{won ? "Gagné" : "Perdu"}</span>}
                 </div>
