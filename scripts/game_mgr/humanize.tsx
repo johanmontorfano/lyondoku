@@ -107,9 +107,9 @@ export async function humanizeConstraint(
             return `Sur une ligne de ${val}`;
         case "stationCharacteristics":
             return `Est ${labels[val] || val}`;
-        case "stationBorough":
+        case "borough":
             return `Dans le ${val}${val === "1" ? "er" : "ème"} arrondissement`;
-        case "stationLocation":
+        case "city":
             if (op === "not") return `Ne se situe pas à ${formatOr(val)}`;
             if (op === "equals") return `Se situe à ${val}`;
             if (op === "includes") return `Se situe à ${formatOr(val)}`;
