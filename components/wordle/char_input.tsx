@@ -89,7 +89,7 @@ export function CharInput(props: {
 
                             return (
                                 <input
-                                    key={idx}
+                                    key={`ci-frag-${i}-${idx}`}
                                     ref={(el) => {
                                         inputRefs.current[idx] = el!;
                                     }}

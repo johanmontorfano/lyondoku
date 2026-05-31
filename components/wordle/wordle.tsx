@@ -81,7 +81,7 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
 
                 const body = (await res.json()) as WordleData;
 
-                setInputs(body.name.replaceAll(" ", "").split(""));
+                setInputs(body.name.replaceAll(/[\'\s-]/g, "").split(""));
                 localStorage.setItem(
                     `guess-${props.id}`,
                     JSON.stringify({
@@ -132,10 +132,23 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
             // we check all letters statuses
             setMisplaced(p => {
                 const prev = { ...p };
+                const matchWithKey: Record<string, LetterPosition> = {};
 
-                body.match.sort().reverse().forEach((status: LetterPosition, i: number) => {
-                    const letter = keys[i];
+                // we build a dict first linking the match state with the
+                // letter
+                body.match.forEach((status: LetterPosition, i: number) => {
+                    const letter = keys[i] || "";
+                    matchWithKey[letter] = status;
+                });
 
+                // we order the keys from no action to valid key to avoid
+                // valid operations to reduce misplaced operations wrongfully
+                const ordered = Object.entries(matchWithKey).sort().reverse();
+
+                for (const [letter, status] of ordered) {
+                    if (letter === "") continue;
+
+                    console.log(letter, status);
                     if (status !== LetterPosition.Invalid) {
                         if (prev[letter] === undefined)
                             prev[letter] = {
@@ -153,7 +166,7 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                             prev[letter].valid;
                         }
                     }
-                });
+                }
                 return prev;
             });
 
