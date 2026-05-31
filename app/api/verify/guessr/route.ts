@@ -21,13 +21,22 @@ export async function POST(req: NextRequest) {
     const answerStation = await retrieveStation(game.answerId);
     const guessStation = await retrieveStation(body.data.guess);
 
+    const boroughMatch = guessStation!.borough.filter((b) => {
+        if (b < 0) return false;
+        return answerStation!.borough.includes(b);
+    });
+
     return NextResponse.json({
         won: game.answerId === body.data.guess,
         data: {
             guess: guessStation!,
-            cityMatch:
-                answerStation!.city === guessStation!.city &&
-                answerStation!.borough === guessStation!.borough,
+            cityMatch: [
+                ...boroughMatch.sort().map(b => `Lyon ${b}`),
+                ...guessStation!.city.filter((c) => {
+                    if (c === "Lyon") return false; // processed by borough
+                    return answerStation!.city.includes(c);
+                }),
+            ],
             validLinesOnStation:
                 guessStation!.connections.filter(
                     c => answerStation!.connections.includes(c)

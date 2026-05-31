@@ -6,7 +6,7 @@ export function GuessrRow(props: GuessrAnswer) {
     const match = props.distanceWithAnswer === 0;
     const [animation, setAnimation] = useState([
         `animate-flash-${props.validLinesOnStation.length > 0 ? "green" : "red"}`,
-        `animate-flash-${props.cityMatch ? "green" : "red"}`,
+        `animate-flash-${props.cityMatch.length > 0 ? "green" : "red"}`,
         `animate-flash-${match ? "green" : "red"}`,
     ]);
 
@@ -35,13 +35,15 @@ export function GuessrRow(props: GuessrAnswer) {
                 </div>
             </td>
             <td className={`p-2 text-center text-dyn-md ${animation[1]} ${
-                props.cityMatch ? "text-success-content" : "text-error-content"
+                props.cityMatch.length > 0 ? "text-success-content" : "text-error-content"
             }`}>
-                {props.guess.city} {
-                    props.guess.borough > -1 ?
-                        props.guess.borough :
-                        ""
-                }
+                <div className="flex flex-wrap gap-1 justify-center">
+                    {props.cityMatch.sort().map((c) => (
+                        <p key={`${props.guess.id}-valid-${c}`}>
+                            {c}
+                        </p>
+                    ))}
+                </div>
             </td>
             <td className={`${animation[2]} ${
                 match ? "text-success-content" : "text-error-content"

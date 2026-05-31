@@ -38,28 +38,29 @@ export type Constraints = string;
 export interface Station {
     id: number;
     name: string;
-    nameCharacteristics: "historicalFigure"[];
+    nameCharacteristics: ("historicalFigure" | "det")[];
     
-    linesType: "tram" | "metro" | "funicular";
+    linesType: ("tram" | "metro" | "funicular")[];
     // NOTE: connections includes actual lines and lines groups, such as
     // greenLine
     connections: string[];
-    stationCharacteristics: ("std" | "terminus" | "centralPlatform")[];
+    stationCharacteristics: "std"[];
 
-    location: string;
+    street: string[];
     lat: number;
     lon: number;
     // NOTE: when the station is outside of Lyon, we default to -1
-    borough: number;
-    city: string;
+    borough: number[];
+    city: string[];
     terminus: boolean;
     cognitiveScore: number;
+    stopsId: number[];
 }
 
 export interface GuessrAnswer {
     guess: Station;
     validLinesOnStation: string[];
-    cityMatch: boolean;
+    cityMatch: string[];
     distanceWithAnswer: number;
     cardinalDirectionTowardsAnswer: number;
 }

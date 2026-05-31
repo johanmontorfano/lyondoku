@@ -1,5 +1,5 @@
 import { LetterPosition, UserFacingWordleData } from "@/scripts/game_mgr/types";
-import { ChangeEvent, KeyboardEvent, useEffect, useRef } from "react";
+import { ChangeEvent, Fragment, KeyboardEvent, useEffect, useRef } from "react";
 
 export function CharInput(props: {
     value: string[],
@@ -10,6 +10,7 @@ export function CharInput(props: {
 }) {
     const totalLength = props.layout.wordLengths.reduce((p, c) => p + c, 0);
     const inputRefs = useRef<HTMLInputElement[]>([]);
+    const isComposing = useRef(false);
 
     useEffect(() => {
         inputRefs.current = inputRefs.current.slice(0, totalLength);
@@ -48,10 +49,11 @@ export function CharInput(props: {
         newInputs[idx] = val;
         
         props.onChange(newInputs);
-        if (val) queueMicrotask(() => focusNext(idx));
+        if (val && !isComposing.current) queueMicrotask(() => focusNext(idx));
     }
 
     function onKeyDown(e: KeyboardEvent<HTMLInputElement>, idx: number) {
+        if (isComposing.current) return;
         if (e.key === "Backspace") {
             const newInputs = [...props.value];
 
@@ -71,8 +73,8 @@ export function CharInput(props: {
                     .slice(0, i)
                     .reduce((acc, len) => acc + len, 0);
 
-                return (<>
-                    <div key={i} className="flex flex-wrap justify-center gap-1 lg:gap-2 p-1 lg:p-2 bg-base-300 rounded-xl">
+                return (<Fragment key={"ci-w-" + i}>
+                    <div className="flex flex-wrap justify-center gap-1 lg:gap-2 p-1 lg:p-2 bg-base-300 rounded-xl">
                         {Array.from({ length }).map((_, j) => {
                             const idx = wordOffset + j;
                             const status = props.locked[idx];
@@ -85,9 +87,14 @@ export function CharInput(props: {
                                         inputRefs.current[idx] = el!;
                                     }}
                                     type="text"
-                                    maxLength={1}
                                     value={props.value[idx] || ""}
                                     disabled={isValid || props.disabled}
+                                    onCompositionStart={() => {
+                                        isComposing.current = true;
+                                    }}
+                                    onCompositionEnd={() => {
+                                        isComposing.current = false;
+                                    }}
                                     onChange={(e) => onInput(e, idx)}
                                     onKeyDown={(e) => onKeyDown(e, idx)}
                                     className={`w-9 h-10.5 lg:w-10 lg:h-12.5 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none
@@ -111,7 +118,7 @@ export function CharInput(props: {
                                 <p>{d.type}</p>
                             ))}
                     </div>
-                </>);
+                </Fragment>);
             })}
         </div>
     );

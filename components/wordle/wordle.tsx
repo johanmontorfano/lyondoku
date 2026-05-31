@@ -55,7 +55,7 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
         endedAtRef.current = new Date();
         if (!won) {
             try {
-                const res = await fetch("/api/solution/guess?id=" + props.id);
+                const res = await fetch("/api/solution/wordle?id=" + props.id);
 
                 if (!res.ok) throw new Error("Request error");
 
@@ -97,7 +97,7 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
         setInputs(keys.slice(0, length));
         if (!initialAttemptSent) setInitialAttemptSent(true);
         try {
-            const res = await fetch("/api/verify/guess", {
+            const res = await fetch("/api/verify/wordle", {
                 method: "POST",
                 body: JSON.stringify({
                     id: props.id,

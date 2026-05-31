@@ -8,7 +8,7 @@ export async function humanizeConstraint(
     const formatOr = (input: string): string => {
         if (!input) return "";
 
-        const expressions = input.split("|").map(item => item.trim());
+        const expressions = input.split(";").map(item => item.trim());
         if (expressions.length <= 1) return expressions[0] || "";
 
         const lastExpression = expressions.pop();
@@ -72,7 +72,7 @@ export async function humanizeConstraint(
                 <p>À plus {prefixffs}{
                     (distanceFfs / 1000).toString().replace(".", ",")
                 }km de {stationffs.station.name}</p>
-                <div className="flex flex-wrap gap-1 mt-1">
+                <div className="flex flex-wrap gap-1 mt-2">
                     {stationffs.station.connections.sort().map((l: string) =>
                         <img
                             key={"ffs-" + l}
@@ -87,12 +87,13 @@ export async function humanizeConstraint(
                 pink: "rose",
                 blue: "bleue",
                 red: "rouge",
-                orange: "orange"
+                orange: "orange",
+                violet: "violette"
             };
             if (op === "includes")
                 return <>
                     Sur une ligne {colorstl[val]}
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1 mt-2">
                         {linesData.byColor[val as "green"].sort().map((l: string) =>
                             <img
                                 key={l}
@@ -110,19 +111,20 @@ export async function humanizeConstraint(
         case "borough":
             return `Dans le ${val}${val === "1" ? "er" : "ème"} arrondissement`;
         case "city":
-            if (op === "not") return `Ne se situe pas à ${formatOr(val)}`;
-            if (op === "equals") return `Se situe à ${val}`;
-            if (op === "includes") return `Se situe à ${formatOr(val)}`;
+            if (op === "not") return `N'est pas à ${formatOr(val)}`;
+            if (op === "equals") return `Est à ${val}`;
+            if (op === "includes") return `Est à ${formatOr(val)}`;
+            if (op === "excludes") return `N'est pas à ${formatOr(val)}`
             break;
         case "connections":
             if (!(val in labels) && isLineName(val))
-                return <>
+                return <div className="flex flex-wrap gap-2">
                     Sur la ligne
                     <img
                          src={"/lines/" + val + ".svg"}
                          className="w-[clamp(0.5rem,4cqi,2.2rem)]"
                     />
-                </> 
+                </div> 
             return `Sur le ${labels[val] || val}`;
         case "terminus":
             if (op === "bool" && val === "True") return "Est un terminus";

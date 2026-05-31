@@ -33,7 +33,7 @@ export async function retrieveDoku(id: string, userFacing = false): Promise<
 
 export async function retrieveGuessr(id: string): Promise<GuessrData | null> {
     try {
-        const snap = await firestore.doc(`wordle/${id}`).get();
+        const snap = await firestore.doc(`guessr/${id}`).get();
 
         if (snap.exists) {
             return snap.data()! as GuessrData;
@@ -48,7 +48,7 @@ export async function retrieveWordle(id: string, userFacing = false): Promise<
     WordleData | UserFacingWordleData | null
 > {
     try {
-        const snap = await firestore.doc(`guess/${id}`).get();
+        const snap = await firestore.doc(`wordle/${id}`).get();
 
         if (snap.exists) {
             const data = snap.data()! as WordleData;
@@ -67,10 +67,25 @@ export async function retrieveWordle(id: string, userFacing = false): Promise<
 
 export async function retrieveStation(id: number) {
     try {
-        const snap = await firestore.doc(`config/network/stations/${id}`).get();
-        
-        if (snap.exists)
-            return snap.data() as Station;
+        const res = await fetch("https://api.lyondle.fr/cql", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                target: "stations",
+                query: `SELECT id == str:[${id}]`
+            })
+        });
+
+        console.log(id);
+
+        if (!res.ok) throw Error("Request error " + res.status);
+
+        const body = await res.json();
+
+        if ("selected" in body && body["selected"].length > 0)
+            return body["selected"][0] as Station;
         return null;
     } catch (e) {
         console.error(e);

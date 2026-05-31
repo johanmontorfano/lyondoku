@@ -52,7 +52,16 @@ export function Guessr(props: { id: string }) {
                 guess: body.station,
                 cardinalDirectionTowardsAnswer: 0,
                 distanceWithAnswer: 0,
-                cityMatch: true,
+                cityMatch: [
+                    ...body.station!.borough
+                        .filter(b => b > -1)
+                        .sort()
+                        .map(b => `Lyon ${b}`),
+                    ...body.station!.city.filter((c) => {
+                        if (c === "Lyon") return false; // processed by borough
+                        return c;
+                    }),
+                ],
                 validLinesOnStation: body.station.connections
             });
             setAnswers(final);
