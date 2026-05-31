@@ -361,6 +361,14 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
             <br />
             <div className="flex justify-between items-center">
                 <div className="flex gap-2">
+                    <button
+                        onClick={() => useRuledPopupContext
+                            .getState()
+                            .setCurrentRule("doku-rules")
+                        }
+                        className="btn"
+                        key="rules"
+                    >Voir les règles</button>
                     {won === null && <button
                         onClick={() => handleGameEnd(false)}
                         className="btn btn-primary"

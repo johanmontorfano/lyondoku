@@ -35,6 +35,12 @@ export function RuledPopup(props: { rule: string, children: ReactNode }) {
         popupCtx.setCurrentRule(show ? props.rule : null);
     }, [show]);
 
+
+    useEffect(() => {
+        if (popupCtx.currentRule === props.rule)
+            setShow(true);
+    }, [popupCtx.currentRule]);
+
     return (
         <AnimatePresence>
             {show && (

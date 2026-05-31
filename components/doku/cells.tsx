@@ -70,6 +70,12 @@ export function Cell(props: {
                 props.onClick();
         }} 
     >
+        {props.data?.score.toFixed(2) === "0.67" && <motion.img
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 1, 1, 0] }}
+            transition={{ duration: 4 }}
+            src="/67.gif"
+        />}
         {props.data.answer && <div className="relative h-full">
             <p className="font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)] p-2">
                 {props.data.answer.name}

@@ -269,6 +269,14 @@ export function Guess(props: { gameData: UserFacingGuessData; id: string }) {
             </form>
             <div className="flex justify-between items-center w-full">
                 <div className="flex gap-2">
+                    <button
+                        onClick={() => useRuledPopupContext
+                            .getState()
+                            .setCurrentRule("guess-rules")
+                        }
+                        className="btn"
+                        key="rules"
+                    >Voir les règles</button>
                     {won === null && (
                         <button
                             onClick={() => handleGameEnd(false, lockedIndices)}

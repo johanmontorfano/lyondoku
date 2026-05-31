@@ -251,7 +251,15 @@ export function Wordle(props: { id: string }) {
                     )}
                 </tbody>
             </table>
-            <div className="flex justify-end w-full gap-2">
+            <div className="flex justify-start w-full gap-2">
+                <button
+                    onClick={() => useRuledPopupContext
+                        .getState()
+                        .setCurrentRule("dle-rules")
+                    }
+                    className="btn"
+                    key="rules"
+                >Voir les règles</button>
                 {won === null && (
                     <button
                         onClick={() => handleGameEnd(false)}
