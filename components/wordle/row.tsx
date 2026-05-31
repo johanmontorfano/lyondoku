@@ -37,9 +37,9 @@ export function WordleRow(props: WordleAnswer) {
             <td className={`p-2 text-center text-dyn-md ${animation[1]} ${
                 props.cityMatch ? "text-success-content" : "text-error-content"
             }`}>
-                {props.guess.stationLocation} {
-                    props.guess.stationBorough > -1 ?
-                        props.guess.stationBorough :
+                {props.guess.city} {
+                    props.guess.borough > -1 ?
+                        props.guess.borough :
                         ""
                 }
             </td>
