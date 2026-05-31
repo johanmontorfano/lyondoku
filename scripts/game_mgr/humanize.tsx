@@ -109,6 +109,10 @@ export async function humanizeConstraint(
         case "stationCharacteristics":
             return `Est ${labels[val] || val}`;
         case "borough":
+            if (val === "even")
+                return "Dans un arrondissement pair";
+            if (val === "ood")
+                return "Dans un arrondissement impair";
             return `Dans le ${val}${val === "1" ? "er" : "ème"} arrondissement`;
         case "city":
             if (op === "not") return `N'est pas à ${formatOr(val)}`;
