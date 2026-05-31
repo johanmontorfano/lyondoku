@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar/navbar";
-import { FontEditor } from "@/components/font_editor";
 import { dots, serif } from "@/scripts/fonts";
 import { Footer } from "@/components/footer";
 import { Analytics } from "@vercel/analytics/next";
@@ -24,7 +23,6 @@ export default function RootLayout({
                 <div className="flex flex-col grow min-h-[80dvh]">
                     <br />
                     <Navbar />
-                    <FontEditor />
                     <ResetProgressShortcut />
                     <br />
                     {children}

@@ -1,4 +1,5 @@
-import { GameData, retrieveGame } from "@/scripts/game_mgr/game";
+import { retrieveDoku } from "@/scripts/game_mgr/game";
+import { DokuData } from "@/scripts/game_mgr/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -7,7 +8,7 @@ export async function GET(req: NextRequest) {
     if (!url.searchParams.has("id"))
         return NextResponse.json({ error: "invalid req" }, { status: 400 });
 
-    const game = await retrieveGame(url.searchParams.get("id")!) as GameData;
+    const game = await retrieveDoku(url.searchParams.get("id")!) as DokuData;
 
     return NextResponse.json(game.validAnswers);
 }

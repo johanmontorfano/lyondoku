@@ -1,10 +1,9 @@
-import { UserFacingGuessData } from "@/scripts/game_mgr/game";
-import { LetterPosition } from "@/scripts/game_mgr/types";
+import { LetterPosition, UserFacingWordleData } from "@/scripts/game_mgr/types";
 import { ChangeEvent, KeyboardEvent, useEffect, useRef } from "react";
 
 export function CharInput(props: {
     value: string[],
-    layout: UserFacingGuessData["layout"],
+    layout: UserFacingWordleData["layout"],
     locked: LetterPosition[],
     onChange: (inputs: string[]) => void,
     disabled: boolean

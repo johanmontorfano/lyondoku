@@ -1,123 +1,158 @@
 "use client";
 
-import { Station, WordleAnswer } from "@/scripts/game_mgr/types";
-import { useEffect, useRef, useState } from "react";
-import {
-    StationSelectorPopup,
-    useStationSelectorPopup,
-} from "@/components/select_station";
-import { getDataset } from "@/scripts/firebase/data_provider";
 import { isToday } from "@/scripts/date";
-import { WordleRow } from "./row";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { RuledPopup, useRuledPopupContext } from "../popup";
+import { LetterPosition, UserFacingWordleData, WordleData } from "@/scripts/game_mgr/types";
+import { CharInput } from "./char_input";
 import Confetti from "react-confetti-boom";
 import { shareWordleGame } from "@/scripts/share_game";
-import { RuledPopup, useRuledPopupContext } from "../popup";
 
-// this game works by making the user guess in 5 tries a station based on 5
-// criterias:
-// - guess
-// - line/connections matching
-// - city/borough matching
-// - distance with answer
-// - cardinal direction towards answer
-export function Wordle(props: { id: string }) {
-    const popup = useStationSelectorPopup();
+function Counter(props: { count: number }) {
+    const dot = "h-3 w-3 border border-2 rounded-full transition-colors ";
 
+    return (
+        <div className="flex items-center gap-1">
+            <p className="text-sm font-bold mr-2">Tentatives</p>
+            <div
+                className={
+                    dot + (props.count > 0 ? "border-error bg-error" : "")
+                }
+            />
+            <div
+                className={
+                    dot + (props.count > 1 ? "border-error bg-error" : "")
+                }
+            />
+            <div
+                className={
+                    dot + (props.count > 2 ? "border-error bg-error" : "")
+                }
+            />
+        </div>
+    );
+}
+
+export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
+    // WARN: since the back-end doesn't want any whitespaces, we are provided
+    // with the length of each word of the station name
+    const length = props.gameData.layout.wordLengths.reduce((p, c) => p + c, 0);
+
+    // State for current board letters, locked letters, and game loop
     const [won, setWon] = useState<boolean | null>(null);
-    const [answers, setAnswers] = useState<WordleAnswer[]>([]);
     const [loading, setLoading] = useState(false);
+    const [attempts, setAttempts] = useState(0);
+    const [inputs, setInputs] = useState<string[]>([]);
+    const [lockedIndices, setLockedIndices] = useState<LetterPosition[]>([]);
+    const [initialAttemptSent, setInitialAttemptSent] = useState(false);
 
     const startedAtRef = useRef(new Date());
     const endedAtRef = useRef<Date | null>(null);
     const countdownRef = useRef<HTMLSpanElement>(null);
 
-    // we must get the latest answer as this function is called in the answer
-    // checker which will not provide it with the new state scope upon call
-    async function handleGameEnd(won: boolean, latestAnswer?: WordleAnswer) {
-        const final = [...answers];
-        endedAtRef.current = new Date();
-
-        if (latestAnswer) final.push(latestAnswer);
-        if (!won) try {
-            const res = await fetch(`/api/solution/wordle?id=${
-                props.id
-            }`);
-
-            if (!res.ok)
-                throw new Error("Request failed");
-
-            const body = await res.json() as Record<"station", Station>;
-
-            final.push({
-                guess: body.station,
-                cardinalDirectionTowardsAnswer: 0,
-                distanceWithAnswer: 0,
-                cityMatch: true,
-                validLinesOnStation: body.station.connections
-            });
-            setAnswers(final);
-        } catch (e) {
-            console.error(e);
-        }
-
+    async function handleGameEnd(won: boolean, indices: typeof lockedIndices) {
         setWon(won);
-        localStorage.setItem(
-            `lyondle-${props.id}`,
-            JSON.stringify({
-                won,
-                answers: final,
-                startedAt: startedAtRef.current.getTime(),
-                endedAt: endedAtRef.current!.getTime(),
-            }),
-        );
+        endedAtRef.current = new Date();
+        if (!won) {
+            try {
+                const res = await fetch("/api/solution/guess?id=" + props.id);
+
+                if (!res.ok) throw new Error("Request error");
+
+                const body = (await res.json()) as WordleData;
+
+                setInputs(body.name.replaceAll(" ", "").split(""));
+                localStorage.setItem(
+                    `guess-${props.id}`,
+                    JSON.stringify({
+                        won: false,
+                        attempts: 3,
+                        inputs: body.name.replaceAll(" ", "").split(""),
+                        locked: indices,
+                        startedAt: startedAtRef.current.getTime(),
+                        endedAt: endedAtRef.current.getTime(),
+                    }),
+                );
+            } catch (e) {}
+        } else {
+            localStorage.setItem(
+                `guess-${props.id}`,
+                JSON.stringify({
+                    won: true,
+                    inputs,
+                    attempts,
+                    locked: indices,
+                    startedAt: startedAtRef.current.getTime(),
+                    endedAt: endedAtRef.current.getTime(),
+                }),
+            );
+        }
     }
 
-    async function handleCheck(guess: number) {
+    async function handleCheck(keys: string[]) {
+        // NOTE: the backend expects the answer to be provided without any
+        // spaces to avoid any logic issues between the component repr and
+        // and the underlying handlers
         setLoading(true);
+        setInputs(keys.slice(0, length));
+        if (!initialAttemptSent) setInitialAttemptSent(true);
         try {
-            const res = await fetch("/api/verify/wordle", {
+            const res = await fetch("/api/verify/guess", {
                 method: "POST",
-                body: JSON.stringify({ id: props.id, guess }),
+                body: JSON.stringify({
+                    id: props.id,
+                    guess: keys,
+                }),
             });
 
             if (!res.ok) throw new Error("Request error");
 
             const body = await res.json();
+            const li = lockedIndices.map((was, i) =>
+                was === LetterPosition.Valid
+                    ? LetterPosition.Valid
+                    : body.match[i],
+            );
 
-            setAnswers((p) => [...p, body.data]);
-            popup.setForbiddenStations([
-                ...popup.forbiddenStations,
-                body.data.guess.id,
-            ]);
-
-            if (body.won) handleGameEnd(true, body.data);
-            // for incults: a function updating a state doesn't get the new
-            // state value in its scope unless we are talking about a ref
-            else if (answers.length >= 5) handleGameEnd(false, body.data);
-        } catch (e) {
-            console.error(e);
-        }
+            // to ensure entries stay locked while new ones switch to be locked
+            // we must run the matches through a filter before setting
+            setLockedIndices(li);
+            if (!body.won) setAttempts((p) => p + 1);
+            else handleGameEnd(true, li);
+            if (!body.won && attempts > 1) handleGameEnd(false, li);
+        } catch (e) {}
         setLoading(false);
     }
 
     useEffect(() => {
-        // look if a save is available in local storage for this game
-        const save = localStorage.getItem(`lyondle-${props.id}`);
+        const saveGame = localStorage.getItem(`guess-${props.id}`);
 
-        if (save !== null) {
-            const gameData = JSON.parse(save);
+        if (saveGame !== null) {
+            const data = JSON.parse(saveGame);
 
-            setAnswers(gameData.answers);
-            setWon(gameData.won);
-            startedAtRef.current = new Date(gameData.startedAt);
-            endedAtRef.current = new Date(gameData.endedAt);
+            setWon(data.won);
+            setInitialAttemptSent(true);
+            setAttempts(data.attempts);
+            setInputs(data.inputs);
+            setLockedIndices(data.locked);
+            startedAtRef.current = new Date(data.startedAt);
+            endedAtRef.current = new Date(data.endedAt);
+        } else {
+            setWon(null);
+            setAttempts(0);
+            setInputs(Array(length).fill(""));
+            setLockedIndices(Array(length).fill(LetterPosition.Invalid));
+            startedAtRef.current = new Date();
+            endedAtRef.current = null;
         }
+    }, [props.gameData]);
 
+    useEffect(() => {
         function updateCountdown() {
             // NOTE: if the rule popup is still visible the countdown must not
             // start.
             // HACK: to avoid too much overhead, the startAt date is just reset
-            if (useRuledPopupContext.getState().currentRule === "dle-rules") {
+            if (useRuledPopupContext.getState().currentRule === "guess-rules") {
                 startedAtRef.current = new Date();
                 return requestAnimationFrame(updateCountdown);
             }
@@ -142,151 +177,148 @@ export function Wordle(props: { id: string }) {
         updateCountdown();
     }, []);
 
-    useEffect(() => {
-        if (popup.lastSelected !== null) {
-            handleCheck(popup.lastSelected);
-            popup.setLastSelected(null);
-        }
-    }, [popup.lastSelected]);
-
     return (
         <div className="flex flex-col justify-between grow gap-8">
             {won && <Confetti mode="fall" />}
-            <StationSelectorPopup />
-            <RuledPopup rule="dle-rules">
-                <p className="font-semibold text-xl">Comment jouer à Guessr</p>
+            <RuledPopup rule="guess-rules">
+                <p className="font-semibold text-xl">Comment jouer au wordle</p>
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
                     <li>
-                        Trouvez la station TCL en <strong>
-                            6 essais
-                        </strong> maximum.
+                        Trouvez la station TCL en <strong>3 essais</strong>{" "}
+                        maximum.
                     </li>
                     <li>
-                        Chaque essai vous fourni des indices sur la
-                        station à trouver.
+                        Vous ne verrez la forme du nom de la station qu'après
+                        le premier essai.
                     </li>
                     <li>
-                        Les indices suivants sont fournis: <strong>
-                        lignes en commun, commune correcte, distance et 
-                        direction.</strong>
+                        Chaque essai vous indique{" "}
+                        <strong>l'ensemble des lettres</strong>{" "}
+                        valides (vertes) ou mal placées (jaunes).
                     </li>
                     <li>
-                        Un indice en vert/la présence d'un pictogramme de 
-                        ligne indique que la station les partage 
-                        avec la station à deviner.
+                        Chaque lettre <strong>valide</strong> reste affichée.
                     </li>
                     <li>
-                        Une nouvelle partie est disponible à <strong>
-                            minuit
-                        </strong> chaque jour.
+                        Vous devez <strong>respecter</strong> la ponctuation.
+                    </li>
+                    <li>
+                        Une nouvelle partie est disponible à{" "}
+                        <strong>minuit</strong> chaque jour.
                     </li>
                 </ul>
             </RuledPopup>
             <header className="header flex items-center justify-between">
                 <div>
                     <h3 className="text-lg font-semibold">
-                        {isToday(new Date(props.id)) ?
-                            "Station du jour" : `Archive du ${
-                                new Intl.DateTimeFormat('fr-FR').format(
-                                    new Date(props.id).getTime()
-                                )
-                        }`}
+                        {isToday(new Date(props.id))
+                            ? "Station du jour"
+                            : `Archive du ${new Intl.DateTimeFormat(
+                                  "fr-FR",
+                              ).format(new Date(props.id).getTime())}`}
                     </h3>
-                    {isToday(new Date(props.id)) && <h2>
-                        {new Intl.DateTimeFormat('fr-FR').format(
-                            new Date(props.id).getTime()
-                        )}
-                    </h2>}
+                    {isToday(new Date(props.id)) && (
+                        <h2>
+                            {new Intl.DateTimeFormat("fr-FR").format(
+                                new Date(props.id).getTime(),
+                            )}
+                        </h2>
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     <span ref={countdownRef}>00:01</span>
                     {won !== null && (
                         <span
-                            className={`badge badge-sm ${
-                                won ? "badge-success" : "badge-error"
-                            }`}
+                            className={`badge badge-sm ${won ? "badge-success" : "badge-error"}`}
                         >
                             {won ? "Gagné" : "Perdu"}
                         </span>
                     )}
                 </div>
             </header>
-            <table className="table font-(family-name:--font-doto) bg-base-200 rounded-lg">
-                <thead>
-                    <tr className="text-base-content/80 text-dyn-md font-bold p-1">
-                        <th className="w-[52%]">Station</th>
-                        <th className="w-[10%] text-center">Lignes</th>
-                        <th className="w-[20%] text-center">Commune</th>
-                        <th className="w-[18%] text-right">Distance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {answers.map((a) => (
-                        <WordleRow {...a} key={a.guess.id} />
-                    ))}
-                    {answers.length < 6 && won === null && (
-                        <tr
-                            className="bg-base-200/50 hover:bg-base-200 cursor-pointer transition-colors"
-                            onClick={async () => {
-                                popup.setPlaceholder(
-                                    `Encore ${6 - answers.length} essai(s)`,
-                                );
-                                popup.setStations(
-                                    await getDataset("stations_dict"),
-                                );
-                                popup.setShow(true);
-                            }}
-                        >
-                            <td colSpan={4}>
-                                {loading ? (
-                                    <span className="loading loading-spinner loading-sm" />
-                                ) : (
-                                    <span className="opacity-60 italic">
-                                        Encore {6 - answers.length} essai(s)...
-                                    </span>
-                                )}
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-            <div className="flex justify-start w-full gap-2">
-                <button
-                    onClick={() => useRuledPopupContext
-                        .getState()
-                        .setCurrentRule("dle-rules")
-                    }
-                    className="btn"
-                    key="rules"
-                >Voir les règles</button>
-                {won === null && (
-                    <button
-                        onClick={() => handleGameEnd(false)}
-                        className="btn btn-primary"
-                        key="giveup"
-                    >
-                        Abandonner
-                    </button>
+            <form
+                onSubmit={(ev) => {
+                    ev.preventDefault();
+                    handleCheck(inputs);
+                }}
+                className="flex flex-col items-center justify-center"
+            >
+                {initialAttemptSent ? (
+                    <CharInput
+                        value={inputs}
+                        onChange={setInputs}
+                        locked={lockedIndices}
+                        disabled={won !== null}
+                        layout={props.gameData.layout}
+                    />
+                ) : (
+                    <input
+                        type="text"
+                        className="input border-2 text-xl my-8 rounded-lg w-full max-w-[400px] p-6"
+                        placeholder="Tentez quelque chose..."
+                        onChange={(ev) => {
+                            setInputs(
+                                ev.target.value.replaceAll(" ", "").split(""),
+                            );
+                        }}
+                    />
                 )}
-                {won !== null && <div className="flex flex-col gap-1">
+                <input type="submit" disabled={loading} hidden />
+            </form>
+            <div className="flex justify-between items-center w-full">
+                <div className="flex gap-2">
                     <button
-                        onClick={() =>
-                            shareWordleGame(
-                                props.id,
-                                won,
-                                startedAtRef.current,
-                                endedAtRef.current!,
-                                answers,
-                                false
-                            )
+                        onClick={() => useRuledPopupContext
+                            .getState()
+                            .setCurrentRule("guess-rules")
                         }
-                        className="btn btn-primary"
-                        key="share"
-                    >
-                        Partager
-                    </button>
-                </div>}
+                        className="btn"
+                        key="rules"
+                    >Voir les règles</button>
+                    {won === null && (
+                        <button
+                            onClick={() => handleGameEnd(false, lockedIndices)}
+                            className="btn"
+                            type="button"
+                            disabled={loading}
+                        >
+                            Abandonner
+                        </button>
+                    )}
+                    {won === null && (
+                        <button
+                            className="btn btn-primary"
+                            type="button"
+                            disabled={loading}
+                            onClick={() => handleCheck(inputs)}
+                        >
+                            {loading ? (
+                                <span className="loading loading-spinner" />
+                            ) : (
+                                "Tenter"
+                            )}
+                        </button>
+                    )}
+                    {won !== null && (
+                        <button
+                            onClick={() =>
+                                shareWordleGame(
+                                    props.id,
+                                    startedAtRef.current,
+                                    endedAtRef.current!,
+                                    lockedIndices,
+                                    props.gameData.layout,
+                                )
+                            }
+                            className="btn btn-primary"
+                            type="button"
+                        >
+                            Partager
+                        </button>
+                    )}
+                </div>
+                <Counter count={attempts} />
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { SSRGuessLoader } from "@/components/guess/guess_loader";
+import { SSRWordleLoader } from "@/components/wordle/wordle_loader";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -15,7 +15,7 @@ export default async function Page(props: {
                 </div>
             }
         >
-            <SSRGuessLoader
+            <SSRWordleLoader
                 id={params.game_id}
                 onNotFound={notFound}
             />

@@ -1,7 +1,6 @@
-import { firstEverGrid, firstEverGuess, firstEverWordle } from "@/scripts/game_mgr/data";
+import { firstEverGrid, firstEverWordle, firstEverGuessr } from "@/scripts/game_mgr/data";
 import { getDateRange } from "@/scripts/date";
 import { Metadata } from "next";
-import { ResetProgress } from "@/components/reset_progress";
 import { ArchiveEntry } from "@/components/archive";
 
 export const metadata: Metadata = {
@@ -12,14 +11,14 @@ export const metadata: Metadata = {
 export default function Page() {
     // HACK: since a new wordle is available every day and we know the date of
     // the first one, we just statically compute all dates from the creation
-    const allWordles = getDateRange(firstEverWordle);
+    const allWordles = getDateRange(firstEverGuessr);
     const allGrids = getDateRange(firstEverGrid);
-    const allGuesses = getDateRange(firstEverGuess);
+    const allGuesses = getDateRange(firstEverWordle);
 
     const collapsableContent = [
-        ["Guessr", allWordles, "", "lyondle"],
+        ["Guessr", allWordles, "", "guessr"],
         ["Doku", allGrids, "doku", "doku"],
-        ["Wordle", allGuesses, "guess", "guess"]
+        ["Wordle", allGuesses, "wordle", "wordle"]
     ] as const;
 
     return (

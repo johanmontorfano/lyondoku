@@ -1,9 +1,9 @@
-import { Wordle } from "@/components/wordle/wordle";
+import { Guessr } from "@/components/guessr/guessr";
 
 export default async function Page(props: {
     params: Promise<{ game_id: string }>
 }) {
     const params = await props.params;
 
-    return <Wordle id={params.game_id} />
+    return <Guessr id={params.game_id} />
 }

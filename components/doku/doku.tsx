@@ -1,14 +1,13 @@
 "use client";
 
-import { UserFacingGameData } from "@/scripts/game_mgr/game";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
     StationSelectorPopup,
     useStationSelectorPopup,
 } from "@/components/select_station";
-import { Station } from "@/scripts/game_mgr/types";
+import { Station, UserFacingDokuData } from "@/scripts/game_mgr/types";
 import { getDataset } from "@/scripts/firebase/data_provider";
-import { shareGame } from "@/scripts/share_game";
+import { shareDokuGame } from "@/scripts/share_game";
 import { isToday } from "@/scripts/date";
 import { RuledPopup, useRuledPopupContext } from "../popup";
 import { Cell, ConstraintCell } from "./cells";
@@ -51,7 +50,7 @@ function Counter(props: {
     </div>
 }
 
-export function DokuGrid(props: { gameData: UserFacingGameData }) {
+export function DokuGrid(props: { gameData: UserFacingDokuData }) {
     const cellKeys = [
         ["tl", "tc", "tr"],
         ["cl", "cc", "cr"],
@@ -384,7 +383,7 @@ export function DokuGrid(props: { gameData: UserFacingGameData }) {
                         key="retry"
                     >Réessayer</button>}
                     {won !== null && <button
-                        onClick={() => shareGame(
+                        onClick={() => shareDokuGame(
                             props.gameData.id,
                             startedAtRef.current,
                             endedAtRef.current!,

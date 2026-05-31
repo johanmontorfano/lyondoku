@@ -1,4 +1,4 @@
-import { Wordle } from "@/components/wordle/wordle";
+import { Guessr } from "@/components/guessr/guessr";
 import { getToday } from "@/scripts/date";
 import { Suspense } from "react";
 
@@ -11,7 +11,7 @@ export default function Page() {
                 </div>
             }
         >
-            <Wordle id={getToday()} />
+            <Guessr id={getToday()} />
         </Suspense>
     );
 }

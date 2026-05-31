@@ -1,4 +1,31 @@
-// this file contains all the types about a game/grid/wordle
+export interface DokuData {
+    id: string;
+    createdAt: number;
+    rows: [Constraints, Constraints, Constraints],
+    cols: [Constraints, Constraints, Constraints],
+    // tl tc tr cl cc cr bl bc br
+    validAnswers: { [cell: string]: number[] }
+    scoring: { [cell: string]: number }
+}
+export type UserFacingDokuData = Omit<DokuData, "validAnswers"> & {
+    validAnswersCount: { [cell: string]: number }
+};
+
+export interface GuessrData {
+    answerId: number;
+}
+
+export interface WordleData {
+    answerId: number;
+    name: string;
+}
+
+export type UserFacingWordleData = Omit<WordleData, "name"> & {
+    layout: {
+        wordLengths: number[],
+        delimiters: { after: number, type: string }[]
+    }
+}
 
 // this explicitly defines all valid constraints integrated into the
 // dataset
@@ -29,7 +56,7 @@ export interface Station {
     cognitiveScore: number;
 }
 
-export interface WordleAnswer {
+export interface GuessrAnswer {
     guess: Station;
     validLinesOnStation: string[];
     cityMatch: boolean;

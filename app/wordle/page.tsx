@@ -1,4 +1,4 @@
-import { SSRGuessLoader } from "@/components/guess/guess_loader";
+import { SSRWordleLoader } from "@/components/wordle/wordle_loader";
 import { getToday } from "@/scripts/date";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -18,7 +18,7 @@ export default function Page() {
                 </div>
             }
         >
-            <SSRGuessLoader id={getToday()} onNotFound={notFound} />
+            <SSRWordleLoader id={getToday()} onNotFound={notFound} />
         </Suspense>
     );
 }

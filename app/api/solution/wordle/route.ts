@@ -1,4 +1,5 @@
-import { retrieveStation, retrieveWordle } from "@/scripts/game_mgr/game";
+import { retrieveWordle } from "@/scripts/game_mgr/game";
+import { WordleData } from "@/scripts/game_mgr/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -7,12 +8,7 @@ export async function GET(req: NextRequest) {
     if (!url.searchParams.has("id"))
         return NextResponse.json({ error: "invalid req" }, { status: 400 });
 
-    const game = await retrieveWordle(url.searchParams.get("id")!);
+    const game = await retrieveWordle(url.searchParams.get("id")!) as WordleData;
 
-    if (game === null)
-        return NextResponse.json({ error: "not found" }, { status: 404 });
-
-    const station = await retrieveStation(game.answerId);
-
-    return NextResponse.json({ station });
+    return NextResponse.json(game);
 }

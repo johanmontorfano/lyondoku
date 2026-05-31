@@ -1,9 +1,8 @@
 "use client";
 import type { CellData } from "@/components/doku/doku";
-import { firstEverGrid, firstEverWordle } from "./game_mgr/data";
-import { LetterPosition, WordleAnswer } from "./game_mgr/types";
+import { firstEverGrid, firstEverWordle, firstEverGuessr } from "./game_mgr/data";
+import { LetterPosition, GuessrAnswer, UserFacingWordleData } from "./game_mgr/types";
 import { getDateTZ } from "./date";
-import { UserFacingGuessData } from "./game_mgr/game";
 
 function cellData2Emoji(data: CellData) {
     if (!data.answer) return "🔴";
@@ -12,7 +11,7 @@ function cellData2Emoji(data: CellData) {
     else return "🟢";
 }
 
-export function shareGame(
+export function shareDokuGame(
     id: string,
     startedAt: Date,
     endedAt: Date,
@@ -53,17 +52,17 @@ export function shareGame(
     navigator.share({ text });
 }
 
-export function shareWordleGame(
+export function shareGuessrGame(
     id: string,
     won: boolean,
     startedAt: Date,
     endedAt: Date,
-    answers: WordleAnswer[],
+    answers: GuessrAnswer[],
     withGuesses: boolean
 ) {
     const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
     const dailyNumber = Math.ceil(
-        (Date.now() - getDateTZ(firstEverWordle).getTime()) / (1000 * 60 * 60 * 24)
+        (Date.now() - getDateTZ(firstEverGuessr).getTime()) / (1000 * 60 * 60 * 24)
     );
 
     const text = [
@@ -92,12 +91,12 @@ export function shareWordleGame(
     navigator.share({ text });
 }
 
-export function shareGuessGame(
+export function shareWordleGame(
     id: string,
     startedAt: Date,
     endedAt: Date,
     locked: LetterPosition[],
-    layout: UserFacingGuessData["layout"]
+    layout: UserFacingWordleData["layout"]
 ) {
     const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
     const dailyNumber = Math.ceil(

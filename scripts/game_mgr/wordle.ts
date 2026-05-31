@@ -1,4 +1,4 @@
-import { UserFacingGuessData } from "./game";
+import { UserFacingWordleData } from "./types";
 
 /**
  * Splitting station names for the guessing game implies:
@@ -9,7 +9,7 @@ import { UserFacingGuessData } from "./game";
 */
 export function splitWithDetailsForGuess(text: string) {
     const wordLengths: number[] = [];
-    const delimiters: UserFacingGuessData["layout"]["delimiters"] = [];
+    const delimiters: UserFacingWordleData["layout"]["delimiters"] = [];
   
     const reg = /([^' -]+)|([' -])/g;
     let match;
@@ -33,5 +33,5 @@ export function splitWithDetailsForGuess(text: string) {
     return {
         wordLengths,
         delimiters
-    } satisfies UserFacingGuessData["layout"];
+    } satisfies UserFacingWordleData["layout"];
 }

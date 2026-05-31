@@ -1,8 +1,8 @@
-import { WordleAnswer } from "@/scripts/game_mgr/types";
+import { GuessrAnswer } from "@/scripts/game_mgr/types";
 import { useEffect, useState } from "react";
 import { BsArrowDown } from "react-icons/bs";
 
-export function WordleRow(props: WordleAnswer) {
+export function GuessrRow(props: GuessrAnswer) {
     const match = props.distanceWithAnswer === 0;
     const [animation, setAnimation] = useState([
         `animate-flash-${props.validLinesOnStation.length > 0 ? "green" : "red"}`,

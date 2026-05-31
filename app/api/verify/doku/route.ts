@@ -1,4 +1,5 @@
-import { GameData, retrieveGame, retrieveStation } from "@/scripts/game_mgr/game";
+import { retrieveDoku, retrieveStation } from "@/scripts/game_mgr/game";
+import { DokuData } from "@/scripts/game_mgr/types";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
@@ -14,7 +15,7 @@ export async function POST(req: NextRequest) {
     if (body.error)
         return NextResponse.json({ error: "invalid req" }, { status: 400 });
 
-    const game = await retrieveGame(body.data.gridId) as GameData;
+    const game = await retrieveDoku(body.data.gridId) as DokuData;
     const correct = game !== null &&
         game.validAnswers[body.data.targetCell]?.includes(body.data.guess);
     

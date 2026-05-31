@@ -16,6 +16,6 @@ interact with up-to-date, cleaned-up, and enriched datasets.
 ### Important points
 
 - **About brand names & code names (brand name/code reference)**
-    - Guessr = wordle/dle
+    - Guessr =was wordle/dle
     - Doku = lyondoku/doku
     - Wordle = guess

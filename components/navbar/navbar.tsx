@@ -11,7 +11,7 @@ export async function Navbar() {
     const games = [
         ["Guessr", "/"],
         ["Doku", "/doku"],
-        ["Wordle", "/guess"],
+        ["Wordle", "/wordle"],
     ];
 
     return (
