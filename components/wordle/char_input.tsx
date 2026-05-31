@@ -11,17 +11,25 @@ export function CharInput(props: {
     const totalLength = props.layout.wordLengths.reduce((p, c) => p + c, 0);
     const inputRefs = useRef<HTMLInputElement[]>([]);
     const isComposing = useRef(false);
+    const validLetters = useRef<string[]>(Array(totalLength).fill(""));
 
     useEffect(() => {
         inputRefs.current = inputRefs.current.slice(0, totalLength);
     }, [totalLength]);
 
+    useEffect(() => {
+        // when new letters are locked, we add all valid letters permanently
+        // to the validLetters ref
+        props.locked.forEach((l, i) => {
+            if (validLetters.current[i] === "" && l === LetterPosition.Valid)
+                validLetters.current[i] = props.value[i];
+        });
+    }, [props.locked]);
+
     function focusNext(currentIdx: number) {
         if (currentIdx >= totalLength - 1) return;
         
-        const nextUnlockedIdx = props.locked.findIndex(
-            (locked, i) => locked !== LetterPosition.Valid && i > currentIdx,
-        );
+        const nextUnlockedIdx = props.locked.findIndex((_, i) => i > currentIdx);
 
         if (nextUnlockedIdx !== -1 && inputRefs.current[nextUnlockedIdx]) {
             inputRefs.current[nextUnlockedIdx].focus();
@@ -35,8 +43,7 @@ export function CharInput(props: {
         const prevUnlockedIdx = [...props.locked]
             .map((locked, idx) => ({ locked, idx }))
             .slice(0, currentIdx)
-            .reverse()
-            .find((item) => item.locked !== LetterPosition.Valid)?.idx;
+            .reverse()[0].idx;
 
         if (prevUnlockedIdx !== undefined && inputRefs.current[prevUnlockedIdx]) {
             inputRefs.current[prevUnlockedIdx].focus();
@@ -87,13 +94,16 @@ export function CharInput(props: {
                                         inputRefs.current[idx] = el!;
                                     }}
                                     type="text"
+                                    placeholder={validLetters.current[idx]}
                                     value={props.value[idx] || ""}
-                                    disabled={isValid || props.disabled}
+                                    disabled={props.disabled}
                                     onCompositionStart={() => {
                                         isComposing.current = true;
                                     }}
-                                    onCompositionEnd={() => {
+                                    onCompositionEnd={(e) => {
                                         isComposing.current = false;
+                                        if ((e.target as HTMLInputElement).value !== "")
+                                            focusNext(idx);
                                     }}
                                     onChange={(e) => onInput(e, idx)}
                                     onKeyDown={(e) => onKeyDown(e, idx)}
