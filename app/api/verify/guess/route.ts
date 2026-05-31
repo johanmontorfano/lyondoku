@@ -18,15 +18,28 @@ export async function POST(req: NextRequest) {
 
     // NOTE: the guess is provided without spaces, so the verification happens
     // without spaces too
-    body.data.guess = body.data.guess.filter(c => c !== " ").map(
-        c => c.toLowerCase()
-    );
     const gameName = game.name.toLowerCase()
         .replaceAll(/[- ']/gu, "")
         .split("");
-    const match = gameName.map((c, i) =>
-        c === body.data.guess[i] ? LetterPosition.Valid :
-        body.data.guess.includes(c) ? LetterPosition.Misplaced :
+    body.data.guess = body.data.guess
+        .filter(c => c !== " ")
+        .map(c => c.toLowerCase());
+
+    // since we want misplaced letters to not be signaled when they are too
+    // much, all misplaced instances matches get deleted
+    function destructiveIncludes(i: number) {
+        const idx = gameName.findIndex(v => v === body.data!.guess[i]);
+
+        if (idx > -1) {
+            gameName[idx] = "*";
+            return true;
+        }
+        return false;
+    }
+
+    const match = Array(gameName.length).fill(0).map((_, i) =>
+        body.data.guess[i] === gameName[i] ? LetterPosition.Valid :
+        destructiveIncludes(i) ? LetterPosition.Misplaced :
         LetterPosition.Invalid
     );
 
