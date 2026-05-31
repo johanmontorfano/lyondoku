@@ -67,7 +67,7 @@ export function shareWordleGame(
     );
 
     const text = [
-        `Lyondle Guesser #${dailyNumber} (${
+        `Lyondle Guessr #${dailyNumber} (${
             new Intl.DateTimeFormat('fr-FR').format(new Date(id).getTime())
         })`,
         `${(elapsed / 60).toFixed(0).padStart(2, "0")}:${
