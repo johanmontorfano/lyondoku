@@ -30,7 +30,6 @@ export function Wordle(props: { id: string }) {
     const startedAtRef = useRef(new Date());
     const endedAtRef = useRef<Date | null>(null);
     const countdownRef = useRef<HTMLSpanElement>(null);
-    const shareWithGuesses = useRef(false);
 
     // we must get the latest answer as this function is called in the answer
     // checker which will not provide it with the new state scope upon call
@@ -271,7 +270,7 @@ export function Wordle(props: { id: string }) {
                                 startedAtRef.current,
                                 endedAtRef.current!,
                                 answers,
-                                shareWithGuesses.current
+                                false
                             )
                         }
                         className="btn btn-primary"
@@ -279,16 +278,6 @@ export function Wordle(props: { id: string }) {
                     >
                         Partager
                     </button>
-                    <label className="label text-xs">
-                        Incl. stations
-                        <input
-                            type="checkbox"
-                            className="toggle toggle-xs"
-                            onChange={ev => {
-                                shareWithGuesses.current = ev.target.checked;
-                            }}
-                        />
-                    </label>
                 </div>}
             </div>
         </div>
