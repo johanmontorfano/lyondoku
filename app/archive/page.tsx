@@ -17,7 +17,7 @@ export default function Page() {
     const allGuesses = getDateRange(firstEverGuess);
 
     const collapsableContent = [
-        ["Lyondle", allWordles, "", "lyondle"],
+        ["Guesser", allWordles, "", "lyondle"],
         ["Doku", allGrids, "doku", "doku"],
         ["Wordle", allGuesses, "guess", "guess"]
     ] as const;
@@ -47,9 +47,6 @@ export default function Page() {
                     </ul>
                 </div>
             )}
-            <div className="flex justify-end">
-                <ResetProgress />
-            </div>
         </div>
     );
 }

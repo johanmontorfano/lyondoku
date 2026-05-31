@@ -155,7 +155,7 @@ export function Wordle(props: { id: string }) {
             {won && <Confetti mode="fall" />}
             <StationSelectorPopup />
             <RuledPopup rule="dle-rules">
-                <p className="font-semibold text-xl">Comment jouer à Lyondle</p>
+                <p className="font-semibold text-xl">Comment jouer à Guesser</p>
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
                     <li>

@@ -22,3 +22,42 @@ export function ResetProgress() {
         Remettre la progession à zéro
     </button>
 }
+
+export function ResetProgressShortcut() {
+    useEffect(() => {
+        const targetSequence = ["d", "r", "p"];
+        let keyBuffer: string[] = [];
+
+        function listener(ev: KeyboardEvent) {
+            const hasModifier = ev.ctrlKey || ev.metaKey;
+            if (!hasModifier) {
+                keyBuffer = [];
+                return;
+            }
+
+            const pressedKey = ev.key.toLowerCase();
+            const nextExpectedKey = targetSequence[keyBuffer.length];
+
+            if (pressedKey === nextExpectedKey) {
+                keyBuffer.push(pressedKey);
+
+                if (keyBuffer.length === targetSequence.length) {
+                    keyBuffer = [];
+                    ev.preventDefault();
+                    localStorage.clear();
+                    window.location.reload();
+                }
+            } else {
+                keyBuffer =
+                    pressedKey === targetSequence[0] ? [pressedKey] : [];
+            }
+        }
+
+        window.addEventListener("keydown", listener);
+        return () => {
+            window.removeEventListener("keydown", listener);
+        };
+    }, []);
+
+    return null;
+}

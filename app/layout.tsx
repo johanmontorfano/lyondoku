@@ -4,6 +4,8 @@ import { FontEditor } from "@/components/font_editor";
 import { dots, serif } from "@/scripts/fonts";
 import { Footer } from "@/components/footer";
 import { Analytics } from "@vercel/analytics/next";
+import { ResetProgressShortcut } from "@/components/reset_progress";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,6 +25,7 @@ export default function RootLayout({
                     <br />
                     <Navbar />
                     <FontEditor />
+                    <ResetProgressShortcut />
                     <br />
                     {children}
                     <br />
