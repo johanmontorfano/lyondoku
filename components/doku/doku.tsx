@@ -291,6 +291,10 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
                     <li>
+                        Il est possible de se bloquer dans le remplissage de
+                        la grille, <strong>réflechissez bien</strong>.
+                    </li>
+                    <li>
                         Comme en grammaire, un mot composé est considéré 
                         comme n'étant <strong>qu'un seul mot</strong>.
                     </li>
