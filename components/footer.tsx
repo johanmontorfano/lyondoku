@@ -31,6 +31,12 @@ export async function Footer() {
                         Technologie
                     </Link>
                     <Link
+                        href="https://www.johanmontorfano.com/blog/72c6dac3-f86e-43b0-a319-6951030eb061"
+                        className="hover:text-base-content transition-colors"
+                    >
+                        Changelogs
+                    </Link>
+                    <Link
                         href="mailto:hello@johanmontorfano.com"
                         className="hover:text-base-content transition-colors"
                     >
