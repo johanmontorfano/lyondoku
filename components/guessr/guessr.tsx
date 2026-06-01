@@ -95,7 +95,7 @@ export function Guessr(props: { id: string }) {
 
             setAnswers((p) => [...p, body.data]);
             popup.setForbiddenStations([
-                ...popup.forbiddenStations,
+                ...useStationSelectorPopup.getState().forbiddenStations,
                 body.data.guess.id,
             ]);
 
@@ -169,16 +169,16 @@ export function Guessr(props: { id: string }) {
                     <li>
                         Trouvez la station TCL en <strong>
                             6 essais
-                        </strong> maximum.
+                        </strong>.
                     </li>
                     <li>
-                        Chaque essai vous fourni des indices sur la
-                        station à trouver.
+                        Chaque essai permet de récupérer des indices à propos
+                        de la station à trouver.
                     </li>
                     <li>
                         Les indices suivants sont fournis: <strong>
-                        lignes en commun, commune correcte, distance et 
-                        direction.</strong>
+                        lignes en commun, communes en commun, distance et 
+                        direction</strong>.
                     </li>
                     <li>
                         Un indice en vert/la présence d'un pictogramme de 
@@ -189,6 +189,24 @@ export function Guessr(props: { id: string }) {
                         Une nouvelle partie est disponible à <strong>
                             minuit
                         </strong> chaque jour.
+                    </li>
+                </ul>
+                <br />
+                <p className="font-semibold text-lg">
+                    Attention
+                </p>
+                <br />
+                <ul className="list-disc [&>li]:ml-6">
+                    <li>
+                        Le nom des stations correspond à celui inscrit sur le
+                        <strong> mobilier en station</strong>.
+                    </li>
+                    <li>
+                        La localité d'une station est définie par <strong>
+                            la position de ses quais
+                        </strong>. De ce fait, seulement la ville et/ou 
+                        l'arrondissement en commun avec la station à trouver
+                        seront affichés.
                     </li>
                 </ul>
             </RuledPopup>

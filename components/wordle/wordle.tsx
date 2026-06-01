@@ -241,16 +241,15 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
                     <li>
-                        Trouvez la station TCL en <strong>3 essais</strong>{" "}
-                        maximum.
+                        Trouvez la station TCL en <strong>3 essais</strong>.
                     </li>
                     <li>
-                        Vous ne verrez la forme du nom de la station qu'après
-                        le premier essai.
+                        Après le premier essai, la forme du nom de la station
+                        devient visible.
                     </li>
                     <li>
-                        Chaque essai vous indique{" "}
-                        <strong>l'ensemble des lettres</strong>{" "}
+                        Chaque essai vous indique lesquelles des{" "}
+                        <strong>lettres tentées</strong> sont
                         valides (vertes) ou mal placées (jaunes).
                     </li>
                     <li>
@@ -262,6 +261,17 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                     <li>
                         Une nouvelle partie est disponible à{" "}
                         <strong>minuit</strong> chaque jour.
+                    </li>
+                </ul>
+                <br />
+                <p className="font-semibold text-lg">
+                    Attention
+                </p>
+                <br />
+                <ul className="list-disc [&>li]:ml-6">
+                    <li>
+                        Le nom des stations correspond à celui inscrit sur le
+                        <strong> mobilier en station</strong>.
                     </li>
                 </ul>
             </RuledPopup>

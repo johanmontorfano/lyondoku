@@ -265,19 +265,44 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
                     <li>
                         Remplissez la grille avec <strong>
                             9 stations TCL
-                        </strong> différentes
+                        </strong> différentes.
                     </li>
                     <li>
-                        Chaque station doit avoir les caractéristiques de
-                        <strong> sa ligne et sa colonne</strong>
+                        Chaque station doit remplir les conditions de
+                        <strong> sa ligne et sa colonne</strong>.
                     </li>
                     <li>
-                        Vous avez droit à <strong>3 erreurs</strong>
+                        Moins la station est évidente à trouver, plus elle
+                        donne de points.
                     </li>
                     <li>
-                        Une nouvelle partie est disponible à <strong>
+                        Vous avez droit à <strong>3 erreurs</strong>.
+                    </li>
+                    <li>
+                        Une nouvelle grille est disponible à <strong>
                             minuit
-                        </strong> chaque jour
+                        </strong> chaque jour.
+                    </li>
+                </ul>
+                <br />
+                <p className="font-semibold text-lg">
+                    Attention
+                </p>
+                <br />
+                <ul className="list-disc [&>li]:ml-6">
+                    <li>
+                        Comme en grammaire, un mot composé est considéré 
+                        comme n'étant <strong>qu'un seul mot</strong>.
+                    </li>
+                    <li>
+                        Le nom des stations correspond à celui inscrit sur le
+                        <strong> mobilier en station</strong>.
+                    </li>
+                    <li>
+                        La localité d'une station est définie par <strong>
+                            la position de ses quais
+                        </strong>. De ce fait, une station peut se trouver dans
+                        plusieurs villes et/ou arrondissements simultanément.
                     </li>
                 </ul>
             </RuledPopup>
