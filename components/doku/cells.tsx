@@ -70,7 +70,7 @@ export function Cell(props: {
                 props.onClick();
         }} 
     >
-        {props.data?.score.toFixed(2) === "0.67" && <motion.img
+        {props.data?.score === 67 && <motion.img
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 1, 1, 1, 0] }}
             transition={{ duration: 4 }}

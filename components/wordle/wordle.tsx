@@ -356,7 +356,7 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                 </div>
                 <input type="submit" disabled={loading} hidden />
             </form>
-            <div className="flex justify-between items-center w-full">
+            <div className="flex justify-between items-center flex-wrap-reverse">
                 <div className="flex gap-2">
                     <button
                         onClick={() => useRuledPopupContext
@@ -408,7 +408,9 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                         </button>
                     )}
                 </div>
-                <Counter count={attempts} />
+                <div className="flex justify-end flex-grow py-8">
+                    <Counter count={attempts} />
+                </div>
             </div>
         </div>
     );

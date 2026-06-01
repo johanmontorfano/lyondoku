@@ -1,3 +1,4 @@
+import { orderLines } from "../lines_order_by";
 import { Constraints, Station } from "./types";
 import linesData from "@/public/data/lines.json";
 
@@ -94,7 +95,7 @@ export async function humanizeConstraint(
                 return <>
                     Sur une ligne {colorstl[val]}
                     <div className="flex flex-wrap gap-1 mt-2">
-                        {linesData.byColor[val as "green"].sort().map((l: string) =>
+                        {orderLines(linesData.byColor[val as "green"]).map((l: string) =>
                             <img
                                 key={l}
                                 src={"/lines/" + l + ".svg"}

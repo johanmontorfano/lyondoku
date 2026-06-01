@@ -18,35 +18,34 @@ export async function POST(req: NextRequest) {
 
     // NOTE: the guess is provided without spaces, so the verification happens
     // without spaces too
-    const gameName = game.name.toLowerCase()
-        .replaceAll(/[- ']/gu, "")
-        .split("");
-    body.data.guess = body.data.guess
-        .filter(c => c !== " ")
-        .map(c => c.toLowerCase());
+    const gameName = game.name.toLowerCase().replaceAll(/[- ']/gu, "").split("");
+    const guess = body.data.guess.filter(c => c !== " ").map(c => c.toLowerCase());
 
-    // since we want misplaced letters to not be signaled when they are too
-    // much, all misplaced instances matches get deleted
-    function destructiveIncludes(i: number) {
-        const idx = gameName.findIndex(v => v === body.data!.guess[i]);
+    const match = Array(gameName.length).fill(LetterPosition.Invalid);
+    const secretWordPool = [...gameName];
+    const userGuessPool: (string | null)[] = [...guess];
 
-        if (idx > -1) {
-            gameName[idx] = "*";
-            return true;
+    for (let i = 0; i < gameName.length; i++) {
+        if (userGuessPool[i] && secretWordPool[i] &&
+            userGuessPool[i] === secretWordPool[i]) {
+            match[i] = LetterPosition.Valid;
+            secretWordPool[i] = "*";
+            userGuessPool[i] = null;
         }
-        return false;
     }
 
-    const match = Array(gameName.length).fill(0).map((_, i) =>
-        body.data.guess[i] === gameName[i] ? LetterPosition.Valid :
-        destructiveIncludes(i) ? LetterPosition.Misplaced :
-        LetterPosition.Invalid
-    );
+    for (let i = 0; i < gameName.length; i++) {
+        if (!userGuessPool[i] || userGuessPool[i] === null) continue;
+
+        const misplacedIdx = secretWordPool.indexOf(userGuessPool[i]!);
+        if (misplacedIdx > -1) {
+            match[i] = LetterPosition.Misplaced;
+            secretWordPool[misplacedIdx] = "*";
+        }
+    }
 
     return NextResponse.json({
-        won: match
-            .map(c => c === LetterPosition.Valid)
-            .reduce((p, c) => p && c),
+        won: match.every(c => c === LetterPosition.Valid),
         match
     });
 }

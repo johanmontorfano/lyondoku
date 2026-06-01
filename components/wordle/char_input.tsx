@@ -123,9 +123,12 @@ export function CharInput(props: {
                     <div className="flex items-center">
                         {props.layout
                             .delimiters
-                            .filter(d => d.after === i + 1)
-                            .map(d => (
-                                <p>{d.type}</p>
+                            .filter(d => d.after === i + 1 && d.type !== " ")
+                            .map((d, i) => (
+                                <p
+                                    key={`${d}-delim-${i}`}
+                                    className="w-9 h-10.5 lg:w-10 lg:h-12.5 text-center text-xl font-bold uppercase rounded-lg border-2 bg-base-100 border-base-content/20 text-base-content"
+                                >{d.type}</p>
                             ))}
                     </div>
                 </Fragment>);

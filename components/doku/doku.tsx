@@ -382,8 +382,7 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
                     </React.Fragment>
                 ))}
             </div>
-            <br />
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap-reverse">
                 <div className="flex gap-2">
                     <button
                         onClick={() => useRuledPopupContext
@@ -418,7 +417,9 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
                         key="share"
                     >Partager</button>}
                 </div>
-                <Counter score={Math.floor(score) - attempts * 50} count={errorCount} />
+                <div className="flex justify-end flex-grow py-8">
+                    <Counter score={Math.floor(score) - attempts * 50} count={errorCount} />
+                </div>
             </div>
         </div>
     );
