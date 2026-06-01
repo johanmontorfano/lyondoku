@@ -47,8 +47,8 @@ export interface Station {
     stationCharacteristics: "std"[];
 
     street: string[];
-    lat: number;
-    lon: number;
+    lat: number[];
+    lon: number[];
     // NOTE: when the station is outside of Lyon, we default to -1
     borough: number[];
     city: string[];
