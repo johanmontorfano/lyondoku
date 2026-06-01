@@ -7,14 +7,14 @@ import { BsX } from "react-icons/bs";
 export const useStationSelectorPopup = create<{
     show: boolean;
     // when this variable is set, the popup will only show those stations
-    showSpecificStationsReadonly: number[] | null;
+    showSpecificStationsReadonly: [number, number][] | null;
     lastSelected: number | null;
     placeholder: string;
     // stations are saved this way since the server only provides ids
     stations: Record<number, string>;
     // used for all stations that are already used in answers
     forbiddenStations: number[];
-    setShowSpecificStationsReadonly(stations: number[] | null): void;
+    setShowSpecificStationsReadonly(stations: [number, number][] | null): void;
     setLastSelected(selected: number | null): void;
     setPlaceholder(placeholder: string): void;
     setStations(stations: Record<number, string>): void;
@@ -192,13 +192,20 @@ export function StationSelectorPopup() {
                                         </motion.li>
                                     ))}
                                 </AnimatePresence>
-                                {state.showSpecificStationsReadonly?.map(id => (
-                                        <li key={state.stations[id]}>
-                                            <p className="flex justify-between items-center py-3 px-4 rounded-xl transition-colors text-medium">
-                                                {state.stations[id]}
-                                            </p>
-                                        </li>
-                                    ))}
+                                {state.showSpecificStationsReadonly?.sort((a, b) => {
+                                    if (a[1] > b[1]) return 1;
+                                    if (a[1] < b[1]) return -1;
+                                    return 0;
+                                }).map(([id, score]) => (
+                                    <li key={state.stations[id]}>
+                                        <div className="flex justify-between items-center py-3 px-4 rounded-xl transition-colors text-medium">
+                                            <span>{state.stations[id]}</span>
+                                            <span className="badge">
+                                                {((1 -score) * 100).toFixed(0)}%
+                                            </span>
+                                        </div>
+                                    </li>
+                                ))}
                                 {search && matches.length === 0 && (
                                     <div className="p-8 text-center text-base-content/50 italic">
                                         No stations found for "{search}"

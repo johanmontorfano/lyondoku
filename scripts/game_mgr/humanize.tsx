@@ -111,7 +111,7 @@ export async function humanizeConstraint(
         case "borough":
             if (val === "even")
                 return "Dans un arrondissement pair";
-            if (val === "ood")
+            if (val === "odd")
                 return "Dans un arrondissement impair";
             return `Dans le ${val}${val === "1" ? "er" : "ème"} arrondissement`;
         case "city":

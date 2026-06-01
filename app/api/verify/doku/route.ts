@@ -26,9 +26,12 @@ export async function POST(req: NextRequest) {
 
     if (stationData === null)
         return NextResponse.json({ error: "retrieval err" }, { status: 500 });
+
+    let rarity = 1 - stationData.finalScore;
+
     return NextResponse.json({
         correct,
         stationData,
-        score: parseFloat((100 * (1 - stationData.cognitiveScore)).toFixed(0))
+        score: parseFloat((rarity * 100).toFixed(0))
     });
 }

@@ -15,7 +15,7 @@ import Confetti from "react-confetti-boom";
 
 export interface CellData {
     answer?: Station;
-    validAnswers: number[];
+    validAnswers: [number, number][];
     score: number;
     errors: number;
 };
@@ -141,7 +141,7 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
 
             setCells(prev => {
                 Object.entries(body).forEach(([k, v]) => {
-                    prev[getKeyId(k)].validAnswers = v as number[];
+                    prev[getKeyId(k)].validAnswers = v as [number, number][];
                 });
                 return [...prev];
             });

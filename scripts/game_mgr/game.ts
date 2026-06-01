@@ -2,6 +2,7 @@ import "server-only";
 import { DokuData, GuessrData, Station, UserFacingDokuData, UserFacingWordleData, WordleData } from "./types";
 import { firestore } from "../firebase/server";
 import { splitWithDetailsForGuess } from "./wordle";
+import { getCQL } from "../cql";
 
 // when the retrieval is userFacing, solutions are not provided but the number
 // of possible solutions per cell is provided
@@ -66,29 +67,9 @@ export async function retrieveWordle(id: string, userFacing = false): Promise<
 }
 
 export async function retrieveStation(id: number) {
-    try {
-        const res = await fetch("https://api.lyondle.fr/cql", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                target: "stations",
-                query: `SELECT id == str:[${id}]`
-            })
-        });
+    const res = await getCQL(`IF id == str:[${id}]`, "stations");
 
-        console.log(id);
-
-        if (!res.ok) throw Error("Request error " + res.status);
-
-        const body = await res.json();
-
-        if ("selected" in body && body["selected"].length > 0)
-            return body["selected"][0] as Station;
-        return null;
-    } catch (e) {
-        console.error(e);
-        return null;
-    }
+    if (res && res.selected.length > 0)
+        return res.selected[0] as Station;
+    return null;
 }

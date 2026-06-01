@@ -54,6 +54,7 @@ export interface Station {
     city: string[];
     terminus: boolean;
     cognitiveScore: number;
+    finalScore: number;
     stopsId: number[];
 }
 
