@@ -1,10 +1,20 @@
+import { navbarGames } from "@/components/navbar/navbar";
+import { dots } from "@/scripts/fonts";
 import Link from "next/link";
 
 export default function NotFound() {
-    return <div className="w-full h-full">
-        <p className="text-lg font-semibold">
-            Cette grille n'existe pas ou n'est pas encore disponible.
-        </p>
-        <Link href="/" className="hover:underline">Retourner a l'accueil</Link>
+    return <div className="flex flex-grow flex-col justify-center items-center">
+        <h1 className={`text-8xl font-bold ${dots.className}`}>=(</h1>
+        <br />
+        <br />
+        <p className="text-xl">Cette partie n'existe pas</p>
+        <br />
+        <div className="flex items-center gap-4 text-base-content/70">
+            {navbarGames.map((g) => (
+                <Link key={`h-${g[1]}`} href={g[1]} className="hover:text-base-content transition-colors">
+                    {g[0]}
+                </Link>
+            ))}
+        </div>
     </div>
 }

@@ -2,17 +2,17 @@ import { firestore } from "@/scripts/firebase/server";
 import Link from "next/link";
 import { GamesDropdown } from "./dropdown";
 
+export const navbarGames = [
+    ["Guessr", "/"],
+    ["Doku", "/doku"],
+    ["Wordle", "/wordle"],
+];
+
 export async function Navbar() {
     // since the navbar title can be updated, we must load it here to show it
     // WARN: this component MUST NOT be a client component thus
     const titleSnap = await firestore.doc("config/ui").get();
     const title = titleSnap.data()!.navbarTitle as string;
-
-    const games = [
-        ["Guessr", "/"],
-        ["Doku", "/doku"],
-        ["Wordle", "/wordle"],
-    ];
 
     return (
         <header className="w-full max-w-3xl mx-auto pt-4">
@@ -22,10 +22,10 @@ export async function Navbar() {
                 </Link>
                 <nav className="flex items-center gap-1 text-sm font-medium">
                     <div className="md:hidden">
-                        <GamesDropdown games={games} />
+                        <GamesDropdown games={navbarGames} />
                     </div>
                     <div className="hidden md:flex items-center gap-4 text-base-content/70">
-                        {games.map((g) => (
+                        {navbarGames.map((g) => (
                             <Link key={`h-${g[1]}`} href={g[1]} className="hover:text-base-content transition-colors">
                                 {g[0]}
                             </Link>

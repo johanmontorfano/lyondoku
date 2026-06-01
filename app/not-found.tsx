@@ -7,7 +7,7 @@ export default function NotFound() {
         <h1 className={`text-8xl font-bold ${dots.className}`}>=(</h1>
         <br />
         <br />
-        <p className="text-xl">Cette partie n'existe pas</p>
+        <p className="text-xl">Il semblerait que vous vous êtes perdu</p>
         <br />
         <div className="flex items-center gap-4 text-base-content/70">
             {navbarGames.map((g) => (
