@@ -6,9 +6,9 @@ import { getDateTZ } from "./date";
 
 function cellData2Emoji(data: CellData) {
     if (!data.answer) return "🔴";
-    else if (data.errors > 1) return "🟠";
-    else if (data.errors > 0) return "🟡";
-    else return "🟢";
+    if (data.errors > 1) return "🟠";
+    if (data.errors > 0) return "🟡";
+    return "🟢";
 }
 
 export function shareDokuGame(
@@ -30,15 +30,14 @@ export function shareDokuGame(
         (Date.now() - getDateTZ(firstEverGrid).getTime()) / (1000 * 60 * 60 * 24)
     );
 
+    const formattedTime = `${Math.floor(elapsed / 60).toString().padStart(2, "0")}:${(elapsed % 60).toString().padStart(2, "0")}`;
+    const errorText = errors === 0 ? "sans erreur" : errors === 1 ? "1 erreur" : `${errors} erreurs`;
+
     const text = [
-        `Lyondle Doku #${dailyNumber} (${
+        `🧩 Lyondle Doku #${dailyNumber} (${
             new Intl.DateTimeFormat('fr-FR').format(new Date(id).getTime())
         })`,
-        `${(elapsed / 60).toFixed(0).padStart(2, "0")}:${
-            (elapsed % 60).toString().padStart(2, "0")
-        } – ${score}/900 – ${
-            errors 
-        } erreur(s)`,
+        `⏱️ ${formattedTime} • 🏆 ${score}/900 • ❌ ${errorText}`,
         "",
         ...cellKeys.map(r => {
             return r.map(c => cellData2Emoji(cells[
@@ -65,24 +64,23 @@ export function shareGuessrGame(
         (Date.now() - getDateTZ(firstEverGuessr).getTime()) / (1000 * 60 * 60 * 24)
     );
 
+    const formattedTime = `${Math.floor(elapsed / 60).toString().padStart(2, "0")}:${(elapsed % 60).toString().padStart(2, "0")}`;
+    const statusHeader = won ? "Gagné" : "Perdu";
+
     const text = [
-        `Lyondle Guessr #${dailyNumber} (${
+        `📍 Lyondle Guessr #${dailyNumber} (${
             new Intl.DateTimeFormat('fr-FR').format(new Date(id).getTime())
         })`,
-        `${(elapsed / 60).toFixed(0).padStart(2, "0")}:${
-            (elapsed % 60).toString().padStart(2, "0")
-        }`,
+        `⏱️ ${formattedTime} • ${statusHeader}`,
         "",
         ...(!won ? answers.slice(0, answers.length - 1) : answers).map(r => {
-            return `${
-                r.distanceWithAnswer === 0 ? "🟩" : "🟥"
-            } ${
-                r.validLinesOnStation.length > 0 ? "🟩": "🟥"
-            } ${
-                r.cityMatch ? "🟩" : "🟥"
-            } ${
-                r.distanceWithAnswer === 0 ? "🟩" : "🟥"
-            }   ${r.distanceWithAnswer > 0 && withGuesses ? r.guess.name : ""}`
+            const distanceEmoji = r.distanceWithAnswer === 0 ? "✅" : "🟥";
+            const linesEmoji = r.validLinesOnStation.length > 0 ? "✅" : "🟥";
+            const cityEmoji = r.cityMatch ? "✅" : "🟥";
+            
+            return `${distanceEmoji}${linesEmoji}${cityEmoji}${distanceEmoji}${
+                r.distanceWithAnswer > 0 && withGuesses ? `  📍 ${r.guess.name}` : ""
+            }`;
         }),
         "",
         "https://www.lyondle.fr"
@@ -98,27 +96,32 @@ export function shareWordleGame(
     locked: LetterPosition[],
     layout: UserFacingWordleData["layout"]
 ) {
+    const won = !locked.find(l => l !== LetterPosition.Valid);
     const elapsed = Math.ceil((endedAt.getTime() - startedAt.getTime()) / 1000);
     const dailyNumber = Math.ceil(
         (Date.now() - getDateTZ(firstEverWordle).getTime()) / (1000 * 60 * 60 * 24)
     );
 
+    const formattedTime = `${Math.floor(elapsed / 60).toString().padStart(2, "0")}:${(elapsed % 60).toString().padStart(2, "0")}`;
+
     const text = [
-        `Lyondle Wordle #${dailyNumber} (${
+        `📝 Lyondle Wordle #${dailyNumber} (${
             new Intl.DateTimeFormat('fr-FR').format(new Date(id).getTime())
         })`,
-        `${(elapsed / 60).toFixed(0).padStart(2, "0")}:${
-            (elapsed % 60).toString().padStart(2, "0")
-        }`,
+        `⏱️ ${ won ? "Gagné" : "Perdu" } en ${formattedTime}`,
         "",
         layout.wordLengths.map((w, i) => {
             const wordStats = new Array(w).fill(0).map((_, x) => {
-                return locked[x + [0, ...layout.wordLengths.slice(
+                const status = locked[x + [0, ...layout.wordLengths.slice(
                     0, i
                 )].reduce(
                     (p, c) => p + c
-                )] === LetterPosition.Valid ? "🟩" : "🟥";
-            }).join("");;
+                )];
+
+                return status === LetterPosition.Valid ? "🟩" :
+                    status === LetterPosition.Misplaced ? "🔶" : "⭕️";
+            }).join("");
+            
             const delimiters = layout.delimiters.filter(
                 d => d.after === i + 1
             ).map(d => d.type).join("");
