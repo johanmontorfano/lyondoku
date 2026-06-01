@@ -37,6 +37,12 @@ export async function Footer() {
                         Changelogs
                     </Link>
                     <Link
+                        href="https://www.threads.com/@lyondletcl"
+                        className="hover:text-base-content transition-colors"
+                    >
+                        Threads
+                    </Link>
+                    <Link
                         href="mailto:hello@johanmontorfano.com"
                         className="hover:text-base-content transition-colors"
                     >
