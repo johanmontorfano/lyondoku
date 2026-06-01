@@ -32,6 +32,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
         correct,
         stationData,
-        score: parseFloat((rarity * 100).toFixed(0))
+        score: parseFloat(((1 - rarity) * 100).toFixed(0))
     });
 }

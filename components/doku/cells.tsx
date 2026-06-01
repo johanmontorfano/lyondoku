@@ -59,7 +59,7 @@ export function Cell(props: {
 
     return <motion.div
         role="button"
-        className={`w-full h-full ${!props.data?.answer ||
+        className={`relative w-full h-full ${!props.data?.answer ||
             props.data.validAnswers ? "cursor-pointer" : ""} ${animation} 
             border border-1 rounded-md dark:border-neutral-700 hover:bg-base-300 
             overflow-clip transition-colors ${props.disabled ?
@@ -74,6 +74,7 @@ export function Cell(props: {
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 1, 1, 1, 0] }}
             transition={{ duration: 4 }}
+            className="absolute z-100"
             src="/67.gif"
         />}
         {props.data.answer && <div className="relative h-full">
