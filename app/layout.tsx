@@ -45,7 +45,7 @@ export const metadata: Metadata = {
         title: "Lyondle | La trilogie de jeux des TCL",
         description:
             "Testez-vous chaque jour sur un Sudoku, un Wordle et un Guessr 100% dédiés aux TCL.",
-        images: ["https://www.lyondle.fr/og-banner.png"]
+        images: ["https://www.lyondle.fr/twitter-banner.png"]
     },
     alternates: {
         canonical: "https://www.lyondle.fr"
