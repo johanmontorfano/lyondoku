@@ -13,7 +13,7 @@ import Confetti from "react-confetti-boom";
 import { shareGuessrGame } from "@/scripts/share_game";
 import { RuledPopup, useRuledPopupContext } from "../popup";
 
-// this game works by making the user guess in 5 tries a station based on 5
+// this game works by making the user guess in 6 tries a station based on 5
 // criterias:
 // - guess
 // - line/connections matching
@@ -243,7 +243,7 @@ export function Guessr(props: { id: string }) {
                 <thead>
                     <tr className="text-base-content/80 text-dyn-md font-bold">
                         <th className="w-[52%]">Station</th>
-                        <th className="w-[10%] text-center">Lignes</th>
+                        <th className="w-[10%] text-center">Lignes en commun</th>
                         <th className="w-[20%] text-center">Commune</th>
                         <th className="w-[18%] text-right">Distance</th>
                     </tr>
@@ -257,7 +257,9 @@ export function Guessr(props: { id: string }) {
                             className="bg-base-200/50 hover:bg-base-200 cursor-pointer transition-colors"
                             onClick={async () => {
                                 popup.setPlaceholder(
-                                    `Encore ${6 - answers.length} essai(s)`,
+                                    `Encore ${6 - answers.length} essai${
+                                        6 - answers.length > 1 ? "s" : ""
+                                    }`,
                                 );
                                 popup.setStations(
                                     await getDataset("stations_dict"),
