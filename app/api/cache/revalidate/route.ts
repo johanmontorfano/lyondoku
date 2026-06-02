@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     if (auth === `Bearer ${process.env.CRON_SECRET}`) {
         revalidatePath("/");
         revalidatePath("/doku");
-        revalidatePath("/guess");
+        revalidatePath("/wordle");
         revalidatePath("/archive");
         return NextResponse.json({ success: true });
     } else return NextResponse.json({ success: false }, { status: 401 });
