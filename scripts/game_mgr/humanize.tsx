@@ -45,6 +45,8 @@ export async function humanizeConstraint(
                 return "Fait référence à une figure historique"
             else if (val === "det")
                 return "Comporte au moins un déterminant"
+            else if (val === "train")
+                return "Dessert une gare SNCF"
             break;
         // NOTE: THIS PROPERTY IS SPECIAL AS NO METHOD APPLIES TO IT
         case "near":
