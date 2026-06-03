@@ -116,8 +116,6 @@ export function StationSelectorPopup() {
                         }}
                         className="bg-base-200 shadow-2xl max-w-[450px] w-full rounded-2xl overflow-hidden border border-base-300 mt-5 mx-5"
                         onClick={(ev) => ev.stopPropagation()}
-                        drag
-                        dragMomentum={false}
                     >
                         <div className="px-4 pt-2 flex justify-between items-center">
                             <div />
