@@ -124,7 +124,10 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
 
             if (!res.ok) throw new Error("Request error");
 
-            const body = await res.json();
+            const body: {
+                match: [LetterPosition, string | null][],
+                won: boolean
+            } = await res.json();
 
             // we check all letters statuses
             setMisplaced(p => {
@@ -134,7 +137,7 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                 // we build a dict first linking the match state with the
                 // letter, we also for set valid keys to their given key right
                 // now as the steps after mess up the sorting
-                body.match.forEach((status: [LetterPosition, string | null], i: number) => {
+                body.match.forEach((status, i: number) => {
                     const letter = keys[i] || "";
                     matchWithKey[letter] = status[0];
 
@@ -178,8 +181,9 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
             // we must run the matches through a filter before setting
             setLockedIndices(body.match.map(m => m[0]));
             if (!body.won) setAttempts((p) => p + 1);
-            else handleGameEnd(true, body.match);
-            if (!body.won && attempts > 1) handleGameEnd(false, body.match);
+            else handleGameEnd(true, body.match.map(m => m[0]));
+            if (!body.won && attempts > 1)
+                handleGameEnd(false, body.match.map(m => m[0]));
         } catch (e) {}
         setLoading(false);
     }
