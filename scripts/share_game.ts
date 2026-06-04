@@ -121,12 +121,7 @@ export function shareWordleGame(
                 return status === LetterPosition.Valid ? "🟩" :
                     status === LetterPosition.Misplaced ? "🔶" : "⭕️";
             }).join("");
-            
-            const delimiters = layout.delimiters.filter(
-                d => d.after === i + 1
-            ).map(d => d.type).join("");
-
-            return wordStats + delimiters;
+            return wordStats;
         }).join(""),
         "",
         "https://www.lyondle.fr/guess"

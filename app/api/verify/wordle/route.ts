@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({
-        won: match.every(c => c === LetterPosition.Valid),
+        won: match.every(c => c[0] === LetterPosition.Valid),
         match
     });
 }

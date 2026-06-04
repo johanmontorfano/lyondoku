@@ -1,7 +1,7 @@
 "use client";
 
 import { isToday } from "@/scripts/date";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { RuledPopup, useRuledPopupContext } from "../popup";
 import { LetterPosition, UserFacingWordleData, WordleData } from "@/scripts/game_mgr/types";
 import { CharInput } from "./char_input";
