@@ -12,6 +12,7 @@ import { isToday } from "@/scripts/date";
 import { RuledPopup, useRuledPopupContext } from "../popup";
 import { Cell, ConstraintCell } from "./cells";
 import Confetti from "react-confetti-boom";
+import { useCountdown } from "@/scripts/countdown";
 
 export interface CellData {
     answer?: Station;
@@ -61,7 +62,6 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
     const [won, setWon] = useState<boolean | null>(null);
     const [loading, setLoading] = useState(false);
     const [attempts, setAttemps] = useState(0);
-    const [scorePenality, setScorePenality] = useState(0);
     const [cells, setCells] = useState<CellData[]>(cellKeys.flat().map(() => ({
         score: 0,
         errors: 0,
@@ -74,13 +74,11 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
     [cells]);
     const score = useMemo(() => Object.values(cells)
         .map(c => c.score)
-        .reduce((p, c) => p + c, 0) - scorePenality,
-    [cells, scorePenality]);
+        .reduce((p, c) => p + c, 0),
+    [cells]);
     const focusedCellKey = useRef("tl");
 
-    const startedAtRef = useRef(new Date());
-    const endedAtRef = useRef<Date | null>(null);
-    const countdownRef = useRef<HTMLSpanElement>(null);
+    const [countdownRef, startedAt, endedAt] = useCountdown("doku-rules");
 
     const getKeyId = (k: string) => cellKeys.flat().findIndex(v => v === k);
 
@@ -151,13 +149,13 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
     }
     
     function handleGameEnd(won: boolean) {
-        endedAtRef.current = new Date();
+        endedAt.current = new Date();
         setWon(won);
         if (!props.gameData.id.startsWith("random_"))
             localStorage.setItem(`doku-${props.gameData.id}`, JSON.stringify({
                 won, cells, attempts,
-                startedAt: startedAtRef.current.getTime(),
-                endedAt: endedAtRef.current.getTime()
+                startedAt: startedAt.current.getTime(),
+                endedAt: endedAt.current.getTime()
             } satisfies DokuSave));
         getAllAnswers();
     }
@@ -177,8 +175,8 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
         if (saveGame !== null) {
             const saveData = JSON.parse(saveGame);
 
-            startedAtRef.current = new Date(saveData.startedAt);
-            endedAtRef.current = new Date(saveData.endedAt);
+            startedAt.current = new Date(saveData.startedAt);
+            endedAt.current = new Date(saveData.endedAt);
             setWon(saveData.won);
             setCells(saveData.cells);
             setAttemps(saveData.attempts);
@@ -216,44 +214,6 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
             handleGameEnd(false);
         }
     }, [cells, errorCount]);
-
-    useEffect(() => {
-        let lastTime = Date.now();
-
-        function updateCountdown() {
-            // NOTE: if the rule popup is still visible the countdown must not
-            // start.
-            // HACK: to avoid too much overhead, the startAt date is just reset
-            if (useRuledPopupContext.getState().currentRule === "doku-rules") {
-                startedAtRef.current = new Date();
-                return requestAnimationFrame(updateCountdown);
-            }
-
-            const now = Date.now();
-            const elapsed = Math.ceil(
-                ((endedAtRef.current ? new Date(endedAtRef.current).getTime() : now) - startedAtRef.current.getTime()) / 1000
-            );
-        
-            const deltaElapsed = (now - lastTime) / 1000;
-            lastTime = now;
-
-            setScorePenality(p => Math.min(
-                p + deltaElapsed * Math.floor(elapsed / 120),
-                score
-            ));
-
-            if (countdownRef.current !== null) {
-                countdownRef.current.textContent = `${
-                    Math.floor(elapsed / 60).toString().padStart(2, "0")
-                }:${
-                    (elapsed % 60).toString().padStart(2, "0")
-                }`;
-            }    
-            if (endedAtRef.current === null)
-                requestAnimationFrame(updateCountdown);
-        }
-        requestAnimationFrame(updateCountdown); 
-    }, []);
 
     return (
         <div>
@@ -413,8 +373,8 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
                     {won !== null && <button
                         onClick={() => shareDokuGame(
                             props.gameData.id,
-                            startedAtRef.current,
-                            endedAtRef.current!,
+                            startedAt.current,
+                            endedAt.current!,
                             cells
                         )}
                         className="btn btn-primary"

@@ -8,6 +8,7 @@ import { CharInput } from "./char_input";
 import Confetti from "react-confetti-boom";
 import { shareWordleGame } from "@/scripts/share_game";
 import { AnimatePresence, motion } from "framer-motion";
+import { useCountdown } from "@/scripts/countdown";
 
 function Counter(props: { count: number }) {
     const dot = "h-3 w-3 border border-2 rounded-full transition-colors ";
@@ -66,13 +67,11 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
         string, Record<"misplaced" | "valid", number>
     >>({});
 
-    const startedAtRef = useRef(new Date());
-    const endedAtRef = useRef<Date | null>(null);
-    const countdownRef = useRef<HTMLSpanElement>(null);
+    const [countdownRef, startedAt, endedAt] = useCountdown("wordle-rules");
 
     async function handleGameEnd(won: boolean, indices: typeof lockedIndices) {
         setWon(won);
-        endedAtRef.current = new Date();
+        endedAt.current = new Date();
         if (!won) {
             try {
                 const res = await fetch("/api/solution/wordle?id=" + props.id);
@@ -89,8 +88,8 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                         attempts: 3,
                         inputs: body.name.replaceAll(" ", "").split(""),
                         locked: indices,
-                        startedAt: startedAtRef.current.getTime(),
-                        endedAt: endedAtRef.current.getTime(),
+                        startedAt: startedAt.current.getTime(),
+                        endedAt: endedAt.current.getTime(),
                     }),
                 );
             } catch (e) {}
@@ -102,8 +101,8 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                     inputs,
                     attempts,
                     locked: indices,
-                    startedAt: startedAtRef.current.getTime(),
-                    endedAt: endedAtRef.current.getTime(),
+                    startedAt: startedAt.current.getTime(),
+                    endedAt: endedAt.current.getTime(),
                 }),
             );
         }
@@ -191,52 +190,22 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
             setAttempts(data.attempts);
             setInputs(data.inputs);
             setLockedIndices(data.locked);
-            startedAtRef.current = new Date(data.startedAt);
-            endedAtRef.current = new Date(data.endedAt);
+            startedAt.current = new Date(data.startedAt);
+            endedAt.current = new Date(data.endedAt);
         } else {
             setWon(null);
             setAttempts(0);
             setInputs(Array(length).fill(""));
             setLockedIndices(Array(length).fill(LetterPosition.Invalid));
-            startedAtRef.current = new Date();
-            endedAtRef.current = null;
+            startedAt.current = new Date();
+            endedAt.current = null;
         }
     }, [props.gameData]);
-
-    useEffect(() => {
-        function updateCountdown() {
-            // NOTE: if the rule popup is still visible the countdown must not
-            // start.
-            // HACK: to avoid too much overhead, the startAt date is just reset
-            if (useRuledPopupContext.getState().currentRule === "guess-rules") {
-                startedAtRef.current = new Date();
-                return requestAnimationFrame(updateCountdown);
-            }
-
-            const elapsed = Math.ceil(
-                ((endedAtRef.current
-                    ? new Date(endedAtRef.current).getTime()
-                    : Date.now()) -
-                    startedAtRef.current.getTime()) /
-                    1000,
-            );
-
-            if (countdownRef.current !== null)
-                countdownRef.current.textContent = `${(elapsed / 60)
-                    .toFixed(0)
-                    .padStart(2, "0")}:${(elapsed % 60)
-                    .toString()
-                    .padStart(2, "0")}`;
-            if (endedAtRef.current === null)
-                requestAnimationFrame(updateCountdown);
-        }
-        updateCountdown();
-    }, []);
 
     return (
         <div className="flex flex-col justify-between grow gap-8">
             {won && <Confetti mode="fall" />}
-            <RuledPopup rule="guess-rules">
+            <RuledPopup rule="wordle-rules">
                 <p className="font-semibold text-xl">Comment jouer au wordle</p>
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
@@ -395,8 +364,8 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                             onClick={() =>
                                 shareWordleGame(
                                     props.id,
-                                    startedAtRef.current,
-                                    endedAtRef.current!,
+                                    startedAt.current,
+                                    endedAt.current!,
                                     lockedIndices,
                                     props.gameData.layout,
                                 )

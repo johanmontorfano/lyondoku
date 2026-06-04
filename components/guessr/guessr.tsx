@@ -1,7 +1,7 @@
 "use client";
 
 import { Station, GuessrAnswer } from "@/scripts/game_mgr/types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
     StationSelectorPopup,
     useStationSelectorPopup,
@@ -12,6 +12,7 @@ import { GuessrRow } from "./row";
 import Confetti from "react-confetti-boom";
 import { shareGuessrGame } from "@/scripts/share_game";
 import { RuledPopup, useRuledPopupContext } from "../popup";
+import { useCountdown } from "@/scripts/countdown";
 
 // this game works by making the user guess in 6 tries a station based on 5
 // criterias:
@@ -27,15 +28,13 @@ export function Guessr(props: { id: string }) {
     const [answers, setAnswers] = useState<GuessrAnswer[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const startedAtRef = useRef(new Date());
-    const endedAtRef = useRef<Date | null>(null);
-    const countdownRef = useRef<HTMLSpanElement>(null);
+    const [countdownRef, startedAt, endedAt] = useCountdown("guessr-rules");
 
     // we must get the latest answer as this function is called in the answer
     // checker which will not provide it with the new state scope upon call
     async function handleGameEnd(won: boolean, latestAnswer?: GuessrAnswer) {
         const final = [...answers];
-        endedAtRef.current = new Date();
+        endedAt.current = new Date();
 
         if (latestAnswer) final.push(latestAnswer);
         if (!won) try {
@@ -75,8 +74,8 @@ export function Guessr(props: { id: string }) {
             JSON.stringify({
                 won,
                 answers: final,
-                startedAt: startedAtRef.current.getTime(),
-                endedAt: endedAtRef.current!.getTime(),
+                startedAt: startedAt.current.getTime(),
+                endedAt: endedAt.current!.getTime(),
             }),
         );
     }
@@ -118,37 +117,9 @@ export function Guessr(props: { id: string }) {
 
             setAnswers(gameData.answers);
             setWon(gameData.won);
-            startedAtRef.current = new Date(gameData.startedAt);
-            endedAtRef.current = new Date(gameData.endedAt);
+            startedAt.current = new Date(gameData.startedAt);
+            endedAt.current = new Date(gameData.endedAt);
         }
-
-        function updateCountdown() {
-            // NOTE: if the rule popup is still visible the countdown must not
-            // start.
-            // HACK: to avoid too much overhead, the startAt date is just reset
-            if (useRuledPopupContext.getState().currentRule === "dle-rules") {
-                startedAtRef.current = new Date();
-                return requestAnimationFrame(updateCountdown);
-            }
-
-            const elapsed = Math.ceil(
-                ((endedAtRef.current
-                    ? new Date(endedAtRef.current).getTime()
-                    : Date.now()) -
-                    startedAtRef.current.getTime()) /
-                    1000,
-            );
-
-            if (countdownRef.current !== null)
-                countdownRef.current.textContent = `${(elapsed / 60)
-                    .toFixed(0)
-                    .padStart(2, "0")}:${(elapsed % 60)
-                    .toString()
-                    .padStart(2, "0")}`;
-            if (endedAtRef.current === null)
-                requestAnimationFrame(updateCountdown);
-        }
-        updateCountdown();
     }, []);
 
     useEffect(() => {
@@ -162,7 +133,7 @@ export function Guessr(props: { id: string }) {
         <div className="flex flex-col justify-between grow gap-8">
             {won && <Confetti mode="fall" />}
             <StationSelectorPopup />
-            <RuledPopup rule="dle-rules">
+            <RuledPopup rule="guessr-rules">
                 <p className="font-semibold text-xl">Comment jouer à Guessr</p>
                 <br />
                 <ul className="list-disc [&>li]:ml-6">
@@ -307,8 +278,8 @@ export function Guessr(props: { id: string }) {
                             shareGuessrGame(
                                 props.id,
                                 won,
-                                startedAtRef.current,
-                                endedAtRef.current!,
+                                startedAt.current,
+                                endedAt.current!,
                                 answers,
                                 false
                             )
