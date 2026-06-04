@@ -141,8 +141,9 @@ export async function humanizeConstraint(
 }
 
 export function humanizeRarity(rarity: number) {
-    if (rarity > 79) return "très rare";
-    else if (rarity > 50) return "rare";
-    else if (rarity > 30) return "peu commun";
+    if (rarity > 80) return "très rare";
+    else if (rarity > 70) return "rare";
+    else if (rarity > 50) return "bonne pioche";
+    else if (rarity > 30) return "plutôt commun"
     return "commun";
 }
