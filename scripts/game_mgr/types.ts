@@ -23,7 +23,8 @@ export interface WordleData {
 export type UserFacingWordleData = Omit<WordleData, "name"> & {
     layout: {
         wordLengths: number[],
-        delimiters: { after: number, type: string }[]
+        // word index, char index
+        delimiters: { widx: number, cidx: number, type: string }[]
     }
 }
 

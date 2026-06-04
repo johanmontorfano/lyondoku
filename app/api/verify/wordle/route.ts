@@ -18,17 +18,25 @@ export async function POST(req: NextRequest) {
 
     // NOTE: the guess is provided without spaces, so the verification happens
     // without spaces too
-    const gameName = game.name.toLowerCase().replaceAll(/[- ']/gu, "").split("");
-    const guess = body.data.guess.filter(c => c !== " ").map(c => c.toLowerCase());
+    const gameName = game.name.toLowerCase().replaceAll(" ", "").split("");
+    const guess = body.data.guess
+        .filter(c => c !== " ")
+        .map(c => c.toLowerCase()
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "")
+        );
 
-    const match = Array(gameName.length).fill(LetterPosition.Invalid);
+    const match = Array(gameName.length).fill([LetterPosition.Invalid, null]);
     const secretWordPool = [...gameName];
     const userGuessPool: (string | null)[] = [...guess];
 
     for (let i = 0; i < gameName.length; i++) {
-        if (userGuessPool[i] && secretWordPool[i] &&
-            userGuessPool[i] === secretWordPool[i]) {
-            match[i] = LetterPosition.Valid;
+        const c = secretWordPool[i] ? secretWordPool[i]
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "") : null;
+        
+        if (userGuessPool[i] && c && userGuessPool[i] === c) {
+            match[i] = [LetterPosition.Valid, secretWordPool[i]];
             secretWordPool[i] = "*";
             userGuessPool[i] = null;
         }
@@ -39,7 +47,7 @@ export async function POST(req: NextRequest) {
 
         const misplacedIdx = secretWordPool.indexOf(userGuessPool[i]!);
         if (misplacedIdx > -1) {
-            match[i] = LetterPosition.Misplaced;
+            match[i] = [LetterPosition.Misplaced, null];
             secretWordPool[misplacedIdx] = "*";
         }
     }

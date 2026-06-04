@@ -8,7 +8,8 @@ export function CharInput(props: {
     onChange: (inputs: string[]) => void,
     disabled: boolean
 }) {
-    const totalLength = props.layout.wordLengths.reduce((p, c) => p + c, 0);
+    const totalLength = props.layout.wordLengths.reduce((p, c) => p + c, 0) +
+        props.layout.delimiters.length;
     const inputRefs = useRef<HTMLInputElement[]>([]);
     const isComposing = useRef(false);
     const validLetters = useRef<string[]>(Array(totalLength).fill(""));
@@ -52,6 +53,9 @@ export function CharInput(props: {
 
     function onInput(e: ChangeEvent<HTMLInputElement>, idx: number) {
         const val = e.target.value.toUpperCase().slice(-1);
+        
+        if (val === " ") return;
+
         const newInputs = [...props.value];
         newInputs[idx] = val;
         
@@ -76,62 +80,56 @@ export function CharInput(props: {
     return (
         <div className="flex flex-wrap justify-center gap-6 mb-8">
             {props.layout.wordLengths.map((length, i) => {
-                const wordOffset = props.layout.wordLengths
+                const wordOffset = i > 0 ? props.layout.wordLengths
                     .slice(0, i)
-                    .reduce((acc, len) => acc + len, 0);
+                    .reduce((a, b) => a + b) : 0;
 
-                return (<Fragment key={"ci-w-" + i}>
-                    <div className="flex flex-wrap justify-center gap-1 lg:gap-2 p-1 lg:p-2 bg-base-300 rounded-xl">
-                        {Array.from({ length }).map((_, j) => {
-                            const idx = wordOffset + j;
-                            const status = props.locked[idx];
-                            const isValid = status === LetterPosition.Valid;
+                return <div
+                    className="flex flex-wrap justify-center gap-1 lg:gap-2 p-1 lg:p-2 bg-base-300 rounded-xl"
+                    key={"ci-w-" + i}
+                >
+                    {Array.from({ length }).map((_, j) => {
+                        const idx = wordOffset + j;
+                        const status = props.locked[idx];
+                        const isValid = status === LetterPosition.Valid;
 
-                            return (
-                                <input
-                                    key={`ci-frag-${i}-${idx}`}
-                                    ref={(el) => {
-                                        inputRefs.current[idx] = el!;
-                                    }}
-                                    type="text"
-                                    placeholder={validLetters.current[idx]}
-                                    value={props.value[idx] || ""}
-                                    disabled={props.disabled}
-                                    onCompositionStart={() => {
-                                        isComposing.current = true;
-                                    }}
-                                    onCompositionEnd={(e) => {
-                                        isComposing.current = false;
-                                        if ((e.target as HTMLInputElement).value !== "")
-                                            focusNext(idx);
-                                    }}
-                                    onChange={(e) => onInput(e, idx)}
-                                    onKeyDown={(e) => onKeyDown(e, idx)}
-                                    className={`w-9 h-10.5 lg:w-10 lg:h-12.5 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none
-                                        ${
-                                            isValid
-                                                ? "bg-success text-success-content border-success scale-95"
-                                                : status === LetterPosition.Misplaced
-                                                ? "bg-warning text-warning-content border-warning"
-                                                : "bg-base-100 border-base-content/20 focus:border-primary text-base-content"
-                                        }
-                                    `}
-                                />
-                            );
-                        })}
-                    </div>
-                    <div className="flex items-center">
-                        {props.layout
-                            .delimiters
-                            .filter(d => d.after === i + 1 && d.type !== " ")
-                            .map((d, i) => (
-                                <p
-                                    key={`${d}-delim-${i}`}
-                                    className="w-9 h-10.5 lg:w-10 lg:h-12.5 text-center text-xl font-bold uppercase rounded-lg border-2 bg-base-100 border-base-content/20 text-base-content"
-                                >{d.type}</p>
-                            ))}
-                    </div>
-                </Fragment>);
+                        const delim = props.layout.delimiters.find(
+                            d => d.widx === i && d.cidx === j
+                        );
+
+                        return (
+                            <input
+                                key={`ci-frag-${i}-${idx}`}
+                                ref={(el) => {
+                                    inputRefs.current[idx] = el!;
+                                }}
+                                type="text"
+                                placeholder={
+                                    delim?.type || validLetters.current[idx]
+                                }
+                                value={props.value[idx] || ""}
+                                disabled={props.disabled}
+                                onCompositionStart={() => {
+                                     isComposing.current = true;
+                                }}
+                                onCompositionEnd={(e) => {
+                                    isComposing.current = false;
+                                    if ((e.target as HTMLInputElement).value !== "")
+                                        focusNext(idx);
+                                }}
+                                onChange={(e) => onInput(e, idx)}
+                                onKeyDown={(e) => onKeyDown(e, idx)}
+                                className={`w-9 h-10.5 lg:w-10 lg:h-12.5 text-center text-xl font-bold uppercase rounded-lg border-2 transition-all focus:outline-none
+                                    ${isValid ?
+                                        "bg-success text-success-content border-success scale-95"
+                                        : status === LetterPosition.Misplaced ?
+                                            "bg-warning text-warning-content border-warning"
+                                            : "bg-base-100 border-base-content/20 focus:border-primary text-base-content"                                        }
+                                `}
+                            />
+                        );
+                    })}
+                </div>
             })}
         </div>
     );

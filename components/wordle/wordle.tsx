@@ -46,7 +46,6 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
     const [attempts, setAttempts] = useState(0);
     const [inputs, setInputs] = useState<string[]>([]);
     const [lockedIndices, setLockedIndices] = useState<LetterPosition[]>([]);
-    const [initialAttemptSent, setInitialAttemptSent] = useState(false);
 
     // to be funnier to play with, the wordle will keep track of all invalid
     // letters and show them to the user until they place them WITHOUT knowing
@@ -80,7 +79,7 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
 
                 const body = (await res.json()) as WordleData;
 
-                setInputs(body.name.replaceAll(/[\'\s-]/g, "").split(""));
+                setInputs(body.name.replaceAll(/[\s]/g, "").split(""));
                 localStorage.setItem(
                     `guess-${props.id}`,
                     JSON.stringify({
@@ -114,7 +113,6 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
         // and the underlying handlers
         setLoading(true);
         setInputs(keys.slice(0, length));
-        if (!initialAttemptSent) setInitialAttemptSent(true);
         try {
             const res = await fetch("/api/verify/wordle", {
                 method: "POST",
@@ -134,10 +132,19 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                 const matchWithKey: Record<string, LetterPosition> = {};
 
                 // we build a dict first linking the match state with the
-                // letter
-                body.match.forEach((status: LetterPosition, i: number) => {
+                // letter, we also for set valid keys to their given key right
+                // now as the steps after mess up the sorting
+                body.match.forEach((status: [LetterPosition, string | null], i: number) => {
                     const letter = keys[i] || "";
-                    matchWithKey[letter] = status;
+                    matchWithKey[letter] = status[0];
+
+                    if (status[0] === LetterPosition.Valid && status[1])
+                        setInputs(p => {
+                            const n = [...p]
+
+                            n[i] = status[1]!;
+                            return n;
+                        });
                 });
 
                 // we order the keys from no action to valid key to avoid
@@ -146,8 +153,6 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
 
                 for (const [letter, status] of ordered) {
                     if (letter === "") continue;
-
-                    console.log(letter, status);
                     if (status !== LetterPosition.Invalid) {
                         if (prev[letter] === undefined)
                             prev[letter] = {
@@ -171,7 +176,7 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
 
             // to ensure entries stay locked while new ones switch to be locked
             // we must run the matches through a filter before setting
-            setLockedIndices(body.match);
+            setLockedIndices(body.match.map(m => m[0]));
             if (!body.won) setAttempts((p) => p + 1);
             else handleGameEnd(true, body.match);
             if (!body.won && attempts > 1) handleGameEnd(false, body.match);
@@ -186,7 +191,6 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
             const data = JSON.parse(saveGame);
 
             setWon(data.won);
-            setInitialAttemptSent(true);
             setAttempts(data.attempts);
             setInputs(data.inputs);
             setLockedIndices(data.locked);
@@ -211,10 +215,6 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                 <ul className="list-disc [&>li]:ml-6">
                     <li>
                         Trouvez la station TCL en <strong>3 essais</strong>.
-                    </li>
-                    <li>
-                        Après le premier essai, la forme du nom de la station
-                        devient visible.
                     </li>
                     <li>
                         Chaque essai vous indique lesquelles des{" "}
@@ -279,26 +279,13 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                 }}
                 className="flex flex-col items-center justify-center gap-2"
             >
-                {initialAttemptSent ? (
-                    <CharInput
-                        value={inputs}
-                        onChange={setInputs}
-                        locked={lockedIndices}
-                        disabled={won !== null}
-                        layout={props.gameData.layout}
-                    />
-                ) : (
-                    <input
-                        type="text"
-                        className="input border-2 text-xl my-8 rounded-lg w-full max-w-[400px] p-6"
-                        placeholder="Tentez quelque chose..."
-                        onChange={(ev) => {
-                            setInputs(
-                                ev.target.value.replaceAll(" ", "").split(""),
-                            );
-                        }}
-                    />
-                )}
+                <CharInput
+                    value={inputs}
+                    onChange={setInputs}
+                    locked={lockedIndices}
+                    disabled={won !== null}
+                    layout={props.gameData.layout}
+                />
                 <div className="flex flex-wrap gap-2">
                     <AnimatePresence>
                         {Object.entries(misplaced)
