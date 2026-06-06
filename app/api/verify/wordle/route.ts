@@ -5,6 +5,12 @@ import z from "zod";
 
 const postReq = z.object({ id: z.string(), guess: z.array(z.string()) });
 
+function normalizeApostrophes(to: string) {
+    // Matches ’, ‘, `, ＇, and ＇
+    return to.replace(/[\u2018\u2019\u201B\u0060\uFF07]/g, "'");
+}
+
+
 export async function POST(req: NextRequest) {
     const body = postReq.safeParse(await req.json());
 
@@ -18,12 +24,16 @@ export async function POST(req: NextRequest) {
 
     // NOTE: the guess is provided without spaces, so the verification happens
     // without spaces too
-    const gameName = game.name.toLowerCase().replaceAll(" ", "").split("");
+    const gameName = game.name.toLowerCase()
+        .replaceAll(/[\u2018\u2019\u201B\u0060\uFF07]/g, "'")
+        .replaceAll(" ", "")
+        .split("");
     const guess = body.data.guess
         .filter(c => c !== " ")
         .map(c => c.toLowerCase()
             .normalize("NFD")
             .replace(/\p{Diacritic}/gu, "")
+            .replace(/[\u2018\u2019\u201B\u0060\uFF07]/g, "'")
         );
 
     const match = Array(gameName.length).fill([LetterPosition.Invalid, null]);
