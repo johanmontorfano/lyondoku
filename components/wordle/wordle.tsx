@@ -7,7 +7,6 @@ import { LetterPosition, UserFacingWordleData, WordleData } from "@/scripts/game
 import { CharInput } from "./char_input";
 import Confetti from "react-confetti-boom";
 import { shareWordleGame } from "@/scripts/share_game";
-import { AnimatePresence, motion } from "framer-motion";
 import { useCountdown } from "@/scripts/countdown";
 
 function Counter(props: { count: number }) {
@@ -46,25 +45,6 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
     const [attempts, setAttempts] = useState(0);
     const [inputs, setInputs] = useState<string[]>([]);
     const [lockedIndices, setLockedIndices] = useState<LetterPosition[]>([]);
-
-    // to be funnier to play with, the wordle will keep track of all invalid
-    // letters and show them to the user until they place them WITHOUT knowing
-    // itself what's the final word
-    //
-    // therefore, each time a letter is misplaced, the number of the same
-    // letter misplaced (if 3 misplaced e, then it is 3) and the number of 
-    // valid placed letters (if 1 e placed, then it is 1) will be kept track
-    // of
-    //
-    // fi, if at round 1 the user has placed 1 a at the right spot but another
-    // a is misplaced, we know there is at least 1 a misplaced and we show it
-    // to the user
-    //
-    // if at the next turn they placed the 2 a at the right spot and tried a
-    // guess with a 3rd a misplaced, then we know there is at least... etc etc
-    const [misplaced, setMisplaced] = useState<Record<
-        string, Record<"misplaced" | "valid", number>
-    >>({});
 
     const [countdownRef, startedAt, endedAt] = useCountdown("wordle-rules");
 
@@ -128,54 +108,6 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                 match: [LetterPosition, string | null][],
                 won: boolean
             } = await res.json();
-
-            // we check all letters statuses
-            setMisplaced(p => {
-                const prev = { ...p };
-                const matchWithKey: Record<string, LetterPosition> = {};
-
-                // we build a dict first linking the match state with the
-                // letter, we also for set valid keys to their given key right
-                // now as the steps after mess up the sorting
-                body.match.forEach((status, i: number) => {
-                    const letter = keys[i] || "";
-                    matchWithKey[letter] = status[0];
-
-                    if (status[0] === LetterPosition.Valid && status[1])
-                        setInputs(p => {
-                            const n = [...p]
-
-                            n[i] = status[1]!;
-                            return n;
-                        });
-                });
-
-                // we order the keys from no action to valid key to avoid
-                // valid operations to reduce misplaced operations wrongfully
-                const ordered = Object.entries(matchWithKey).sort().reverse();
-
-                for (const [letter, status] of ordered) {
-                    if (letter === "") continue;
-                    if (status !== LetterPosition.Invalid) {
-                        if (prev[letter] === undefined)
-                            prev[letter] = {
-                                misplaced: 0,
-                                valid: 0
-                            };
-                        if (status === LetterPosition.Misplaced)
-                            prev[letter].misplaced += 1;
-                        if (status === LetterPosition.Valid) {
-                            // if it is the first round, we cannot remove from the
-                            // misplaced entry since we weren't aware before they
-                            // were 0 misplaced letter
-                            if (prev[letter].misplaced > 0)
-                                prev[letter].misplaced -= 1;
-                            prev[letter].valid;
-                        }
-                    }
-                }
-                return prev;
-            });
 
             // to ensure entries stay locked while new ones switch to be locked
             // we must run the matches through a filter before setting
@@ -290,30 +222,6 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                     disabled={won !== null}
                     layout={props.gameData.layout}
                 />
-                <div className="flex flex-wrap gap-2">
-                    <AnimatePresence>
-                        {Object.entries(misplaced)
-                            .sort()
-                            .filter(([_, v]) => v.misplaced > 0)
-                            .map(([k, v]) => (
-                                <motion.div
-                                    key={`misplaced-${k}`}
-                                    className="indicator"
-                                    initial={{ scale: 0.7, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    exit={{ scale: 0.7, opacity: 0 }}
-                                >
-                                    <span className="indicator-item badge badge-warning badge-xs w-4 h-4 rounded-full">
-                                        {v.misplaced}
-                                    </span>
-                                    <div className="w-7 h-8 flex justify-center items-center uppercase rounded-md bg-base-200">
-                                        <span>{k}</span>
-                                    </div>
-                                </motion.div>
-                            ))
-                        }
-                    </AnimatePresence>
-                </div>
                 <input type="submit" disabled={loading} hidden />
             </form>
             <div className="flex justify-between items-center flex-wrap-reverse">

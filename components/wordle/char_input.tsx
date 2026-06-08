@@ -1,5 +1,5 @@
 import { LetterPosition, UserFacingWordleData } from "@/scripts/game_mgr/types";
-import { ChangeEvent, Fragment, KeyboardEvent, useEffect, useRef } from "react";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef } from "react";
 
 export function CharInput(props: {
     value: string[],
@@ -22,7 +22,9 @@ export function CharInput(props: {
         // when new letters are locked, we add all valid letters permanently
         // to the validLetters ref
         props.locked.forEach((l, i) => {
-            if (validLetters.current[i] === "" && l === LetterPosition.Valid)
+            if (validLetters.current[i] === "" &&
+                (l === LetterPosition.Valid ||
+                l === LetterPosition.Misplaced))
                 validLetters.current[i] = props.value[i];
         });
     }, [props.locked]);
