@@ -64,7 +64,7 @@ export function RuledPopup(props: { rule: string, children: ReactNode }) {
                             damping: 25,
                             stiffness: 300,
                         }}
-                        className="bg-base-100 shadow-2xl max-w-[500px] w-full rounded-2xl overflow-hidden border border-base-300 mt-5 mx-5"
+                        className="bg-base-200 shadow-2xl max-w-[500px] w-full rounded-2xl overflow-hidden border border-base-300 mt-5 mx-5"
                         onClick={(ev) => ev.stopPropagation()}
                     >
                         <div className="p-4">
@@ -73,7 +73,7 @@ export function RuledPopup(props: { rule: string, children: ReactNode }) {
                         <br />
                         <div className="px-4 pb-4 gap-2 flex justify-end items-center">
                             {shouldShow && <button
-                                className="btn"
+                                className="btn btn-dash"
                                 onClick={() => {
                                     localStorage.setItem(props.rule, "ok");
                                     setShow(false);
