@@ -299,6 +299,7 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
                         key={"col-" + i}
                         constraint={col}
                         group="column"
+                        i={i + 1}
                     />
                 ))}
                 {cellKeys.map((keys, i) => (
@@ -306,9 +307,11 @@ export function DokuGrid(props: { gameData: UserFacingDokuData }) {
                         <ConstraintCell
                             constraint={props.gameData.rows[i]}
                             group="row"
+                            i={(i + 1) * 4}
                         />
-                        {keys.map((key) => (
+                        {keys.map((key, j) => (
                             <Cell
+                                i={(i + 1) * 4 + j}
                                 key={key}
                                 data={cells[getKeyId(key)]}
                                 onClick={async () => {

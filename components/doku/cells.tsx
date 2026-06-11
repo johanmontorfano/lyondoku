@@ -5,10 +5,12 @@ import { CellData } from "./doku";
 import { humanizeConstraint, humanizeRarity } from "@/scripts/game_mgr/humanize";
 import { motion } from "framer-motion";
 import React, { Suspense, useEffect, useState } from "react";
+import { cellAnimate } from "@/scripts/motion";
 
 function _ConstraintCell(props: {
     constraint: Constraints,
-    group: "row" | "column"
+    group: "row" | "column",
+    i: number
 }) {
     const [isServer, setServer] = useState(true);
 
@@ -16,17 +18,21 @@ function _ConstraintCell(props: {
         setServer(false);
     }, []);
 
-    return <div className={`bg-base-200 border-base-300 flex items-center ${
-        props.group === "row" ?
-            "rounded-l-[20%_50%]" :
-            "rounded-t-[50%_20%]"
-    } rounded-sm`}>
+    return <motion.div
+        variants={cellAnimate}
+        initial="exit"
+        animate="show"
+        transition={{ bounce: 0, delay: props.i / 10 }}
+        className={`bg-base-200 border-base-300 flex items-center ${
+            props.group === "row" ? "rounded-l-[20%_50%]" : "rounded-t-[50%_20%]"
+        } rounded-sm`}
+    >
         <div className="mx-2 font-semibold text-[clamp(0.4rem,2.4cqi,0.85rem)]">
             {!isServer && <Suspense>
                 {humanizeConstraint(props.constraint)}
             </Suspense>}
         </div>
-    </div>;
+    </motion.div>;
 }
 
 export const ConstraintCell = React.memo(_ConstraintCell);
@@ -34,7 +40,8 @@ export const ConstraintCell = React.memo(_ConstraintCell);
 export function Cell(props: {
     data: CellData,
     onClick: () => void,
-    disabled: boolean
+    disabled: boolean,
+    i: number
 }) {
     const [animation, setAnimation] = useState("");
     const [was, setWas] = useState({
@@ -59,6 +66,10 @@ export function Cell(props: {
 
     return <motion.div
         role="button"
+        variants={cellAnimate}
+        initial="exit"
+        animate="show"
+        transition={{ bounce: 0, delay: props.i / 10 }}
         className={`relative w-full h-full ${!props.data?.answer ||
             props.data.validAnswers ? "cursor-pointer" : ""} ${animation} 
             border border-1 rounded-md dark:border-neutral-700 hover:bg-base-300 
