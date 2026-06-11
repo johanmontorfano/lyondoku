@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { create } from "zustand";
 
 export const useRuledPopupContext = create<{
@@ -17,13 +17,13 @@ export const useRuledPopupContext = create<{
 // shows a popup if a key is not present in local storage
 export function RuledPopup(props: { rule: string, children: ReactNode }) {
     const [show, setShow] = useState(false);
+    const shouldShow = useMemo(() => {
+        if (typeof window == "undefined") return;
+        return localStorage.getItem(props.rule) === null;
+    }, [show]);
     const popupCtx = useRuledPopupContext();
 
     useEffect(() => {
-        if (typeof window === "undefined") return;
-
-        const shouldShow = localStorage.getItem(props.rule) === null;
-
         if (shouldShow) {
             popupCtx.setCurrentRule(props.rule);
             setShow(shouldShow);
@@ -72,13 +72,13 @@ export function RuledPopup(props: { rule: string, children: ReactNode }) {
                         </div>
                         <br />
                         <div className="px-4 pb-4 gap-2 flex justify-end items-center">
-                            <button
+                            {shouldShow && <button
                                 className="btn"
                                 onClick={() => {
                                     localStorage.setItem(props.rule, "ok");
                                     setShow(false);
                                 }}
-                            >Ne plus afficher</button>
+                            >Ne plus afficher</button>}
                             <button
                                 className="btn btn-primary"
                                 onClick={() => setShow(false)}

@@ -33,13 +33,11 @@ export function GuessrRow(props: GuessrAnswer) {
                                 alt={`Ligne ${c}`}
                             />
                         )) :
-                        <p>Aucune</p>
+                        <p>Différentes</p>
                     }
                 </div>
             </td>
-            <td className={`p-2 text-center text-dyn-md ${animation[1]} ${
-                props.cityMatch.length > 0 ? "text-success-content" : "text-error-content"
-            }`}>
+            <td className={`p-2 text-center text-dyn-md ${animation[1]}`}>
                 <div className="flex flex-wrap gap-1 justify-center">
                     {props.cityMatch.length > 0 ?
                         props.cityMatch.sort().map((c) => (
@@ -47,13 +45,11 @@ export function GuessrRow(props: GuessrAnswer) {
                                 {c}
                             </p>
                         )) :
-                        <p>Incorrecte</p>
+                        <p>Différente</p>
                     }
                 </div>
             </td>
-            <td className={`${animation[2]} ${
-                match ? "text-success-content" : "text-error-content"
-            }`}>
+            <td className={animation[2]}>
                 <div className="flex items-center justify-end gap-1.5">
                     <span className="text-dyn-md whitespace-nowrap">
                         {props.distanceWithAnswer === 0 ? "Exact" : `${

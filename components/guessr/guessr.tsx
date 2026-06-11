@@ -214,7 +214,7 @@ export function Guessr(props: { id: string }) {
                 <thead>
                     <tr className="text-base-content/80 text-dyn-md font-bold">
                         <th className="w-[52%]">Station</th>
-                        <th className="w-[10%] text-center">Lignes en commun</th>
+                        <th className="w-[10%] text-center">Lignes</th>
                         <th className="w-[20%] text-center">Commune</th>
                         <th className="w-[18%] text-right">Distance</th>
                     </tr>
@@ -258,7 +258,7 @@ export function Guessr(props: { id: string }) {
                 <button
                     onClick={() => useRuledPopupContext
                         .getState()
-                        .setCurrentRule("dle-rules")
+                        .setCurrentRule("guessr-rules")
                     }
                     className="btn"
                     key="rules"
