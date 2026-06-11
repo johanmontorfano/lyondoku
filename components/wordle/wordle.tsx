@@ -229,7 +229,7 @@ export function Wordle(props: { gameData: UserFacingWordleData; id: string }) {
                     <button
                         onClick={() => useRuledPopupContext
                             .getState()
-                            .setCurrentRule("guess-rules")
+                            .setCurrentRule("wordle-rules")
                         }
                         className="btn"
                         key="rules"
